@@ -63,9 +63,9 @@ window.SDG_CONTENT = {
     rankLabels: ["1st", "2nd", "3rd"],
 
     sectionLabels: {
-      industries:          "Industries",
-      studyPathways:       "Study Pathways",
-      careerRoles:         "Career Roles",
+      industries:          "Potential Industries",
+      studyPathways:       "Potential Study Pathways",
+      careerRoles:         "Potential Career Roles",
       purposefulIntention: "What Drives This",
       singaporeContext:    "In Singapore"
     }
