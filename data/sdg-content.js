@@ -20,7 +20,7 @@ window.SDG_CONTENT = {
     stage1Heading:      "Which of these feel like yours?",
     stage1NextBtn:      "Next Step",
     stage1NotDoneMsg:   "You've sorted {x} of 17. Keep going — there are a few left.",
-    stage1TallyLabel:   ["Very interested", "Slightly interested", "Not at all"],
+    stage1TallyLabel:   ["Not for me", "Curious", "Mine"],
 
     stage2Heading:      "Pick your top 3",
     stage2Intro:        "These are the goals you leaned into. Choose the three that matter most — they'll shape your career reflection.",
@@ -69,9 +69,9 @@ window.SDG_CONTENT = {
     summaryPurposeLabel: "Sources of Purpose",
 
     categoryLabels: {
-      not:      "Not at all",
-      slightly: "Slightly interested",
-      very:     "Very interested"
+      not:      "Not for me",
+      slightly: "Curious",
+      very:     "Mine"
     },
 
     rankLabels: ["1st", "2nd", "3rd"],
