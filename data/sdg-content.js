@@ -69,9 +69,9 @@ window.SDG_CONTENT = {
     summaryPurposeLabel: "Sources of Purpose",
 
     categoryLabels: {
-      not:      "Not for me",
-      slightly: "Curious",
-      very:     "Mine"
+      not:      "Not at all",
+      slightly: "Slightly interested",
+      very:     "Very interested"
     },
 
     rankLabels: ["1st", "2nd", "3rd"],
