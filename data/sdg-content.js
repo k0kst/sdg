@@ -20,14 +20,14 @@ window.SDG_CONTENT = {
     stage1Heading:      "Which of these feel like yours?",
     stage1NextBtn:      "Next Step",
     stage1NotDoneMsg:   "You've sorted {x} of 17. Keep going — there are a few left.",
-    stage1TallyLabel:   ["Mine", "Curious", "Not for me"],
+    stage1TallyLabel:   ["Very interested", "Slightly interested", "Not at all"],
 
     stage2Heading:      "Pick your top 3",
     stage2Intro:        "These are the goals you leaned into. Choose the three that matter most — they'll shape your career reflection.",
     stage2BackLink:     "Change My Sorting",
     stage2NudgeLink:    "Want to include a different goal? Go back to change your categories.",
     stage2FullMsg:      "You've already picked 3. Tap one to swap it out.",
-    stage2TooFewMsg:    "You've been picky — go back and flag a few more that caught your eye.",
+    stage2TooFewMsg:    "You've been picky, go back and flag a few more that caught your eye.",
     stage2ResultsBtn:   "See My Results",
 
     stage3Heading:      "Your Purpose Compass",
