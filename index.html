@@ -5,10 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1A4F8A">
 <title>SDG Career Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    SDG Career Explorer — Inline Styles
    ============================================================ */
+
+:root {
+  --ink:               #1A1A2E;
+  --ink-2:             #3A3A4A;
+  --ink-3:             #6B6B7A;
+  --paper:             #F7F3EC;
+  --paper-2:           #EDE7DA;
+  --line:              #D9D3C3;
+  --line-2:            #C7C0AD;
+  --accent:            #1A4F8A;
+  --accent-hi:         #14416F;
+  --accent-tint:       #E8EFF7;
+  --cat-very:          #5C8A4A;
+  --cat-slightly:      #C08A2E;
+  --cat-not:           #8B8B92;
+  --cat-very-tint:     #E5EEE0;
+  --cat-slightly-tint: #F7EAC9;
+  --cat-not-tint:      #EDEDEE;
+  --font-display:      'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body:         'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+}
 
 @font-face {
   font-family: 'DM Sans';
@@ -24,23 +48,23 @@
 html, body { margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; }
 body {
-  font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
   line-height: 1.5;
-  color: #1A1A2E;
-  background: #FAF7F2;
+  color: var(--ink);
+  background: var(--paper);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 button { font-family: inherit; cursor: pointer; }
 img { max-width: 100%; display: block; }
-h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
+h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
 
 /* Visible focus */
 :focus { outline: none; }
 :focus-visible {
-  outline: 3px solid #1A4F8A;
+  outline: 3px solid var(--accent);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -58,27 +82,31 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
 /* ---- Sticky header ---- */
 .app-header {
   position: sticky; top: 0; z-index: 50;
-  background: #FFFFFF;
-  border-bottom: 1px solid rgba(26, 79, 138, 0.12);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-  min-height: 60px;
+  background: rgba(247, 243, 236, 0.82);
+  -webkit-backdrop-filter: saturate(160%) blur(10px);
+  backdrop-filter: saturate(160%) blur(10px);
+  border-bottom: 1px solid var(--line);
+  min-height: 44px;
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .app-header { background: var(--paper); }
 }
 .app-header-inner {
   max-width: 1400px; margin: 0 auto;
-  padding: 10px 24px;
-  display: flex; align-items: center; gap: 16px;
-  min-height: 60px;
+  padding: 6px 20px;
+  display: flex; align-items: center; gap: 14px;
+  min-height: 44px;
 }
 .header-logo {
-  height: 34px; width: auto; flex-shrink: 0;
+  height: 28px; width: auto; flex-shrink: 0;
 }
 .header-label-group {
-  display: flex; flex-direction: column; gap: 2px;
+  display: flex; flex-direction: column; gap: 1px;
   min-width: 0; flex: 1;
 }
 .header-stage-label {
-  font-size: 13px; font-weight: 500; color: #6B6B7A;
-  text-transform: uppercase; letter-spacing: 0.04em;
+  font-size: 11px; font-weight: 600; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.12em;
   line-height: 1.2;
 }
 .header-progress {
@@ -175,8 +203,11 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
 }
 .landing-copy { max-width: 560px; }
 .landing-title {
-  font-size: 32px; font-weight: 700;
-  margin-bottom: 16px; color: #1A4F8A;
+  font-family: var(--font-display);
+  font-size: 42px; font-weight: 600;
+  letter-spacing: -0.015em; line-height: 1.08;
+  margin-bottom: 18px; color: var(--ink);
+  text-wrap: balance;
 }
 .landing-subtitle {
   font-size: 17px; color: #3A3A4A;
@@ -219,7 +250,7 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
   .landing { grid-template-columns: 1fr; gap: 24px; }
   .landing-visual { order: -1; }
   .landing-visual img { max-width: 260px; }
-  .landing-title { font-size: 26px; }
+  .landing-title { font-size: 30px; }
 }
 
 /* ============================================================
@@ -229,10 +260,13 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
   margin-bottom: 20px;
 }
 .stage-heading {
-  font-size: 24px; font-weight: 700; margin-bottom: 6px;
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 600;
+  letter-spacing: -0.01em; margin-bottom: 6px;
+  color: var(--ink);
 }
 .stage-sub {
-  font-size: 15px; color: #4A4A5A; margin: 0;
+  font-size: 15px; color: var(--ink-2); margin: 0;
 }
 @media (max-width: 767px) {
   .stage-heading { font-size: 20px; }
@@ -478,17 +512,25 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
   display: flex; justify-content: space-between; align-items: flex-start;
   gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
 }
-.summary-heading { font-size: 28px; margin-bottom: 4px; }
-.summary-sub { font-size: 16px; color: #4A4A5A; margin: 0; }
+.summary-heading {
+  font-family: var(--font-display);
+  font-size: 36px; font-weight: 600;
+  letter-spacing: -0.015em; line-height: 1.1;
+  margin-bottom: 6px; color: var(--ink);
+}
+.summary-sub { font-size: 16px; color: var(--ink-2); margin: 0; }
 @media (max-width: 767px) {
-  .summary-heading { font-size: 22px; }
+  .summary-heading { font-size: 26px; }
 }
 
 .summary-section-title {
-  font-size: 18px; font-weight: 700; color: #1A4F8A;
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--ink);
   margin: 32px 0 14px;
   padding-bottom: 8px;
-  border-bottom: 2px solid rgba(26, 79, 138, 0.15);
+  border-bottom: 1px solid var(--line);
 }
 
 /* Spotlight cards */
@@ -526,7 +568,9 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
   text-transform: uppercase; letter-spacing: 0.04em;
 }
 .spotlight-name {
-  font-size: 18px; font-weight: 700; line-height: 1.2;
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 600;
+  letter-spacing: -0.005em; line-height: 1.15;
   margin-top: 2px; color: #FFFFFF;
 }
 .spotlight-body {
@@ -669,6 +713,171 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
 .modal-btn.confirm { background: #B91C1C; color: #FFFFFF; }
 .modal-btn.confirm:hover { background: #9B1616; }
 
+/* ============================================================
+   TAG STAGE (Stage 2b) — Purpose tagging
+   ============================================================ */
+.tag-stage { max-width: 880px; margin: 0 auto; }
+
+.tag-sdg-strip {
+  display: flex; gap: 14px; align-items: center;
+  background: #FFFFFF; border-radius: 12px;
+  border: 2px solid rgba(26, 26, 46, 0.08);
+  border-left: 6px solid var(--sdg-color, #1A4F8A);
+  padding: 14px 16px; margin-bottom: 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.tag-sdg-icon-wrap {
+  flex-shrink: 0;
+  width: 56px; height: 56px; border-radius: 8px;
+  background: var(--sdg-color, #1A4F8A);
+  padding: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+.tag-sdg-icon-wrap img { width: 100%; height: 100%; object-fit: contain; }
+.tag-sdg-title-group { flex: 1; min-width: 0; }
+.tag-sdg-number {
+  font-size: 12px; font-weight: 600;
+  color: var(--sdg-color, #1A4F8A);
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.tag-sdg-name {
+  font-size: 18px; font-weight: 700;
+  color: #1A1A2E; line-height: 1.25;
+  margin-top: 2px;
+}
+.tag-sdg-desc {
+  font-size: 14px; color: #3A3A4A; line-height: 1.5;
+  margin: 6px 0 0;
+}
+.tag-goal-progress {
+  display: inline-block;
+  background: #E8EFF7; color: #1A4F8A;
+  padding: 4px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+.tag-prompt {
+  font-size: 16px; color: #1A1A2E; font-weight: 600;
+  margin: 4px 0 14px;
+}
+.tag-error {
+  background: #FFF4D6; border: 1px solid #F5D581;
+  color: #7A5A00; padding: 10px 14px; border-radius: 8px;
+  font-size: 14px; margin-bottom: 12px;
+  display: none;
+}
+.tag-error.show { display: block; }
+
+.purpose-group { margin-bottom: 18px; }
+.purpose-category-label {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #1A4F8A;
+  margin: 0 0 8px; padding: 0;
+}
+.purpose-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+@media (min-width: 900px) {
+  .purpose-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+}
+
+.purpose-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  text-align: left; width: 100%;
+  background: #FFFFFF;
+  border: 2px solid rgba(26, 26, 46, 0.08);
+  border-left: 6px solid transparent;
+  border-radius: 10px;
+  padding: 10px 12px; min-height: 52px;
+  cursor: pointer; font: inherit; color: inherit;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+.purpose-item:hover { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06); }
+.purpose-item.is-selected {
+  background: #E8EFF7;
+  border-color: rgba(26, 79, 138, 0.25);
+  border-left-color: #1A4F8A;
+}
+.purpose-item-check {
+  width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;
+  border: 1.5px solid #B0B0BA; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: transparent; line-height: 1;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+}
+.purpose-item.is-selected .purpose-item-check {
+  background: #1A4F8A; border-color: #1A4F8A; color: #FFFFFF;
+}
+.purpose-item-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.purpose-item-name {
+  font-size: 11px; font-weight: 700; color: var(--ink-3);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  line-height: 1.2;
+}
+.purpose-item-desc {
+  font-size: 15px; color: var(--ink); font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Purpose counter + cap warning */
+.tag-counter {
+  display: inline-block;
+  background: var(--accent-tint); color: var(--accent);
+  padding: 4px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 700;
+  margin-bottom: 14px;
+}
+.tag-counter.is-full { background: #F7EAC9; color: #8A5A00; }
+.tag-cap-msg {
+  background: #F7EAC9; border: 1px solid #E5C877;
+  color: #7A5A00; padding: 10px 14px; border-radius: 8px;
+  font-size: 14px; margin-bottom: 12px;
+  display: none;
+}
+.tag-cap-msg.show { display: block; }
+.purpose-item.is-swap-target {
+  box-shadow: 0 0 0 2px #C08A2E, 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.tag-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; flex-wrap: wrap;
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid rgba(26, 26, 46, 0.08);
+}
+.tag-back-link {
+  background: transparent; border: none;
+  color: #1A4F8A; font-size: 14px; font-weight: 500;
+  padding: 10px 8px; min-height: 44px;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.tag-back-link:hover { color: #14416F; }
+.tag-next-btn {
+  background: #1A4F8A; color: #FFFFFF; border: none;
+  padding: 12px 22px; border-radius: 10px;
+  font-size: 15px; font-weight: 600; min-height: 48px;
+  transition: background-color 150ms ease-out;
+}
+.tag-next-btn:hover:not(:disabled) { background: #14416F; }
+.tag-next-btn:disabled {
+  background: #C9C9D1; color: #FFFFFF;
+  cursor: not-allowed;
+}
+
+/* Summary: "Sources of Purpose" list */
+.spotlight-purpose-list {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 4px;
+}
+.spotlight-purpose-chip {
+  background: #E8EFF7; color: #1A4F8A;
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 600;
+}
+
 /* ---- Reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -695,7 +904,6 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
   <!-- Sticky header -->
   <header class="app-header" role="banner">
     <div class="app-header-inner" id="header-inner">
-      <img src="icons/E_SDG_logo_horizontal_Transparent_WEB.png" class="header-logo" alt="UN Sustainable Development Goals logo">
       <div class="header-label-group" id="header-label-group"></div>
       <div id="header-action-slot"></div>
     </div>
@@ -749,7 +957,10 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
     expandedCards: new Set(),
     orientationNudgeDismissed: false,
     copyState: 'idle',
-    copyConfirmVisible: false
+    copyConfirmVisible: false,
+    purposeTags: {},
+    currentTaggingIndex: 0,
+    pendingPurposeSwap: null
   };
 
   function resetState() {
@@ -759,7 +970,46 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
     appState.expandedCards = new Set();
     appState.copyState = 'idle';
     appState.copyConfirmVisible = false;
+    appState.purposeTags = {};
+    appState.currentTaggingIndex = 0;
+    appState.pendingPurposeSwap = null;
     // orientationNudgeDismissed is session-scoped per spec 7.x (dismiss "for the session")
+  }
+
+  // -- Purpose lookup helpers -------------------------------
+  var PURPOSES = (CONTENT.purposes && CONTENT.purposes.length) ? CONTENT.purposes : [];
+  var PURPOSE_BY_ID = {};
+  PURPOSES.forEach(function (group) {
+    (group.sources || []).forEach(function (src) { PURPOSE_BY_ID[src.id] = src; });
+  });
+
+  function getPurposeTagsFor(sdgId) {
+    return appState.purposeTags[sdgId] || [];
+  }
+  function hasPurposeTag(sdgId, purposeId) {
+    return getPurposeTagsFor(sdgId).indexOf(purposeId) !== -1;
+  }
+  // Returns 'added' | 'removed' | 'cap' (blocked by 3-cap).
+  function togglePurposeTag(sdgId, purposeId) {
+    var tags = getPurposeTagsFor(sdgId).slice();
+    var idx = tags.indexOf(purposeId);
+    if (idx !== -1) {
+      tags.splice(idx, 1);
+      appState.purposeTags[sdgId] = tags;
+      return 'removed';
+    }
+    if (tags.length >= 3) {
+      appState.pendingPurposeSwap = purposeId;
+      return 'cap';
+    }
+    tags.push(purposeId);
+    appState.purposeTags[sdgId] = tags;
+    return 'added';
+  }
+  function currentTagSdgId() {
+    var i = appState.currentTaggingIndex;
+    if (i < 0 || i > 2) return null;
+    return appState.topThree[i] || null;
   }
 
   // -- Helpers ----------------------------------------------
@@ -817,7 +1067,7 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
     if (appState.currentStage === 'landing') {
       labelGroup.innerHTML =
         '<div class="header-stage-label">SDG Career Explorer</div>' +
-        '<div style="font-size:14px;font-weight:500;color:#4A4A5A;">An ECG activity</div>';
+        '<div style="font-size:14px;font-weight:500;color:#4A4A5A;">An MOE ECG activity</div>';
       return;
     }
 
@@ -862,13 +1112,47 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
       var resultsBtn = document.createElement('button');
       resultsBtn.type = 'button';
       resultsBtn.className = 'header-cta';
-      resultsBtn.textContent = UI.stage2ResultsBtn;
+      resultsBtn.textContent = UI.stage2bContinueBtn || UI.stage2ResultsBtn;
       resultsBtn.disabled = chosen !== 3;
       resultsBtn.setAttribute('aria-disabled', String(chosen !== 3));
       resultsBtn.addEventListener('click', function () {
-        if (appState.topThree.length === 3) goToStage('summary');
+        if (appState.topThree.length === 3) {
+          appState.currentTaggingIndex = 0;
+          goToStage('tag');
+        }
       });
       actionSlot.appendChild(resultsBtn);
+      return;
+    }
+
+    if (appState.currentStage === 'tag') {
+      var tagIdx = appState.currentTaggingIndex;
+      var progressText = (UI.stage2bGoalProgress || 'Goal {n} of 3').replace('{n}', String(tagIdx + 1));
+      labelGroup.innerHTML =
+        '<div class="header-stage-label">' + escapeHtml(UI.stage2bHeading) + '</div>' +
+        '<div class="header-progress" role="status" aria-live="polite">' +
+          '<span>' + escapeHtml(progressText) + '</span>' +
+        '</div>';
+
+      var tagBackBtn = document.createElement('button');
+      tagBackBtn.type = 'button';
+      tagBackBtn.className = 'header-back-link';
+      tagBackBtn.textContent = UI.stage2bBackLink;
+      tagBackBtn.addEventListener('click', function () { goToStage('select'); });
+      actionSlot.appendChild(tagBackBtn);
+
+      var currentSdgId = currentTagSdgId();
+      var tagsCount = currentSdgId ? getPurposeTagsFor(currentSdgId).length : 0;
+      var isFinal = tagIdx >= 2;
+      var tagNextBtn = document.createElement('button');
+      tagNextBtn.type = 'button';
+      tagNextBtn.className = 'header-cta';
+      tagNextBtn.id = 'tag-next-header-btn';
+      tagNextBtn.textContent = isFinal ? UI.stage2bFinalBtn : UI.stage2bNextBtn;
+      tagNextBtn.disabled = tagsCount < 1;
+      tagNextBtn.setAttribute('aria-disabled', String(tagsCount < 1));
+      tagNextBtn.addEventListener('click', handleTagNext);
+      actionSlot.appendChild(tagNextBtn);
       return;
     }
 
@@ -918,7 +1202,7 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
     var html = '<section aria-labelledby="stage1-heading">' +
       '<div class="stage-intro">' +
         '<h2 id="stage1-heading" class="stage-heading">' + escapeHtml(UI.stage1Heading) + '</h2>' +
-        '<p class="stage-sub">Tap a card to read more. Mark each goal by how much it interests you.</p>' +
+        '<p class="stage-sub">Tap one. Take a breath. No wrong answers.</p>' +
       '</div>' +
       '<div id="gate-prompt" class="gate-prompt" role="status" aria-live="polite"></div>' +
       '<div class="sdg-grid" id="sdg-grid">';
@@ -975,7 +1259,6 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
       renderSection(UI.sectionLabels.industries, s.industries) +
       renderSection(UI.sectionLabels.studyPathways, s.studyPathways) +
       renderSection(UI.sectionLabels.careerRoles, s.careerRoles) +
-      renderSection(UI.sectionLabels.purposefulIntention, s.purposefulIntention) +
       renderSection(UI.sectionLabels.singaporeContext, s.singaporeContext) +
     '</div>';
 
@@ -1147,7 +1430,6 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
       renderSection(UI.sectionLabels.industries, s.industries) +
       renderSection(UI.sectionLabels.studyPathways, s.studyPathways) +
       renderSection(UI.sectionLabels.careerRoles, s.careerRoles) +
-      renderSection(UI.sectionLabels.purposefulIntention, s.purposefulIntention) +
       renderSection(UI.sectionLabels.singaporeContext, s.singaporeContext) +
     '</div>';
 
@@ -1209,6 +1491,186 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
     grid.innerHTML = pool.map(function (id) { return renderSelectCard(SDG_BY_ID[id]); }).join('');
   }
 
+  // -- Stage 2b (Tag) ---------------------------------------
+  function renderTag() {
+    if (appState.topThree.length !== 3) {
+      goToStage('select');
+      return;
+    }
+    app.className = 'stage-container stage-transition';
+
+    var sdgId = currentTagSdgId();
+    var s = SDG_BY_ID[sdgId];
+    if (!s) {
+      goToStage('select');
+      return;
+    }
+
+    var tags = getPurposeTagsFor(sdgId);
+    var isFinal = appState.currentTaggingIndex >= 2;
+    var nextLabel = isFinal ? UI.stage2bFinalBtn : UI.stage2bNextBtn;
+    var nextDisabled = tags.length < 1;
+
+    var html = '<section class="tag-stage" aria-labelledby="tag-sdg-name">' +
+      '<p class="stage-sub">' + escapeHtml(UI.stage2bSubheading) + '</p>' +
+      '<article class="tag-sdg-strip" style="--sdg-color:' + s.color + ';">' +
+        '<span class="tag-sdg-icon-wrap" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
+        '<div class="tag-sdg-title-group">' +
+          '<div class="tag-sdg-number">SDG ' + s.id + '</div>' +
+          '<div class="tag-sdg-name" id="tag-sdg-name">' + escapeHtml(s.name) + '</div>' +
+          '<p class="tag-sdg-desc">' + escapeHtml(s.description) + '</p>' +
+        '</div>' +
+      '</article>' +
+      '<p class="tag-prompt">' + escapeHtml(UI.stage2bPrompt) + '</p>' +
+      '<div class="tag-counter-row">' +
+        '<span class="tag-counter" id="tag-counter" aria-live="polite">' +
+          escapeHtml((UI.stage2bCounter || '{n} of 3 chosen').replace('{n}', String(tags.length))) +
+        '</span>' +
+      '</div>' +
+      '<div class="tag-cap-msg" id="tag-cap-msg" role="status" aria-live="polite">' + escapeHtml(UI.stage2bCapMsg || '3 is the cap — tap one of your current picks to swap.') + '</div>' +
+      '<div class="tag-error" id="tag-error" role="alert" aria-live="polite">' + escapeHtml(UI.stage2bError) + '</div>';
+
+    PURPOSES.forEach(function (group) {
+      html += '<div class="purpose-group">' +
+        '<h3 class="purpose-category-label">' + escapeHtml(group.category) + '</h3>' +
+        '<div class="purpose-grid">';
+      (group.sources || []).forEach(function (src) {
+        var selected = hasPurposeTag(sdgId, src.id);
+        var cls = 'purpose-item' + (selected ? ' is-selected' : '');
+        html += '<button type="button" class="' + cls + '" ' +
+          'data-purpose-id="' + escapeHtml(src.id) + '" ' +
+          'aria-pressed="' + (selected ? 'true' : 'false') + '">' +
+          '<span class="purpose-item-check" aria-hidden="true">\u2713</span>' +
+          '<span class="purpose-item-body">' +
+            '<span class="purpose-item-desc">' + escapeHtml(src.description) + '</span>' +
+            '<span class="purpose-item-name">' + escapeHtml(src.name) + '</span>' +
+          '</span>' +
+          '<span class="sr-only">' + escapeHtml(src.name) + '</span>' +
+        '</button>';
+      });
+      html += '</div></div>';
+    });
+
+    html += '<div class="tag-footer">' +
+      '<button type="button" class="tag-back-link" id="tag-back-link">' + escapeHtml(UI.stage2bBackLink) + '</button>' +
+      '<button type="button" class="tag-next-btn" id="tag-next-body-btn"' +
+        (nextDisabled ? ' disabled aria-disabled="true"' : '') +
+        '>' + escapeHtml(nextLabel) + '</button>' +
+    '</div>';
+
+    html += '</section>';
+
+    app.innerHTML = html;
+
+    function syncTagChrome() {
+      var count = getPurposeTagsFor(sdgId).length;
+      var disabled = count < 1;
+      var bodyBtn = document.getElementById('tag-next-body-btn');
+      var headerBtn = document.getElementById('tag-next-header-btn');
+      [bodyBtn, headerBtn].forEach(function (btn) {
+        if (!btn) return;
+        btn.disabled = disabled;
+        btn.setAttribute('aria-disabled', String(disabled));
+      });
+      var counterEl = document.getElementById('tag-counter');
+      if (counterEl) {
+        var tmpl = UI.stage2bCounter || '{n} of 3 chosen';
+        counterEl.textContent = tmpl.replace('{n}', String(count));
+        counterEl.classList.toggle('is-full', count >= 3);
+      }
+    }
+
+    function clearSwapTargets() {
+      app.querySelectorAll('.purpose-item.is-swap-target').forEach(function (n) {
+        n.classList.remove('is-swap-target');
+      });
+      var capEl = document.getElementById('tag-cap-msg');
+      if (capEl) capEl.classList.remove('show');
+    }
+
+    function markSwapTargets() {
+      var currentTags = getPurposeTagsFor(sdgId);
+      app.querySelectorAll('.purpose-item').forEach(function (n) {
+        var pid = n.getAttribute('data-purpose-id');
+        n.classList.toggle('is-swap-target', currentTags.indexOf(pid) !== -1);
+      });
+      var capEl = document.getElementById('tag-cap-msg');
+      if (capEl) capEl.classList.add('show');
+    }
+
+    var items = app.querySelectorAll('.purpose-item');
+    items.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var pid = btn.getAttribute('data-purpose-id');
+        if (!pid) return;
+
+        var pending = appState.pendingPurposeSwap;
+        var alreadySelected = hasPurposeTag(sdgId, pid);
+
+        // If we're in pending-swap mode and user taps one of their current picks,
+        // remove that pick and apply the queued one.
+        if (pending && alreadySelected) {
+          togglePurposeTag(sdgId, pid); // removes it
+          togglePurposeTag(sdgId, pending); // adds the queued tag
+          appState.pendingPurposeSwap = null;
+          clearSwapTargets();
+          // Re-sync the entire grid's visual state.
+          var tagsNow = getPurposeTagsFor(sdgId);
+          app.querySelectorAll('.purpose-item').forEach(function (n) {
+            var nPid = n.getAttribute('data-purpose-id');
+            var on = tagsNow.indexOf(nPid) !== -1;
+            n.classList.toggle('is-selected', on);
+            n.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+          var errA = document.getElementById('tag-error');
+          if (errA) errA.classList.remove('show');
+          syncTagChrome();
+          return;
+        }
+
+        var result = togglePurposeTag(sdgId, pid);
+
+        if (result === 'cap') {
+          // Show cap message and highlight current picks as swap targets.
+          markSwapTargets();
+          return;
+        }
+
+        // Normal add/remove: clear any stale swap state.
+        appState.pendingPurposeSwap = null;
+        clearSwapTargets();
+
+        var nowSelected = hasPurposeTag(sdgId, pid);
+        btn.classList.toggle('is-selected', nowSelected);
+        btn.setAttribute('aria-pressed', nowSelected ? 'true' : 'false');
+        var err = document.getElementById('tag-error');
+        if (err) err.classList.remove('show');
+        syncTagChrome();
+      });
+    });
+
+    document.getElementById('tag-back-link').addEventListener('click', function () {
+      goToStage('select');
+    });
+    document.getElementById('tag-next-body-btn').addEventListener('click', handleTagNext);
+  }
+
+  function handleTagNext() {
+    var id = currentTagSdgId();
+    if (!id || getPurposeTagsFor(id).length < 1) {
+      var err = document.getElementById('tag-error');
+      if (err) err.classList.add('show');
+      return;
+    }
+    if (appState.currentTaggingIndex >= 2) {
+      goToStage('summary');
+    } else {
+      appState.currentTaggingIndex += 1;
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      render();
+    }
+  }
+
   // -- Stage 3 ----------------------------------------------
   function renderSummary() {
     app.className = 'stage-container stage-transition';
@@ -1268,14 +1730,28 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
       '</div>' +
       '<div class="spotlight-body">' +
         '<p class="spotlight-desc">' + escapeHtml(s.description) + '</p>' +
+        renderSpotlightPurposes(s.id) +
         renderSpotlightSection(UI.sectionLabels.industries, s.industries) +
         renderSpotlightSection(UI.sectionLabels.studyPathways, s.studyPathways) +
         renderSpotlightSection(UI.sectionLabels.careerRoles, s.careerRoles) +
-        renderSpotlightSection(UI.sectionLabels.purposefulIntention, s.purposefulIntention) +
         renderSpotlightSection(UI.sectionLabels.singaporeContext, s.singaporeContext) +
       '</div>' +
     '</article>';
   }
+  function renderSpotlightPurposes(sdgId) {
+    var ids = getPurposeTagsFor(sdgId);
+    if (!ids.length) return '';
+    var chips = ids.map(function (pid) {
+      var p = PURPOSE_BY_ID[pid];
+      if (!p) return '';
+      return '<span class="spotlight-purpose-chip">' + escapeHtml(p.name) + '</span>';
+    }).join('');
+    return '<div class="spotlight-section">' +
+      '<div class="spotlight-section-label">' + escapeHtml(UI.summaryPurposeLabel) + '</div>' +
+      '<div class="spotlight-purpose-list">' + chips + '</div>' +
+    '</div>';
+  }
+
   function renderSpotlightSection(label, body) {
     return '<div class="spotlight-section">' +
       '<div class="spotlight-section-label">' + escapeHtml(label) + '</div>' +
@@ -1320,7 +1796,11 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
       lines.push('   ' + s.description);
       lines.push('   Study pathways: ' + s.studyPathways);
       lines.push('   Career roles: ' + s.careerRoles);
-      lines.push('   What drives this: ' + s.purposefulIntention);
+      var pids = getPurposeTagsFor(s.id);
+      if (pids.length) {
+        var names = pids.map(function (pid) { return (PURPOSE_BY_ID[pid] || {}).name; }).filter(Boolean);
+        if (names.length) lines.push('   ' + UI.summaryPurposeLabel + ': ' + names.join(', '));
+      }
       lines.push('');
     });
     lines.push('MY FULL SORTING:');
@@ -1440,6 +1920,7 @@ h1, h2, h3, h4 { color: #1A4F8A; margin: 0 0 0.5em; line-height: 1.25; }
       case 'landing': renderLanding(); break;
       case 'browse':  renderBrowse();  break;
       case 'select':  renderSelect();  break;
+      case 'tag':     renderTag();     break;
       case 'summary': renderSummary(); break;
       default:        renderLanding();
     }

@@ -17,27 +17,28 @@ window.SDG_CONTENT = {
     landingStep3:       "Pick your top 3 and see what careers might be waiting for you",
     landingCta:         "Let's Begin",
 
-    stage1Heading:      "Step 1 of 3: Explore and Sort",
+    stage1Heading:      "Which of these feel like yours?",
     stage1NextBtn:      "Next Step",
-    stage1NotDoneMsg:   "You've sorted {x} of 17 goals. Sort all of them to continue!",
-    stage1TallyLabel:   ["Very Interested", "Slightly Interested", "Not Interested"],
+    stage1NotDoneMsg:   "You've sorted {x} of 17. Keep going — there are a few left.",
+    stage1TallyLabel:   ["Mine", "Curious", "Not for me"],
 
-    stage2Heading:      "Step 2 of 3: Choose Your Top 3",
-    stage2Intro:        "From the goals you're most interested in, pick your top 3. These will shape your career reflection.",
+    stage2Heading:      "Pick your top 3",
+    stage2Intro:        "These are the goals you leaned into. Choose the three that matter most — they'll shape your career reflection.",
     stage2BackLink:     "Change My Sorting",
     stage2NudgeLink:    "Want to include a different goal? Go back to change your categories.",
-    stage2FullMsg:      "You've already picked 3. Deselect one to swap it out.",
-    stage2TooFewMsg:    "It looks like you haven't marked enough goals as Slightly or Very Interested. Head back and re-sort, give yourself more options to choose from!",
+    stage2FullMsg:      "You've already picked 3. Tap one to swap it out.",
+    stage2TooFewMsg:    "You've been picky — go back and flag a few more that caught your eye.",
     stage2ResultsBtn:   "See My Results",
 
     stage3Heading:      "Your Purpose Compass",
     stage3Subheading:   "Here's what your choices say about you, and where they might take you.",
     stage3BackLink:     "Change My Top 3",
     stage3Reflection:   "Look at your top 3. What do they have in common? Is it the people you want to help, the problems you want to solve, or the kind of work you want to do? There is no right answer, this is just the beginning of your career story.",
-    stage3CopyBtn:      "Copy My Results",
+    stage3CopyBtn:      "Copy to clipboard",
     stage3CopyingBtn:   "Copying...",
     stage3CopiedBtn:    "Copied!",
     stage3CopyConfirm:  "Copied! Paste this into your reflection journal or share it with your ECG counsellor.",
+    stage3PdfBtn:       "Download as PDF",
     stage3RestartBtn:   "Start Over",
 
     restartTitle:       "Are you sure you want to start over?",
@@ -54,10 +55,23 @@ window.SDG_CONTENT = {
     cardRemoveBtn:      "Remove from My Top 3",
     cardBackSortBtn:    "Back to Sorting",
 
+    stage2bHeading:      "Link your goals to purpose",
+    stage2bSubheading:    "For each of your top 3, which sources of purpose resonate? Pick up to 3 for each.",
+    stage2bPrompt:       "Which sources of purpose resonate with this goal?",
+    stage2bNextBtn:      "Next Goal",
+    stage2bFinalBtn:     "See My Results",
+    stage2bBackLink:     "Back to My Top 3",
+    stage2bGoalProgress: "Goal {n} of 3",
+    stage2bError:        "Please pick at least one source of purpose.",
+    stage2bContinueBtn:  "Continue",
+    stage2bCapMsg:       "3 is the cap — tap one of your current picks to swap.",
+    stage2bCounter:      "{n} of 3 chosen",
+    summaryPurposeLabel: "Sources of Purpose",
+
     categoryLabels: {
-      not:      "Not Interested",
-      slightly: "Slightly Interested",
-      very:     "Very Interested"
+      not:      "Not for me",
+      slightly: "Curious",
+      very:     "Mine"
     },
 
     rankLabels: ["1st", "2nd", "3rd"],
@@ -70,6 +84,48 @@ window.SDG_CONTENT = {
       singaporeContext:    "In Singapore"
     }
   },
+
+  // -- Sources of Purpose -----------------------------------
+  // Grouped into 4 categories. Each source has { id, name, description }.
+  // Used in Stage 2b (tagging) and referenced by id in appState.purposeTags.
+  purposes: [
+    {
+      category: "Personal Development",
+      sources: [
+        { id: "self-improvement",   name: "Self-improvement",   description: "Becoming the best you can be" },
+        { id: "internal-standards", name: "Internal standards", description: "Knowing who you are and what you stand for and living your life according to these principles" },
+        { id: "persevering",        name: "Persevering",        description: "Handling what life throws at you\u2014not giving up and dealing with the struggles inherent in life" },
+        { id: "physical-health",    name: "Physical health",    description: "Taking care of your body and being healthy" },
+        { id: "inner-peace",        name: "Inner peace",        description: "Being grateful for what you have and accepting what you can\u2019t change" }
+      ]
+    },
+    {
+      category: "Relationships & Connection",
+      sources: [
+        { id: "family",        name: "Family",        description: "Supporting and providing for your family and caretaking" },
+        { id: "relationships", name: "Relationships", description: "Searching for, finding, or maintaining close relationships" },
+        { id: "service",       name: "Service",       description: "Serving your country or community" },
+        { id: "mattering",     name: "Mattering",     description: "Inspiring others and leaving a legacy; making an impact" }
+      ]
+    },
+    {
+      category: "Achievement & Impact",
+      sources: [
+        { id: "recognition",             name: "Recognition",             description: "Being respected and having high status" },
+        { id: "occupational-fulfillment",name: "Occupational fulfillment",description: "Finding your calling through work; doing your job well and working hard" },
+        { id: "positive-impact",         name: "Positive impact",         description: "Making the world a better place" },
+        { id: "self-sufficiency",        name: "Self-sufficiency",        description: "Being able to take care of yourself physically and financially, and having the freedom to do as you wish" }
+      ]
+    },
+    {
+      category: "Values & Well-being",
+      sources: [
+        { id: "religion-spirituality", name: "Religion/spirituality", description: "Living in accordance with and meeting the standards of your religious or spiritual beliefs" },
+        { id: "happiness",             name: "Happiness",             description: "Being happy, enjoying life, and feeling good" },
+        { id: "material-wealth",       name: "Material wealth",       description: "Getting rich, owning nice things, and buying whatever you want" }
+      ]
+    }
+  ],
 
   // -- SDG data ---------------------------------------------
   sdgs: [
