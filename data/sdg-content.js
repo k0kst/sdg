@@ -132,18 +132,18 @@ window.SDG_CONTENT = {
     {
       category: "Achievement & Impact",
       sources: [
-        { id: "recognition",             name: "Recognition",             description: "Being respected and having high status" },
-        { id: "occupational-fulfillment",name: "Occupational fulfillment",description: "Finding your calling through work; doing your job well and working hard" },
-        { id: "positive-impact",         name: "Positive impact",         description: "Making the world a better place" },
-        { id: "self-sufficiency",        name: "Self-sufficiency",        description: "Being able to take care of yourself physically and financially, and having the freedom to do as you wish" }
+        { id: "recognition",             name: "Recognition",             description: "Desiring respect and achieving high status" },
+        { id: "work",                    name: "Work",                    description: "Finding meaning and fulfillment through employment and professional achievements" },
+        { id: "material-wealth",         name: "Material Wealth",         description: "Seeking financial gain, owning possessions, and being able to purchase desired items" },
+        { id: "legacy-leaving-a-mark",   name: "Legacy/Leaving a Mark",   description: "Creating something enduring that extends beyond one's lifetime" }
       ]
     },
     {
       category: "Values & Well-being",
       sources: [
-        { id: "religion-spirituality", name: "Religion/spirituality", description: "Living in accordance with and meeting the standards of your religious or spiritual beliefs" },
-        { id: "happiness",             name: "Happiness",             description: "Being happy, enjoying life, and feeling good" },
-        { id: "material-wealth",       name: "Material wealth",       description: "Getting rich, owning nice things, and buying whatever you want" }
+        { id: "religion-spirituality", name: "Religion/spirituality", description: "Adhering to religious or spiritual beliefs as a guiding principle" },
+        { id: "happiness",             name: "Happiness",             description: "Pursuing happiness, enjoying life, and experiencing positive feelings" },
+        { id: "leisure-hobbies",       name: "Leisure/Hobbies",       description: "Engaging in enjoyable activities and pastimes" }
       ]
     }
   ],
