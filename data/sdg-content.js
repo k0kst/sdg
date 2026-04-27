@@ -113,20 +113,20 @@ window.SDG_CONTENT = {
     {
       category: "Personal Development",
       sources: [
-        { id: "self-improvement",   name: "Self-improvement",   description: "Becoming the best you can be" },
-        { id: "internal-standards", name: "Internal standards", description: "Knowing who you are and what you stand for and living your life according to these principles" },
-        { id: "persevering",        name: "Persevering",        description: "Handling what life throws at you\u2014not giving up and dealing with the struggles inherent in life" },
-        { id: "physical-health",    name: "Physical health",    description: "Taking care of your body and being healthy" },
-        { id: "inner-peace",        name: "Inner peace",        description: "Being grateful for what you have and accepting what you can\u2019t change" }
+        { id: "self-improvement",   name: "Self-improvement",   description: "Focusing on personal development and becoming one's best self" },
+        { id: "education-learning", name: "Education/Learning", description: "Engaging in the acquisition of knowledge and personal growth." },
+        { id: "self=sufficiency",   name: "Self-sufficiency",   description: "Achieving physical and financial independence and freedom" },
+        { id: "health-fitness",     name: "Health/Fitness",     description: "Maintaining physical health and well-being" },
+        { id: "creativity-art",     name: "Creativity/Art",     description: "Expressing oneself through artistic and creative pursuits" }
       ]
     },
     {
       category: "Relationships & Connection",
       sources: [
-        { id: "family",        name: "Family",        description: "Supporting and providing for your family and caretaking" },
-        { id: "relationships", name: "Relationships", description: "Searching for, finding, or maintaining close relationships" },
-        { id: "service",       name: "Service",       description: "Serving your country or community" },
-        { id: "mattering",     name: "Mattering",     description: "Inspiring others and leaving a legacy; making an impact" }
+        { id: "family",                   name: "Family",                   description: "Prioritizing the support, care, and provision for family members" },
+        { id: "relationships",            name: "Relationships",            description: "Seeking, establishing, and maintaining close personal connections" },
+        { id: "helping-others-altruism",  name: "Helping Others/Altruism",  description: "Contributing to the welfare of others" },
+        { id: "nature-environment",       name: "Nature/Environment",     description: "Connecting with the natural world" }
       ]
     },
     {
