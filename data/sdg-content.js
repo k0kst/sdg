@@ -168,7 +168,7 @@ window.SDG_CONTENT = {
       theme: "people",
       description: "End poverty in all its forms everywhere.",
       singaporeContext: "ComLink+ supports lower-income families toward stability, self-reliance and social mobility. Public housing and grants remain a major social foundation.",
-      industries: ["Social Services", "Public Policy", "Housing", "Community Development", "CSR and Philanthropy"],
+      industries: ["Social Services", "Public Administration", "Real Estate", "Social Services"],
       studyPathways: ["Social Work", "Sociology", "Public Policy", "Community Development", "Urban Studies", "Business for Social Impact"],
       careerRoles: ["Social Worker", "Community Development Executive", "Policy Manager", "Programme Executive", "Estate Manager"],
       purposefulIntention: "Service; Positive impact"
@@ -181,7 +181,7 @@ window.SDG_CONTENT = {
       theme: "people",
       description: "End hunger, achieve food security and improved nutrition, and promote sustainable agriculture.",
       singaporeContext: "30 by 30 aims to produce 30% of Singapore's nutritional needs locally and sustainably by 2030, supported by agri-food innovation and capability building.",
-      industries: ["Agri-Food Tech", "Urban Farming", "Aquaculture", "Food Manufacturing", "Supply Chain", "Food Science"],
+      industries: ["Agrifood", "Manufacturing", "Logistics", "Research and Development"],
       studyPathways: ["Food Science", "Environmental Science", "Biotechnology", "Engineering", "Supply Chain", "Business"],
       careerRoles: ["Food Technologist", "Farm Nursery Worker", "Aquarist", "Quality Assurance Manager", "Logistics Solutions Analyst"],
       purposefulIntention: "Positive impact; Physical health"
@@ -194,7 +194,7 @@ window.SDG_CONTENT = {
       theme: "people",
       description: "Ensure healthy lives and promote well-being for all at all ages.",
       singaporeContext: "Healthier SG shifts healthcare towards preventive care through family doctors, healthier lifestyles and stronger primary care.",
-      industries: ["Healthcare", "Public Health", "Biomedical Science", "Fitness and Wellness", "Medtech", "Aged Care"],
+      industries: ["Healthcare", "Research and Development", "Sports and Recreation", "Manufacturing", "Social Services"],
       studyPathways: ["Medicine", "Nursing", "Pharmacy", "Public Health", "Psychology", "Sport Science", "Biomedical Science"],
       careerRoles: ["Doctor", "Nurse", "Pharmacist", "Environmental Health and Safety Specialist", "Psychologist", "Health Data Analyst"],
       purposefulIntention: "Physical health; Service"
@@ -207,7 +207,7 @@ window.SDG_CONTENT = {
       theme: "people",
       description: "Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all.",
       singaporeContext: "MOE's Eco Stewardship Programme and lifelong learning through SkillsFuture show the push for relevant, future-ready and sustainability-linked education.",
-      industries: ["Education", "Training", "Edtech", "Learning Design", "Youth Development", "HR and L&D"],
+      industries: ["Education", "Information and Communications Technology", "Design", "Social Services", "Human Resources"],
       studyPathways: ["Education", "Psychology", "English and History", "Learning Sciences", "HR", "Communications", "Computer Science for Edtech"],
       careerRoles: ["Teacher", "Curriculum Lead", "Learning Technology Designer", "Education Methods Adviser", "Training Manager"],
       purposefulIntention: "Self-improvement; Positive impact"
@@ -220,7 +220,7 @@ window.SDG_CONTENT = {
       theme: "people",
       description: "Achieve gender equality and empower all women and girls.",
       singaporeContext: "The White Paper on Singapore Women's Development sets actions to empower, protect and uplift women in a fairer and more inclusive society.",
-      industries: ["HR", "Legal Services", "Social Policy", "Workplace Consulting", "Advocacy", "Communications"],
+      industries: ["Human Resource", "Legal Services", "Public Administration", "Consulting", "Social Services", "Marketing"],
       studyPathways: ["Law", "Sociology", "Psychology", "HR", "Communications", "Public Policy", "Business"],
       careerRoles: ["HR Partner", "Employee Experience and Relations Manager", "Policy Officer", "Legal Associate", "Counsellor"],
       purposefulIntention: "Internal standards; Positive impact"
@@ -233,7 +233,7 @@ window.SDG_CONTENT = {
       theme: "planet",
       description: "Ensure availability and sustainable management of water and sanitation for all.",
       singaporeContext: "Singapore's Four National Taps (local catchment, imported water, NEWater and desalination) anchor water security and sanitation planning.",
-      industries: ["Water Engineering", "Utilities", "Environmental Services", "Wastewater Treatment", "Cleantech", "R&D"],
+      industries: ["Environmental Services", "Energy and Power", "Research and Development"],
       studyPathways: ["Civil and Environmental Engineering", "Chemistry", "Sustainability", "Data and Automation", "Life Sciences"],
       careerRoles: ["Water Works Manager", "Process Engineer", "Geologist", "Environmental Officer", "Laboratory Technician"],
       purposefulIntention: "Positive impact; Service"
@@ -246,7 +246,7 @@ window.SDG_CONTENT = {
       theme: "prosperity",
       description: "Ensure access to affordable, reliable, sustainable and modern energy for all.",
       singaporeContext: "Under the Green Plan, Singapore targets large-scale solar deployment, greener power systems, storage and cleaner-energy transport.",
-      industries: ["Renewable Energy", "Grid Systems", "Energy Storage", "Power Engineering", "Carbon Services", "Clean Transport"],
+      industries: ["Energy and Power", "Environmental Services", "Land Transport"],
       studyPathways: ["Electrical Engineering", "Mechanical Engineering", "Energy Studies", "Physics", "Data Science", "Economics"],
       careerRoles: ["Energy Engineer", "Solar Engineer", "Network Development Engineer", "Sustainability Officer", "Energy Trading Manager"],
       purposefulIntention: "Positive impact; Occupational fulfillment"
@@ -259,7 +259,7 @@ window.SDG_CONTENT = {
       theme: "prosperity",
       description: "Promote sustained, inclusive and sustainable economic growth, full and productive employment, and decent work for all.",
       singaporeContext: "Singapore links inclusive growth to upskilling and better jobs through tripartism, SkillsFuture and the Progressive Wage Model.",
-      industries: ["Finance", "Advanced Manufacturing", "Tourism", "Logistics", "Digital Economy", "Workforce Development"],
+      industries: ["Finance", "Manufacturing", "Tourism", "Logistics", "Information and Communications Technology", "Human Resource"],
       studyPathways: ["Business", "Economics", "Accountancy", "Engineering", "Computing", "Hospitality", "HR"],
       careerRoles: ["Economist", "Operations Manager", "Human Resource", "Business Analyst", "Talent Manager"],
       purposefulIntention: "Occupational fulfillment; Self-sufficiency"
@@ -272,7 +272,7 @@ window.SDG_CONTENT = {
       theme: "prosperity",
       description: "Build resilient infrastructure, promote inclusive and sustainable industrialisation and foster innovation.",
       singaporeContext: "Green buildings, sustainable industry and innovation are major Green Plan themes, including greener infrastructure and industrial transformation.",
-      industries: ["Advanced Manufacturing", "Construction", "Semiconductors", "Infrastructure", "Smart Cities", "R&D"],
+      industries: ["Manufacturing", "Built Environment", "Electronics", "Built Environment", "Information and Communications Technology", "Research and Development"],
       studyPathways: ["Engineering", "Architecture", "Computer Science", "Data Science", "Materials Science", "Design"],
       careerRoles: ["Engineer", "Product Manager", "Architect", "Town Planner"],
       purposefulIntention: "Occupational fulfillment; Positive impact"
@@ -285,7 +285,7 @@ window.SDG_CONTENT = {
       theme: "people",
       description: "Reduce inequality within and among countries.",
       singaporeContext: "Policies such as ComLink+, social mobility efforts and targeted support aim to reduce disadvantage across income and life outcomes.",
-      industries: ["Social Policy", "Inclusive Design", "Accessibility", "NGOs", "Healthcare Outreach", "Public Service"],
+      industries: ["Public Administration", "Design", "Social Services", "Healthcare"],
       studyPathways: ["Social Work", "Psychology", "Public Policy", "Occupational Therapy", "Design", "Communications"],
       careerRoles: ["Social Work Associate", "Design Researcher", "Design Facilitator", "Volunteer Manager", "Policy Manager"],
       purposefulIntention: "Service; Positive impact"
@@ -298,7 +298,7 @@ window.SDG_CONTENT = {
       theme: "prosperity",
       description: "Make cities and human settlements inclusive, safe, resilient and sustainable.",
       singaporeContext: "HDB's town planning, green buildings, transit targets and park access reflect Singapore's push for liveable, inclusive and low-carbon communities.",
-      industries: ["Urban Planning", "Architecture", "Real Estate", "Transport", "Municipal Services", "Placemaking"],
+      industries: ["Built Environment", "Architecture", "Real Estate", "Land Transport", "Public Administration", "Design"],
       studyPathways: ["Architecture", "Urban Planning", "Geography", "Civil Engineering", "Real Estate", "Environmental Studies"],
       careerRoles: ["Town Planner", "Building Architect", "Network Planning Manager", "Estate Manager", "Sustainability Officer"],
       purposefulIntention: "Positive impact; Service"
@@ -311,7 +311,7 @@ window.SDG_CONTENT = {
       theme: "prosperity",
       description: "Ensure sustainable consumption and production patterns.",
       singaporeContext: "The Green Plan targets lower waste to landfill, greener buildings and more circular resource use across households and industry.",
-      industries: ["Circular Economy", "Waste Management", "Sustainable Retail", "Packaging", "Procurement", "Life-Cycle Assessment"],
+      industries: ["Environmental Services", "Retail", "Manufacturing", "Wholesale Trade", "Research and Development"],
       studyPathways: ["Environmental Science", "Industrial Design", "Supply Chain", "Materials", "Business", "Chemistry"],
       careerRoles: ["Sustainability Officer", "Cleaning Operations Manager", "Manufacturing Engineer", "Procurement Engineer", "Environmental Health and Safety Specialist"],
       purposefulIntention: "Internal standards; Positive impact"
@@ -324,7 +324,7 @@ window.SDG_CONTENT = {
       theme: "planet",
       description: "Take urgent action to combat climate change and its impacts.",
       singaporeContext: "Singapore has a carbon tax, emissions reduction targets and a net-zero-by-2050 goal, alongside coastal and heat resilience work.",
-      industries: ["Climate Policy", "Carbon Markets", "Risk Advisory", "Adaptation Planning", "Sustainability Consulting", "Insurance"],
+      industries: ["Public Administration", "Financial Services", "Consulting", "Environmental Services"],
       studyPathways: ["Environmental Policy", "Economics", "Geography", "Engineering", "Data Science", "Finance"],
       careerRoles: ["Risk Manager", "Energy Trader", "Sustainability Officer", "Policy Manager", "Strategic Planning Manager"],
       purposefulIntention: "Positive impact; Persevering"
@@ -337,7 +337,7 @@ window.SDG_CONTENT = {
       theme: "planet",
       description: "Conserve and sustainably use the oceans, seas and marine resources for sustainable development.",
       singaporeContext: "Singapore is greening maritime activity and strengthening coastal resilience, including cleaner harbour craft and maritime decarbonisation.",
-      industries: ["Marine Science", "Port Operations", "Maritime Decarbonisation", "Aquaculture", "Conservation", "Shipping"],
+      industries: ["Research and Development", "Sea Transport", "Marine and Offshore Engineering", "Agrifood", "Environmental Services"],
       studyPathways: ["Marine Science", "Environmental Science", "Naval Architecture", "Engineering", "Logistics"],
       careerRoles: ["Marine Biologist", "Port Operations Manager", "Marine Engineer", "Aquarist", "Sustainability Officer"],
       purposefulIntention: "Positive impact; Service"
@@ -350,7 +350,7 @@ window.SDG_CONTENT = {
       theme: "planet",
       description: "Protect, restore and promote sustainable use of terrestrial ecosystems, sustainably manage forests, combat desertification, and halt biodiversity loss.",
       singaporeContext: "City in Nature includes more trees, nature parks and improved access to green spaces.",
-      industries: ["Biodiversity Conservation", "Landscape Design", "Ecology", "Parks Management", "Environmental Education"],
+      industries: ["Environmental Services", "Design", "Research and Development", "Facilities and Maintenance Services", "Education"],
       studyPathways: ["Biological Sciences", "Environmental Studies", "Landscape Architecture", "Geography", "Education"],
       careerRoles: ["Biologist", "Landscape Architect", "Park Manager", "Outdoor Adventure Educator", "Arborist"],
       purposefulIntention: "Positive impact; Inner peace"
@@ -363,7 +363,7 @@ window.SDG_CONTENT = {
       theme: "peace",
       description: "Promote peaceful and inclusive societies for sustainable development, provide access to justice for all and build effective, accountable and inclusive institutions at all levels.",
       singaporeContext: "Strong institutions are supported by anti-corruption enforcement, public trust, rule of law and transparent governance systems.",
-      industries: ["Law", "Governance", "Compliance", "Cybersecurity", "Audit", "Public Administration"],
+      industries: ["Legal", "Public Administration", "Information and Communications Technology", "Accounting"],
       studyPathways: ["Law", "Political Science", "Public Policy", "Accountancy", "Cybersecurity", "Criminology"],
       careerRoles: ["Lawyer", "Compliance Officer", "Auditor", "Policy Manager", "Forensics Specialist", "Operational Risk Analyst"],
       purposefulIntention: "Internal standards; Service"
@@ -376,7 +376,7 @@ window.SDG_CONTENT = {
       theme: "peace",
       description: "Strengthen the means of implementation and revitalise the Global Partnership for Sustainable Development.",
       singaporeContext: "Singapore advances regional and international cooperation through the Singapore Cooperation Programme and public-private partnerships.",
-      industries: ["International Development", "Diplomacy", "Sustainability Consulting", "Trade", "Partnerships", "NGOs"],
+      industries: ["Public Administration", "Consulting", "Wholesale Trade", "Administrative and Business Support Services", "Social Services"],
       studyPathways: ["International Relations", "Economics", "Public Policy", "Business", "Communications", "Sustainability"],
       careerRoles: ["Foreign Diplomatic Representative", "Business Development Manager", "Consultant", "Programme Manager"],
       purposefulIntention: "Relationships; Service; Positive impact"
