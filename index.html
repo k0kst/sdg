@@ -863,6 +863,18 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   margin-top: 12px;
 }
 .copy-confirm.show { display: block; animation: stageFadeIn var(--dur-slow) ease-out; }
+.save-banner {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  background: #EEF4FB;
+  border-left: 4px solid #1A4F8A;
+  border-radius: 6px;
+  color: #1A1A2E;
+  font-size: 15px; line-height: 1.4;
+}
+.save-banner-icon { font-size: 18px; color: #1A4F8A; flex: 0 0 auto; }
+.save-banner-text { flex: 1 1 auto; }
 
 /* ---- Modal ---- */
 .modal-backdrop {
@@ -1337,6 +1349,7 @@ button.tray-slot { cursor: pointer; }
   #top3-tray-wrapper,
   .action-bar,
   .copy-confirm,
+  .save-banner,
   .orientation-nudge,
   .stage2-back,
   .completion-actions,
@@ -1622,6 +1635,89 @@ button.tray-slot { cursor: pointer; }
     resortingId: null
   };
 
+  // -- Persistence ------------------------------------------
+  // Spec §2 originally forbade browser storage (SLS sandbox).
+  // Override: persist state across refresh; degrade silently if storage is blocked.
+  var STORAGE_KEY = 'sdg-career-explorer:v1';
+  var STORAGE_SCHEMA_VERSION = 1;
+  var STORAGE_CONTENT_FINGERPRINT = SDGS.map(function (s) { return s.id; }).sort().join(',');
+  var _storageCache; // null = blocked, undefined = not yet probed
+
+  function _pickStorage() {
+    if (_storageCache !== undefined) return _storageCache;
+    var candidates = [];
+    try { candidates.push(window.localStorage); } catch (e) {}
+    try { candidates.push(window.sessionStorage); } catch (e) {}
+    for (var i = 0; i < candidates.length; i++) {
+      var s = candidates[i];
+      try {
+        s.setItem('__sdg_probe__', '1');
+        s.removeItem('__sdg_probe__');
+        _storageCache = s;
+        return s;
+      } catch (e) { /* try next */ }
+    }
+    _storageCache = null;
+    return null;
+  }
+
+  function persistState() {
+    var store = _pickStorage(); if (!store) return;
+    var snapshot = {
+      v: STORAGE_SCHEMA_VERSION,
+      fp: STORAGE_CONTENT_FINGERPRINT,
+      savedAt: Date.now(),
+      data: {
+        currentStage: appState.currentStage,
+        sdgSortings: appState.sdgSortings,
+        topThreeOrder: appState.topThreeOrder,
+        expandedCards: Array.from(appState.expandedCards),
+        orientationNudgeDismissed: appState.orientationNudgeDismissed,
+        purposeTags: appState.purposeTags,
+        currentTaggingIndex: appState.currentTaggingIndex,
+        browseOrder: appState.browseOrder,
+        browseIndex: appState.browseIndex,
+        browseHistory: appState.browseHistory,
+        rankingMode: appState.rankingMode,
+        rankingProgress: appState.rankingProgress
+      }
+    };
+    try { store.setItem(STORAGE_KEY, JSON.stringify(snapshot)); }
+    catch (e) { try { store.removeItem(STORAGE_KEY); } catch (_) {} }
+  }
+
+  function loadPersistedState() {
+    var store = _pickStorage(); if (!store) return false;
+    var raw; try { raw = store.getItem(STORAGE_KEY); } catch (e) { return false; }
+    if (!raw) return false;
+    var parsed;
+    try { parsed = JSON.parse(raw); }
+    catch (e) { try { store.removeItem(STORAGE_KEY); } catch (_) {} return false; }
+    if (!parsed || parsed.v !== STORAGE_SCHEMA_VERSION || parsed.fp !== STORAGE_CONTENT_FINGERPRINT) {
+      try { store.removeItem(STORAGE_KEY); } catch (_) {}
+      return false;
+    }
+    var d = parsed.data || {};
+    if (d.currentStage) appState.currentStage = d.currentStage;
+    if (d.sdgSortings) appState.sdgSortings = Object.assign({}, initialSortings, d.sdgSortings);
+    if (Array.isArray(d.topThreeOrder)) appState.topThreeOrder = d.topThreeOrder.filter(function (id) { return !!SDG_BY_ID[id]; });
+    if (Array.isArray(d.expandedCards)) appState.expandedCards = new Set(d.expandedCards);
+    if (typeof d.orientationNudgeDismissed === 'boolean') appState.orientationNudgeDismissed = d.orientationNudgeDismissed;
+    if (d.purposeTags && typeof d.purposeTags === 'object') appState.purposeTags = d.purposeTags;
+    if (typeof d.currentTaggingIndex === 'number') appState.currentTaggingIndex = d.currentTaggingIndex;
+    if (Array.isArray(d.browseOrder)) appState.browseOrder = d.browseOrder.filter(function (id) { return !!SDG_BY_ID[id]; });
+    if (typeof d.browseIndex === 'number') appState.browseIndex = d.browseIndex;
+    if (Array.isArray(d.browseHistory)) appState.browseHistory = d.browseHistory;
+    if (typeof d.rankingMode === 'boolean') appState.rankingMode = d.rankingMode;
+    if (Array.isArray(d.rankingProgress)) appState.rankingProgress = d.rankingProgress;
+    return true;
+  }
+
+  function clearPersistedState() {
+    try { window.localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    try { window.sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  }
+
   function resetState() {
     appState.currentStage = 'landing';
     appState.sdgSortings = Object.assign({}, initialSortings);
@@ -1640,6 +1736,7 @@ button.tray-slot { cursor: pointer; }
     appState.rankingProgress = [];
     appState.resortingId = null;
     // orientationNudgeDismissed is session-scoped per spec 7.x (dismiss "for the session")
+    clearPersistedState();
   }
 
   // -- Top-3 mutation helpers -------------------------------
@@ -2782,6 +2879,12 @@ button.tray-slot { cursor: pointer; }
         '<p class="summary-kicker">' + escapeHtml(UI.summaryKicker || 'What pulls you — in your own words.') + '</p>' +
       '</div>';
 
+    // Save banner
+    html += '<div class="save-banner" role="note">' +
+      '<span class="save-banner-icon" aria-hidden="true">⬇</span>' +
+      '<span class="save-banner-text">' + escapeHtml(UI.stage3SaveBanner) + '</span>' +
+    '</div>';
+
     // Reflection card
     html += renderReflection();
 
@@ -3069,6 +3172,7 @@ button.tray-slot { cursor: pointer; }
   }
 
   function render() {
+    persistState();
     renderHeader();
     renderTop3Tray();
     switch (appState.currentStage) {
@@ -3080,6 +3184,8 @@ button.tray-slot { cursor: pointer; }
       default:        renderLanding();
     }
   }
+
+  loadPersistedState();
 
   // -- Orientation nudge ------------------------------------
   var nudge = document.getElementById('orientation-nudge');
