@@ -3373,7 +3373,15 @@ button.tray-slot { cursor: pointer; }
   }
 
   // -- Boot -------------------------------------------------
+  // The app rebuilds its content (and remembers its stage) on every load, so
+  // the browser's automatic scroll restoration has nothing meaningful to
+  // restore and can leave the page nudged down after a refresh. Disable it and
+  // always start at the top.
+  if ('scrollRestoration' in history) {
+    try { history.scrollRestoration = 'manual'; } catch (e) {}
+  }
   render();
+  window.scrollTo(0, 0);
 })();
 </script>
 
