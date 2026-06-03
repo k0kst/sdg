@@ -21,6 +21,7 @@ window.SDG_CONTENT = {
     stage1Heading:      "Which of these feel like yours?",
     stage1NextBtn:      "Next Step",
     stage1BackLink:     "Change Level",
+    cardNumberPrefix:   "SDG ",
     stage1NotDoneMsg:   "You've sorted {x} of 17. Keep going — there are a few left.",
     stage1TallyLabel:   ["Very interested", "Slightly interested", "Not at all"],
 
@@ -411,6 +412,7 @@ window.SDG_CONTENT = {
       primary: {
         hiddenSections: ["studyPathways"],
         ui: {
+          cardNumberPrefix: "Goal ",
           landingSubtitle: "Find out how the things you care about connect to real jobs — and the people who make them happen.",
           landingStep1:    "Look at the 17 Global Goals for a better world",
           landingStep2:    "Sort each one by how much you like it",

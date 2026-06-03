@@ -243,10 +243,10 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
 .mode-options { display: flex; flex-wrap: wrap; gap: 10px; }
 .mode-option {
   flex: 1 1 140px;
-  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  display: flex; align-items: center; justify-content: center;
   background: #FFFFFF; border: 1.5px solid rgba(26, 79, 138, 0.18);
   padding: 12px 16px; border-radius: 10px; cursor: pointer;
-  text-align: left; min-height: 48px;
+  text-align: center; min-height: 48px;
   transition: border-color var(--dur-fast) ease-out, background-color var(--dur-fast) ease-out, transform var(--dur-fast) ease-out;
 }
 .mode-option:hover { border-color: #1A4F8A; transform: translateY(-1px); }
@@ -254,10 +254,8 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   background: #1A4F8A; border-color: #1A4F8A;
   box-shadow: 0 2px 6px rgba(26, 79, 138, 0.25);
 }
-.mode-option.is-selected .mode-option-title,
-.mode-option.is-selected .mode-option-sub { color: #FFFFFF; }
+.mode-option.is-selected .mode-option-title { color: #FFFFFF; }
 .mode-option-title { font-size: 15px; font-weight: 700; color: #1A1A2E; }
-.mode-option-sub { font-size: 13px; color: #3A3A4A; }
 .landing-cta {
   background: #1A4F8A; color: #FFFFFF; border: none;
   padding: 14px 32px; border-radius: 10px;
@@ -1685,7 +1683,14 @@ button.tray-slot { cursor: pointer; }
     PURPOSES.forEach(function (group) {
       (group.sources || []).forEach(function (src) { PURPOSE_BY_ID[src.id] = src; });
     });
+
+    // Card heights differ by mode (e.g. secondary's longer course names wrap
+    // taller), so drop the cached max height — it is re-measured per mode.
+    if (typeof appState !== 'undefined' && appState) appState._stackCardHeight = null;
   }
+
+  // Mode-aware goal label, e.g. "SDG 12" (default) or "Goal 12" (primary).
+  function goalNum(id) { return (UI.cardNumberPrefix || 'SDG ') + id; }
 
   // -- State ------------------------------------------------
   // SDG ids never change across modes, so the initial sortings map and the
@@ -2101,7 +2106,6 @@ button.tray-slot { cursor: pointer; }
         return '<button type="button" class="mode-option' + (sel ? ' is-selected' : '') + '" ' +
           'data-mode="' + escapeHtml(m) + '" role="radio" aria-checked="' + (sel ? 'true' : 'false') + '">' +
             '<span class="mode-option-title">' + escapeHtml(lbl.title) + '</span>' +
-            '<span class="mode-option-sub">' + escapeHtml(lbl.sub) + '</span>' +
         '</button>';
       }).join('');
       modeHtml =
@@ -2185,7 +2189,7 @@ button.tray-slot { cursor: pointer; }
     if (resorting) {
       var rs = SDG_BY_ID[appState.resortingId];
       var currentRsCat = appState.sdgSortings[appState.resortingId];
-      html += '<div class="resort-pill" aria-live="polite">Re-sorting SDG ' + rs.id + '</div>';
+      html += '<div class="resort-pill" aria-live="polite">Re-sorting ' + goalNum(rs.id) + '</div>';
       html += '<div class="card-stack">' + renderStackFrontCard(rs) + '</div>';
       html += '<div class="zone-row" role="group" aria-label="Re-sort this goal">' +
         '<button type="button" class="zone zone-not' + (currentRsCat === 'not' ? ' is-current' : '') +
@@ -2263,11 +2267,11 @@ button.tray-slot { cursor: pointer; }
 
   function renderStackFrontCard(s) {
     return '<article class="stack-card front" style="--sdg-color:' + s.color + ';" ' +
-      'data-id="' + s.id + '" aria-label="SDG ' + s.id + ', ' + escapeHtml(s.name) + '">' +
+      'data-id="' + s.id + '" aria-label="' + goalNum(s.id) + ', ' + escapeHtml(s.name) + '">' +
       '<div class="sdg-card-top">' +
         '<span class="sdg-card-icon" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
         '<div class="sdg-card-title-group">' +
-          '<div class="sdg-card-number">SDG ' + s.id + '</div>' +
+          '<div class="sdg-card-number">' + goalNum(s.id) + '</div>' +
           '<div class="sdg-card-name">' + escapeHtml(s.name) + '</div>' +
         '</div>' +
       '</div>' +
@@ -2286,7 +2290,7 @@ button.tray-slot { cursor: pointer; }
       '<div class="sdg-card-top">' +
         '<span class="sdg-card-icon" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
         '<div class="sdg-card-title-group">' +
-          '<div class="sdg-card-number">SDG ' + s.id + '</div>' +
+          '<div class="sdg-card-number">' + goalNum(s.id) + '</div>' +
           '<div class="sdg-card-name">' + escapeHtml(s.name) + '</div>' +
         '</div>' +
       '</div>' +
@@ -2506,7 +2510,7 @@ button.tray-slot { cursor: pointer; }
 
       if (filled) {
         slotsHtml += '<button type="button" class="' + cls + '" data-slot-id="' + sid + '" ' +
-          'aria-label="SDG ' + ss.id + ' ' + escapeHtml(ss.name) + '">' +
+          'aria-label="' + goalNum(ss.id) + ' ' + escapeHtml(ss.name) + '">' +
           '<span class="slot-rank" aria-hidden="true">' + rankLabel + '</span>' +
           '<span class="slot-icon" style="background:' + ss.color + ';" aria-hidden="true">' + ss.id + '</span>' +
           '<span class="slot-name">' + escapeHtml(ss.name) + '</span>' +
@@ -2675,13 +2679,13 @@ button.tray-slot { cursor: pointer; }
     if (full) classes.push('disabled-slot');
 
     var html = '<article class="' + classes.join(' ') + '" data-id="' + s.id + '" ' +
-               'style="--sdg-color:' + s.color + ';" aria-label="SDG ' + s.id + ', ' + escapeHtml(s.name) + '">';
+               'style="--sdg-color:' + s.color + ';" aria-label="' + goalNum(s.id) + ', ' + escapeHtml(s.name) + '">';
 
     html += '<button type="button" class="sdg-card-header" data-action="toggle-expand" ' +
       'aria-expanded="' + (expanded ? 'true' : 'false') + '" aria-controls="expand-' + s.id + '">' +
       '<span class="sdg-card-icon" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
       '<div class="sdg-card-title-group">' +
-        '<div class="sdg-card-number">SDG ' + s.id + '</div>' +
+        '<div class="sdg-card-number">' + goalNum(s.id) + '</div>' +
         '<div class="sdg-card-name">' + escapeHtml(s.name) + '</div>' +
         '<p class="sdg-card-desc">' + escapeHtml(s.description) + '</p>' +
       '</div>' +
@@ -2780,7 +2784,7 @@ button.tray-slot { cursor: pointer; }
       '<article class="tag-sdg-strip" style="--sdg-color:' + s.color + ';">' +
         '<span class="tag-sdg-icon-wrap" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
         '<div class="tag-sdg-title-group">' +
-          '<div class="tag-sdg-number">SDG ' + s.id + '</div>' +
+          '<div class="tag-sdg-number">' + goalNum(s.id) + '</div>' +
           '<div class="tag-sdg-name" id="tag-sdg-name">' + escapeHtml(s.name) + '</div>' +
           '<p class="tag-sdg-desc">' + escapeHtml(s.description) + '</p>' +
         '</div>' +
@@ -3011,7 +3015,7 @@ button.tray-slot { cursor: pointer; }
     var triptychHtml = top.map(function (id) {
       var s = SDG_BY_ID[id];
       return '<div class="hero-sdg-chip" style="background:' + s.color + ';">' +
-        '<span class="hero-sdg-chip-num">SDG ' + s.id + '</span>' +
+        '<span class="hero-sdg-chip-num">' + goalNum(s.id) + '</span>' +
         '<img class="hero-sdg-chip-icon" src="icons/' + encodeURIComponent(s.iconFile) + '" alt="">' +
       '</div>';
     }).join('');
@@ -3068,11 +3072,11 @@ button.tray-slot { cursor: pointer; }
   }
 
   function renderSpotlight(s, idx) {
-    return '<article class="spotlight-card" style="--sdg-color:' + s.color + ';" aria-label="SDG ' + s.id + ', ' + escapeHtml(s.name) + '">' +
+    return '<article class="spotlight-card" style="--sdg-color:' + s.color + ';" aria-label="' + goalNum(s.id) + ', ' + escapeHtml(s.name) + '">' +
       '<div class="spotlight-header-strip">' +
         '<span class="spotlight-icon-wrap" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
         '<div class="spotlight-title-group">' +
-          '<div class="spotlight-number">SDG ' + s.id + '</div>' +
+          '<div class="spotlight-number">' + goalNum(s.id) + '</div>' +
           '<div class="spotlight-name">' + escapeHtml(s.name) + '</div>' +
         '</div>' +
       '</div>' +
@@ -3112,7 +3116,7 @@ button.tray-slot { cursor: pointer; }
         var s = SDG_BY_ID[id];
         return '<span class="sort-chip" style="--sdg-color:' + s.color + ';">' +
           '<span class="sort-chip-icon" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
-          '<span class="sort-chip-text">SDG ' + s.id + ': ' + escapeHtml(s.name) + '</span>' +
+          '<span class="sort-chip-text">' + goalNum(s.id) + ': ' + escapeHtml(s.name) + '</span>' +
         '</span>';
       }).join('');
     }
@@ -3145,10 +3149,10 @@ button.tray-slot { cursor: pointer; }
         var s = SDG_BY_ID[id];
         return '<button type="button" class="sort-chip is-editable" ' +
           'data-sdg-id="' + s.id + '" ' +
-          'aria-label="SDG ' + s.id + ' ' + escapeHtml(s.name) + '. Tap to re-sort this goal." ' +
+          'aria-label="' + goalNum(s.id) + ' ' + escapeHtml(s.name) + '. Tap to re-sort this goal." ' +
           'style="--sdg-color:' + s.color + ';">' +
           '<span class="sort-chip-icon" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
-          '<span class="sort-chip-text">SDG ' + s.id + ': ' + escapeHtml(s.name) + '</span>' +
+          '<span class="sort-chip-text">' + goalNum(s.id) + ': ' + escapeHtml(s.name) + '</span>' +
         '</button>';
       }).join('');
     }
@@ -3169,7 +3173,7 @@ button.tray-slot { cursor: pointer; }
     lines.push('Top 3:');
     appState.topThreeOrder.forEach(function (id, i) {
       var s = SDG_BY_ID[id];
-      lines.push((i + 1) + '. SDG ' + s.id + ' ' + s.name);
+      lines.push((i + 1) + '. ' + goalNum(s.id) + ' ' + s.name);
     });
 
     var purposeLines = [];
@@ -3177,7 +3181,7 @@ button.tray-slot { cursor: pointer; }
       var pids = getPurposeTagsFor(id);
       if (!pids.length) return;
       var names = pids.map(function (pid) { return (PURPOSE_BY_ID[pid] || {}).name; }).filter(Boolean);
-      if (names.length) purposeLines.push('- SDG ' + id + ': ' + names.join(', '));
+      if (names.length) purposeLines.push('- ' + goalNum(id) + ': ' + names.join(', '));
     });
     if (purposeLines.length) {
       lines.push('');
@@ -3364,6 +3368,15 @@ button.tray-slot { cursor: pointer; }
   window.addEventListener('resize', updateOrientationNudge);
   window.addEventListener('orientationchange', updateOrientationNudge);
   updateOrientationNudge();
+
+  // The web font can finish loading after the first measure, reflowing card
+  // text taller; re-measure once fonts are ready so the zones never overlap.
+  if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === 'function') {
+    document.fonts.ready.then(function () {
+      appState._stackCardHeight = null;
+      if (appState.currentStage === 'browse') render();
+    });
+  }
 
   // -- Boot -------------------------------------------------
   render();
