@@ -20,6 +20,7 @@ window.SDG_CONTENT = {
 
     stage1Heading:      "Which of these feel like yours?",
     stage1NextBtn:      "Next Step",
+    stage1BackLink:     "Change Level",
     stage1NotDoneMsg:   "You've sorted {x} of 17. Keep going — there are a few left.",
     stage1TallyLabel:   ["Very interested", "Slightly interested", "Not at all"],
 

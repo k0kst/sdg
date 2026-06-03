@@ -1615,7 +1615,7 @@ button.tray-slot { cursor: pointer; }
   </div>
 </div>
 
-<script src="data/sdg-content.js"></script>
+<script src="data/sdg-content.js?v=2"></script>
 <script>
 /* ============================================================
    SDG Career Explorer — Application Logic
@@ -1984,6 +1984,13 @@ button.tray-slot { cursor: pointer; }
           (complete ? ' complete' : '') + '" style="width:' + pct + '%;"></span></span>' +
           (complete ? '<span class="header-progress-tick" aria-hidden="true">✓</span>' : '') +
         '</div>';
+
+      var browseBackBtn = document.createElement('button');
+      browseBackBtn.type = 'button';
+      browseBackBtn.className = 'header-back-link';
+      browseBackBtn.textContent = UI.stage1BackLink || 'Change Level';
+      browseBackBtn.addEventListener('click', function () { goToStage('landing'); });
+      actionSlot.appendChild(browseBackBtn);
 
       var nextBtn = document.createElement('button');
       nextBtn.type = 'button';
