@@ -55,7 +55,7 @@ window.SDG_CONTENT = {
     stage3CopyConfirm:  "Copied! Paste this into your reflection journal or share it with your ECG counsellor.",
     stage3PdfBtn:       "Download as PDF",
     stage3RestartBtn:   "Start Over",
-    stage3SaveBanner:   "Your results live only in this browser. Download as PDF or copy to clipboard to keep them — or share with your ECG counsellor.",
+    stage3SaveBanner:   "Your results live only in this browser. Download as PDF or copy to clipboard to keep them. Share what you have learnt with your teacher or ECG counsellor!",
 
     restartTitle:       "Are you sure you want to start over?",
     restartBody:        "Your choices will not be saved.",
