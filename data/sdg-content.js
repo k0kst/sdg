@@ -15,6 +15,7 @@ window.SDG_CONTENT = {
     landingStep1:       "Read through the 17 UN Sustainable Development Goals",
     landingStep2:       "Sort each one by how much it interests you",
     landingStep3:       "Pick your top 3 and see what careers might be waiting for you",
+    landingModeLabel:   "Choose your level",
     landingCta:         "Let's Begin",
 
     stage1Heading:      "Which of these feel like yours?",
@@ -99,7 +100,7 @@ window.SDG_CONTENT = {
 
     sectionLabels: {
       industries:          "Potential Industries",
-      studyPathways:       "Potential Study Pathways",
+      studyPathways:       "Relevant Courses",
       careerRoles:         "Potential Career Roles",
       purposefulIntention: "What Drives This",
       singaporeContext:    "📍 In Singapore"
@@ -382,6 +383,164 @@ window.SDG_CONTENT = {
       careerRoles: ["Foreign Diplomatic Representative", "Business Development Manager", "Consultant", "Programme Manager"],
       purposefulIntention: "Relationships; Service; Positive impact"
     }
-  ]
+  ],
+
+  // -- Age modes --------------------------------------------
+  // The base ui/purposes/sdgs above are the "pre-university" content.
+  // 'primary' and 'secondary' supply ONLY the fields whose phrasing differs;
+  // everything else falls back to the base. Overrides are merged by the app's
+  // resolveContent(): UI keys shallow-merge (sectionLabels/categoryLabels merge
+  // one level deep), SDG fields merge by id, purposes merge by source id, and
+  // any field listed in hiddenSections is removed from the cards.
+  // NOTE: primary/secondary wording below is a first draft for review/editing.
+  modes: {
+    order: ["primary", "secondary", "pre-university"],
+    defaultMode: "pre-university",
+    labels: {
+      "primary":        { title: "Primary",       sub: "Ages 11–12" },
+      "secondary":      { title: "Secondary",     sub: "Ages 13–16" },
+      "pre-university": { title: "Pre-University", sub: "Ages 17–20" }
+    },
+
+    overrides: {
+
+      // ===== PRIMARY (11–12) ==============================
+      // Simple language. Study pathways are hidden; industries and career
+      // roles are shared from the base. Singapore context is simplified.
+      primary: {
+        hiddenSections: ["studyPathways"],
+        ui: {
+          landingSubtitle: "Find out how the things you care about connect to real jobs — and the people who make them happen.",
+          landingStep1:    "Look at the 17 Global Goals for a better world",
+          landingStep2:    "Sort each one by how much you like it",
+          landingStep3:    "Pick your top 3 and discover the jobs that help make them happen",
+          stage1Heading:   "Which of these do you care about?",
+          stage3Subheading: "Here's what your choices say about you, and the jobs they could lead to.",
+          stage2bSubheading: "For each of your top 3, why does it matter to you? Pick up to 3.",
+          stage2bPrompt:   "Why does this goal matter to you?"
+        },
+        sdgs: {
+          1:  { description: "Make sure everyone has enough money for food, a home, and the things they need to live well.",
+                singaporeContext: "In Singapore, programmes like ComLink+ help families who need extra support, and many people live in HDB flats." },
+          2:  { description: "Make sure everyone has enough healthy food to eat, and help farmers grow food in better ways.",
+                singaporeContext: "Singapore's '30 by 30' plan wants to grow more of our own food here by the year 2030." },
+          3:  { description: "Help everyone stay healthy and feel good in both body and mind.",
+                singaporeContext: "Singapore's Healthier SG plan helps people stay healthy by seeing a family doctor and living well." },
+          4:  { description: "Make sure every child can go to school and learn, no matter who they are.",
+                singaporeContext: "In Singapore, schools help everyone keep learning, and people can pick up new skills all through life with SkillsFuture." },
+          5:  { description: "Make sure boys and girls, men and women are treated fairly and get the same chances.",
+                singaporeContext: "Singapore works to make sure women and girls are treated fairly and have the same chances as everyone else." },
+          6:  { description: "Make sure everyone has clean water to drink and safe, clean toilets.",
+                singaporeContext: "Singapore gets clean water in four ways, including collecting rain and making NEWater, so we always have enough." },
+          7:  { description: "Give everyone energy for lights and machines, using clean sources like the sun and wind.",
+                singaporeContext: "Singapore is putting up more solar panels to make clean energy from the sun." },
+          8:  { description: "Help people find good jobs and make sure work is fair for everyone.",
+                singaporeContext: "Singapore helps people learn new skills so they can find good jobs." },
+          9:  { description: "Build strong roads, bridges, and buildings, and invent clever new things.",
+                singaporeContext: "Singapore builds green buildings and comes up with clever new ideas to make life better." },
+          10: { description: "Make sure everyone is treated fairly and gets a fair chance, no matter where they come from.",
+                singaporeContext: "Singapore helps people who need extra support so everyone gets a fair chance." },
+          11: { description: "Make our towns and cities safe, clean, and nice places to live for everyone.",
+                singaporeContext: "Singapore plans its towns with parks, trains, and green buildings so they are nice to live in." },
+          12: { description: "Use only what we need, waste less, and reuse and recycle more.",
+                singaporeContext: "Singapore wants people to waste less and recycle more so we throw away less rubbish." },
+          13: { description: "Take care of the Earth and stop the planet from getting too hot.",
+                singaporeContext: "Singapore is working to make less pollution and protect the country from rising seas and hot weather." },
+          14: { description: "Keep our oceans, seas, and the animals in them clean and healthy.",
+                singaporeContext: "Singapore keeps its sea and harbour clean and protects its coasts." },
+          15: { description: "Protect forests, animals, and plants so that nature stays healthy.",
+                singaporeContext: "Singapore's 'City in Nature' plan adds more trees and parks so we can enjoy nature." },
+          16: { description: "Help people live together peacefully and make sure rules are fair for everyone.",
+                singaporeContext: "Singapore has fair rules and honest leaders that people can trust." },
+          17: { description: "Work together with people all over the world to make these goals happen.",
+                singaporeContext: "Singapore works together with other countries to solve big problems." }
+        },
+        purposes: {
+          "self-improvement":         { name: "Getting Better",       description: "Learning new things and becoming the best you can be — through school, hobbies, books, or trying new stuff." },
+          "self-sufficiency":         { name: "Doing Things Myself",  description: "Being able to take care of yourself and do things on your own." },
+          "persevering":              { name: "Never Giving Up",      description: "Keeping going and staying strong even when things are hard." },
+          "physical-health":          { name: "Staying Healthy",      description: "Taking care of your body, eating well, and keeping fit." },
+          "family":                   { name: "Family",               description: "Caring for and helping the people in your family." },
+          "relationships":            { name: "Friends",              description: "Making good friends and being there for the people you care about." },
+          "service":                  { name: "Helping Others",       description: "Helping your community and being part of a group." },
+          "positive-impact":          { name: "Making Things Better", description: "Making the world a better place for people, animals, or nature." },
+          "recognition":              { name: "Being Looked Up To",   description: "Being respected by your friends, family, and the people around you." },
+          "occupational-fulfillment": { name: "Doing a Good Job",     description: "Working hard and being good at what you do." },
+          "material-wealth":          { name: "Having Nice Things",   description: "Earning money and being able to get the things you want." },
+          "mattering":                { name: "Making a Difference",  description: "Inspiring others and being someone who matters." },
+          "religion-spirituality":    { name: "Beliefs",              description: "Living by what you believe in." },
+          "internal-standards":       { name: "Being True to Myself", description: "Knowing what is right and doing the right thing." },
+          "happiness":                { name: "Being Happy",          description: "Enjoying life and feeling good." },
+          "inner-peace":              { name: "Feeling Calm",         description: "Feeling thankful, calm, and peaceful inside." }
+        }
+      },
+
+      // ===== SECONDARY (13–16) ============================
+      // Study pathways are reframed as polytechnic/ITE courses and A-level
+      // subjects (section relabelled). Industries, career roles and Singapore
+      // context are shared from the base.
+      secondary: {
+        ui: {
+          landingSubtitle: "Discover how your interests connect to global goals — and the courses and careers that bring them to life.",
+          sectionLabels: { studyPathways: "Relevant Courses/Subjects" }
+        },
+        sdgs: {
+          1:  { description: "Help end poverty so everyone can afford the things they need to live with dignity.",
+                studyPathways: ["A-Level Economics", "A-Level Geography", "Poly Diploma in Social Sciences", "Poly Diploma in Community Development", "ITE Higher Nitec in Social Care"] },
+          2:  { description: "Make sure everyone has access to enough healthy food, and support better, more sustainable farming.",
+                studyPathways: ["A-Level Biology", "A-Level Chemistry", "Poly Diploma in Food Science & Nutrition", "Poly Diploma in Agritech", "ITE Nitec in Agritech"] },
+          3:  { description: "Help people of all ages stay healthy, both physically and mentally.",
+                studyPathways: ["A-Level Biology", "A-Level Chemistry", "Poly Diploma in Nursing", "Poly Diploma in Biomedical Science", "ITE Higher Nitec in Nursing"] },
+          4:  { description: "Make sure everyone can get a good education and keep learning throughout life.",
+                studyPathways: ["A-Level English Literature", "A-Level History", "Poly Diploma in Early Childhood Education", "Poly Diploma in Psychology Studies", "ITE Higher Nitec in Early Childhood Education"] },
+          5:  { description: "Give women and girls the same rights, opportunities, and respect as everyone else.",
+                studyPathways: ["A-Level Sociology", "A-Level General Paper", "Poly Diploma in Law & Management", "Poly Diploma in Human Resource Management", "Poly Diploma in Social Sciences"] },
+          6:  { description: "Make sure everyone has clean, safe water and proper sanitation.",
+                studyPathways: ["A-Level Chemistry", "A-Level Physics", "Poly Diploma in Environmental & Water Technology", "Poly Diploma in Chemical Engineering", "ITE Higher Nitec in Chemical Process Technology"] },
+          7:  { description: "Provide everyone with affordable, reliable, and clean energy.",
+                studyPathways: ["A-Level Physics", "A-Level Mathematics", "Poly Diploma in Clean Energy", "Poly Diploma in Electrical Engineering", "ITE Higher Nitec in Electrical Technology"] },
+          8:  { description: "Grow the economy in a fair way and create good jobs for everyone.",
+                studyPathways: ["A-Level Economics", "A-Level Mathematics", "Poly Diploma in Business", "Poly Diploma in Accountancy", "Poly Diploma in Human Resource Management"] },
+          9:  { description: "Build reliable infrastructure and support new industries and innovation.",
+                studyPathways: ["A-Level Physics", "A-Level Mathematics", "Poly Diploma in Mechanical Engineering", "Poly Diploma in Architecture", "ITE Higher Nitec in Engineering"] },
+          10: { description: "Reduce the gaps between rich and poor and make sure everyone is treated fairly.",
+                studyPathways: ["A-Level Sociology", "A-Level Economics", "Poly Diploma in Social Sciences", "Poly Diploma in Community Development", "ITE Higher Nitec in Social Care"] },
+          11: { description: "Make cities and communities safe, inclusive, and sustainable to live in.",
+                studyPathways: ["A-Level Geography", "A-Level Art", "Poly Diploma in Urban & Infrastructure Management", "Poly Diploma in Architecture", "Poly Diploma in Civil Engineering"] },
+          12: { description: "Use resources wisely, reduce waste, and produce and consume responsibly.",
+                studyPathways: ["A-Level Chemistry", "A-Level Geography", "Poly Diploma in Environmental Management", "Poly Diploma in Supply Chain Management", "Poly Diploma in Product Design"] },
+          13: { description: "Take urgent action to fight climate change and protect the planet.",
+                studyPathways: ["A-Level Geography", "A-Level Economics", "Poly Diploma in Environmental Science", "Poly Diploma in Maritime Business", "ITE Higher Nitec in Environmental Technology"] },
+          14: { description: "Protect and sustainably use the oceans, seas, and marine life.",
+                studyPathways: ["A-Level Biology", "A-Level Geography", "Poly Diploma in Marine Science & Technology", "Poly Diploma in Marine Engineering", "ITE Higher Nitec in Marine & Offshore Technology"] },
+          15: { description: "Protect forests, wildlife, and land so nature can thrive.",
+                studyPathways: ["A-Level Biology", "A-Level Geography", "Poly Diploma in Landscape Architecture", "Poly Diploma in Biotechnology", "Poly Diploma in Environmental Science"] },
+          16: { description: "Build peaceful, fair societies with honest and effective institutions.",
+                studyPathways: ["A-Level History", "A-Level General Paper", "Poly Diploma in Law & Management", "Poly Diploma in Accountancy", "Poly Diploma in Cybersecurity & Digital Forensics"] },
+          17: { description: "Work in partnership across the world to achieve all these goals.",
+                studyPathways: ["A-Level History", "A-Level Economics", "Poly Diploma in International Business", "Poly Diploma in Mass Communication", "Poly Diploma in Business"] }
+        },
+        purposes: {
+          "self-improvement":         { description: "Becoming the best version of yourself — learning new things, picking up hobbies, travelling, or growing through new experiences." },
+          "self-sufficiency":         { description: "Being able to support and take care of yourself, and having the freedom to make your own choices." },
+          "persevering":              { description: "Pushing through challenges and not giving up when life gets tough." },
+          "physical-health":          { description: "Looking after your body and staying healthy and active." },
+          "family":                   { description: "Supporting and caring for your family, however you define it." },
+          "relationships":            { description: "Building and keeping close friendships and relationships." },
+          "service":                  { description: "Serving your community or country and playing your part in a bigger group." },
+          "positive-impact":          { description: "Making the world a better place — through helping people, the environment, or society." },
+          "recognition":              { description: "Being respected and looked up to, whether at school, at work, or among friends." },
+          "occupational-fulfillment": { description: "Finding work you care about and doing it well." },
+          "material-wealth":          { description: "Earning money and being able to afford the things you want." },
+          "mattering":                { description: "Inspiring others and leaving a positive mark on the world." },
+          "religion-spirituality":    { description: "Living in line with your religious or spiritual beliefs." },
+          "internal-standards":       { description: "Knowing what you stand for and staying true to your own values." },
+          "happiness":                { description: "Enjoying life and feeling good." },
+          "inner-peace":              { description: "Feeling grateful, calm, and at peace with yourself and the world." }
+        }
+      }
+
+    }
+  }
 
 }; // end window.SDG_CONTENT

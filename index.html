@@ -235,6 +235,29 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   font-weight: 700; font-size: 15px;
 }
 .landing-step-text { font-size: 15px; line-height: 1.5; }
+.mode-selector { margin-bottom: 28px; }
+.mode-selector-label {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #1A4F8A; margin-bottom: 10px;
+}
+.mode-options { display: flex; flex-wrap: wrap; gap: 10px; }
+.mode-option {
+  flex: 1 1 140px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  background: #FFFFFF; border: 1.5px solid rgba(26, 79, 138, 0.18);
+  padding: 12px 16px; border-radius: 10px; cursor: pointer;
+  text-align: left; min-height: 48px;
+  transition: border-color var(--dur-fast) ease-out, background-color var(--dur-fast) ease-out, transform var(--dur-fast) ease-out;
+}
+.mode-option:hover { border-color: #1A4F8A; transform: translateY(-1px); }
+.mode-option.is-selected {
+  background: #1A4F8A; border-color: #1A4F8A;
+  box-shadow: 0 2px 6px rgba(26, 79, 138, 0.25);
+}
+.mode-option.is-selected .mode-option-title,
+.mode-option.is-selected .mode-option-sub { color: #FFFFFF; }
+.mode-option-title { font-size: 15px; font-weight: 700; color: #1A1A2E; }
+.mode-option-sub { font-size: 13px; color: #3A3A4A; }
 .landing-cta {
   background: #1A4F8A; color: #FFFFFF; border: none;
   padding: 14px 32px; border-radius: 10px;
@@ -1606,17 +1629,73 @@ button.tray-slot { cursor: pointer; }
       '<p style="padding:40px;text-align:center;color:#B91C1C;">Content failed to load. Check data/sdg-content.js.</p>';
     return;
   }
-  var UI = CONTENT.ui;
-  var SDGS = CONTENT.sdgs;
-  var SDG_BY_ID = {};
-  SDGS.forEach(function (s) { SDG_BY_ID[s.id] = s; });
+  // -- Effective content (mode-aware) -----------------------
+  // These bindings are populated by resolveContent(mode) and re-assigned
+  // whenever the age mode changes. Every render site reads them by name, so
+  // re-assignment here makes the whole app mode-aware with no call-site edits.
+  var UI, SDGS, SDG_BY_ID, PURPOSES, PURPOSE_BY_ID;
+
+  // -- Age modes --------------------------------------------
+  var MODES = CONTENT.modes || {};
+  var MODE_ORDER = (MODES.order && MODES.order.length) ? MODES.order : ['pre-university'];
+  var DEFAULT_MODE = MODES.defaultMode || MODE_ORDER[MODE_ORDER.length - 1];
+  function isValidMode(m) { return MODE_ORDER.indexOf(m) !== -1; }
+
+  // Resolves the base content + the active mode's sparse overrides into the
+  // effective UI / SDGS / PURPOSES bindings. Pre-university has no overrides,
+  // so it returns the base content untouched.
+  function resolveContent(mode) {
+    if (!isValidMode(mode)) mode = DEFAULT_MODE;
+    var ov = (MODES.overrides && MODES.overrides[mode]) || {};
+
+    // UI: shallow-merge top-level keys, with a nested merge for the
+    // sectionLabels / categoryLabels sub-objects so a mode can override a
+    // single label without restating the whole object.
+    UI = Object.assign({}, CONTENT.ui, ov.ui || {});
+    if (ov.ui) {
+      if (ov.ui.sectionLabels) UI.sectionLabels = Object.assign({}, CONTENT.ui.sectionLabels, ov.ui.sectionLabels);
+      if (ov.ui.categoryLabels) UI.categoryLabels = Object.assign({}, CONTENT.ui.categoryLabels, ov.ui.categoryLabels);
+    }
+
+    // SDGS: clone each base goal, merge per-id field overrides, then clear any
+    // hidden sections so they disappear from every render path.
+    var sdgOv = ov.sdgs || {};
+    var hidden = ov.hiddenSections || [];
+    SDGS = CONTENT.sdgs.map(function (base) {
+      var o = sdgOv[base.id];
+      var merged = o ? Object.assign({}, base, o) : Object.assign({}, base);
+      hidden.forEach(function (field) { merged[field] = Array.isArray(base[field]) ? [] : ''; });
+      return merged;
+    });
+    SDG_BY_ID = {};
+    SDGS.forEach(function (s) { SDG_BY_ID[s.id] = s; });
+
+    // PURPOSES: clone groups, merge per-source-id overrides.
+    var purpOv = ov.purposes || {};
+    PURPOSES = (CONTENT.purposes || []).map(function (group) {
+      return {
+        category: group.category,
+        sources: (group.sources || []).map(function (src) {
+          var o = purpOv[src.id];
+          return o ? Object.assign({}, src, o) : src;
+        })
+      };
+    });
+    PURPOSE_BY_ID = {};
+    PURPOSES.forEach(function (group) {
+      (group.sources || []).forEach(function (src) { PURPOSE_BY_ID[src.id] = src; });
+    });
+  }
 
   // -- State ------------------------------------------------
+  // SDG ids never change across modes, so the initial sortings map and the
+  // storage fingerprint build from the base content directly.
   var initialSortings = {};
-  SDGS.forEach(function (s) { initialSortings[s.id] = null; });
+  CONTENT.sdgs.forEach(function (s) { initialSortings[s.id] = null; });
 
   var appState = {
     currentStage: 'landing',
+    mode: DEFAULT_MODE,
     sdgSortings: Object.assign({}, initialSortings),
     topThreeOrder: [],
     expandedCards: new Set(),
@@ -1635,12 +1714,22 @@ button.tray-slot { cursor: pointer; }
     resortingId: null
   };
 
+  // Populate UI/SDGS/PURPOSES for the default mode up front, so all top-level
+  // init code (modal text, orientation nudge, etc.) sees resolved content.
+  // loadPersistedState() may re-resolve later if a saved mode is restored.
+  resolveContent(appState.mode);
+
   // -- Persistence ------------------------------------------
   // Spec §2 originally forbade browser storage (SLS sandbox).
   // Override: persist state across refresh; degrade silently if storage is blocked.
   var STORAGE_KEY = 'sdg-career-explorer:v1';
-  var STORAGE_SCHEMA_VERSION = 1;
-  var STORAGE_CONTENT_FINGERPRINT = SDGS.map(function (s) { return s.id; }).sort().join(',');
+  var STORAGE_SCHEMA_VERSION = 2;
+  // Fingerprint folds in the active mode so progress saved under a different
+  // age mode (or with a changed SDG set) is invalidated on load.
+  function buildFingerprint() {
+    return appState.mode + '|' + CONTENT.sdgs.map(function (s) { return s.id; }).sort().join(',');
+  }
+  var STORAGE_CONTENT_FINGERPRINT;
   var _storageCache; // null = blocked, undefined = not yet probed
 
   function _pickStorage() {
@@ -1669,6 +1758,7 @@ button.tray-slot { cursor: pointer; }
       savedAt: Date.now(),
       data: {
         currentStage: appState.currentStage,
+        mode: appState.mode,
         sdgSortings: appState.sdgSortings,
         topThreeOrder: appState.topThreeOrder,
         expandedCards: Array.from(appState.expandedCards),
@@ -1693,11 +1783,18 @@ button.tray-slot { cursor: pointer; }
     var parsed;
     try { parsed = JSON.parse(raw); }
     catch (e) { try { store.removeItem(STORAGE_KEY); } catch (_) {} return false; }
+    // Resolve the saved mode (and recompute the fingerprint) before the guard,
+    // so a normal reload keeps progress and only a genuine mode change discards it.
+    var d = (parsed && parsed.data) || {};
+    if (parsed && isValidMode(d.mode)) {
+      appState.mode = d.mode;
+      resolveContent(appState.mode);
+      STORAGE_CONTENT_FINGERPRINT = buildFingerprint();
+    }
     if (!parsed || parsed.v !== STORAGE_SCHEMA_VERSION || parsed.fp !== STORAGE_CONTENT_FINGERPRINT) {
       try { store.removeItem(STORAGE_KEY); } catch (_) {}
       return false;
     }
-    var d = parsed.data || {};
     if (d.currentStage) appState.currentStage = d.currentStage;
     if (d.sdgSortings) appState.sdgSortings = Object.assign({}, initialSortings, d.sdgSortings);
     if (Array.isArray(d.topThreeOrder)) appState.topThreeOrder = d.topThreeOrder.filter(function (id) { return !!SDG_BY_ID[id]; });
@@ -1736,7 +1833,20 @@ button.tray-slot { cursor: pointer; }
     appState.rankingProgress = [];
     appState.resortingId = null;
     // orientationNudgeDismissed is session-scoped per spec 7.x (dismiss "for the session")
+    // appState.mode is intentionally NOT reset here, so restarting the activity
+    // keeps the chosen age band.
     clearPersistedState();
+  }
+
+  // Switch age mode (landing only). Re-resolves content and clears progress,
+  // since sortings/tags belong to the previous mode's phrasing.
+  function setMode(mode) {
+    if (!isValidMode(mode) || mode === appState.mode) return;
+    resetState();
+    appState.mode = mode;
+    resolveContent(mode);
+    STORAGE_CONTENT_FINGERPRINT = buildFingerprint();
+    persistState();
   }
 
   // -- Top-3 mutation helpers -------------------------------
@@ -1773,12 +1883,7 @@ button.tray-slot { cursor: pointer; }
   }
 
   // -- Purpose lookup helpers -------------------------------
-  var PURPOSES = (CONTENT.purposes && CONTENT.purposes.length) ? CONTENT.purposes : [];
-  var PURPOSE_BY_ID = {};
-  PURPOSES.forEach(function (group) {
-    (group.sources || []).forEach(function (src) { PURPOSE_BY_ID[src.id] = src; });
-  });
-
+  // PURPOSES / PURPOSE_BY_ID are populated by resolveContent() (mode-aware).
   function getPurposeTagsFor(sdgId) {
     return appState.purposeTags[sdgId] || [];
   }
@@ -1980,6 +2085,25 @@ button.tray-slot { cursor: pointer; }
         '</details>';
     }
 
+    // Mode selector — choose an age band before starting.
+    var modeHtml = '';
+    if (MODE_ORDER.length > 1) {
+      var modeBtns = MODE_ORDER.map(function (m) {
+        var lbl = (MODES.labels && MODES.labels[m]) || { title: m, sub: '' };
+        var sel = (appState.mode === m);
+        return '<button type="button" class="mode-option' + (sel ? ' is-selected' : '') + '" ' +
+          'data-mode="' + escapeHtml(m) + '" role="radio" aria-checked="' + (sel ? 'true' : 'false') + '">' +
+            '<span class="mode-option-title">' + escapeHtml(lbl.title) + '</span>' +
+            '<span class="mode-option-sub">' + escapeHtml(lbl.sub) + '</span>' +
+        '</button>';
+      }).join('');
+      modeHtml =
+        '<div class="mode-selector">' +
+          (UI.landingModeLabel ? '<div class="mode-selector-label">' + escapeHtml(UI.landingModeLabel) + '</div>' : '') +
+          '<div class="mode-options" role="radiogroup" aria-label="' + escapeHtml(UI.landingModeLabel || 'Choose your level') + '">' + modeBtns + '</div>' +
+        '</div>';
+    }
+
     app.innerHTML =
       '<section class="landing" aria-labelledby="landing-title">' +
         '<div class="landing-copy">' +
@@ -1990,6 +2114,7 @@ button.tray-slot { cursor: pointer; }
             '<li class="landing-step"><span class="landing-step-num" aria-hidden="true">2</span><span class="landing-step-text">' + escapeHtml(UI.landingStep2) + '</span></li>' +
             '<li class="landing-step"><span class="landing-step-num" aria-hidden="true">3</span><span class="landing-step-text">' + escapeHtml(UI.landingStep3) + '</span></li>' +
           '</ol>' +
+          modeHtml +
           '<button type="button" class="landing-cta" id="landing-cta">' + escapeHtml(UI.landingCta) + '</button>' +
           refsHtml +
         '</div>' +
@@ -1997,6 +2122,14 @@ button.tray-slot { cursor: pointer; }
           '<img src="icons/SDG_Wheel_Transparent_WEB.png" alt="">' +
         '</div>' +
       '</section>';
+    Array.prototype.forEach.call(document.querySelectorAll('.mode-option'), function (btn) {
+      btn.addEventListener('click', function () {
+        var m = btn.getAttribute('data-mode');
+        if (m === appState.mode) return;
+        setMode(m);
+        renderLanding();
+      });
+    });
     document.getElementById('landing-cta').addEventListener('click', function () {
       goToStage('browse');
     });
@@ -2154,6 +2287,8 @@ button.tray-slot { cursor: pointer; }
   }
 
   function renderSection(label, body) {
+    // Skip empty sections (e.g. study pathways hidden in primary mode).
+    if (Array.isArray(body) ? body.length === 0 : !body) return '';
     var bodyHtml;
     if (Array.isArray(body)) {
       bodyHtml = '<ul class="chip-list">' +
@@ -2169,6 +2304,8 @@ button.tray-slot { cursor: pointer; }
   }
 
   function renderSpotlightSection(label, body) {
+    // Skip empty sections (e.g. study pathways hidden in primary mode).
+    if (Array.isArray(body) ? body.length === 0 : !body) return '';
     var bodyHtml;
     if (Array.isArray(body)) {
       bodyHtml = '<ul class="chip-list">' +
@@ -3185,6 +3322,9 @@ button.tray-slot { cursor: pointer; }
     }
   }
 
+  // Initialise the fingerprint for the default mode before loading saved state.
+  // loadPersistedState() re-resolves content + recomputes this if a saved mode exists.
+  STORAGE_CONTENT_FINGERPRINT = buildFingerprint();
   loadPersistedState();
 
   // -- Orientation nudge ------------------------------------
