@@ -223,7 +223,7 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   margin-bottom: 32px; padding: 0; list-style: none;
 }
 .landing-step {
-  display: flex; align-items: flex-start; gap: 14px;
+  display: flex; align-items: center; gap: 14px;
   background: #FFFFFF; border: 1px solid rgba(26, 79, 138, 0.1);
   padding: 14px 16px; border-radius: 10px;
 }
@@ -1613,7 +1613,10 @@ button.tray-slot { cursor: pointer; }
   </div>
 </div>
 
-<script src="data/sdg-content.js?v=2"></script>
+<script src="data/sdg-content.js?v=3"></script>
+<script src="data/content-pre-university.js?v=3"></script>
+<script src="data/content-secondary.js?v=3"></script>
+<script src="data/content-primary.js?v=3"></script>
 <script>
 /* ============================================================
    SDG Career Explorer — Application Logic
@@ -1631,7 +1634,7 @@ button.tray-slot { cursor: pointer; }
   // These bindings are populated by resolveContent(mode) and re-assigned
   // whenever the age mode changes. Every render site reads them by name, so
   // re-assignment here makes the whole app mode-aware with no call-site edits.
-  var UI, SDGS, SDG_BY_ID, PURPOSES, PURPOSE_BY_ID;
+  var UI, SDGS, SDG_BY_ID, PURPOSES, PURPOSE_BY_ID, REFLECTIONS;
 
   // -- Age modes --------------------------------------------
   var MODES = CONTENT.modes || {};
@@ -1683,6 +1686,9 @@ button.tray-slot { cursor: pointer; }
     PURPOSES.forEach(function (group) {
       (group.sources || []).forEach(function (src) { PURPOSE_BY_ID[src.id] = src; });
     });
+
+    // Reflection prompt text for this mode (keyed by template id).
+    REFLECTIONS = ov.reflections || {};
 
     // Card heights differ by mode (e.g. secondary's longer course names wrap
     // taller), so drop the cached max height — it is re-measured per mode.
@@ -2915,31 +2921,17 @@ button.tray-slot { cursor: pointer; }
   }
 
   // -- Reflection engine ------------------------------------
+  // Condition logic lives here (first match wins); the prompt TEXT for each id
+  // is supplied per level in the content files (resolved into REFLECTIONS).
   var REFLECTION_TEMPLATES = [
-    { id: 'all-planet',
-      when: function (s) { return s.themes.planet === 3; },
-      text: "All three of your picks centre on the living world — ecosystems, climate, the systems that hold life. That's rare focus. What does {top1Name} ask of you that the other two don't?" },
-    { id: 'all-people',
-      when: function (s) { return s.themes.people === 3; },
-      text: "Your three are all about people — their dignity, learning, health, equity. You're drawn to the human scale. Which of the three feels closest to people you actually know?" },
-    { id: 'all-prosperity',
-      when: function (s) { return s.themes.prosperity === 3; },
-      text: "You've chosen three goals about how economies and cities should work. You think in systems. Where does your picture of a fair economy start — with {top1Name}?" },
-    { id: 'partnerships',
-      when: function (s) { return s.topThreeIds.indexOf(17) !== -1; },
-      text: "SDG 17 shows up for you — partnerships, the connective tissue. That's often a sign you see yourself in the joins between groups, not inside any one of them." },
-    { id: 'people-planet',
-      when: function (s) { return s.themes.people >= 1 && s.themes.planet >= 1 && s.themes.prosperity === 0; },
-      text: "You're holding people and planet together — two priorities that sometimes pull against each other. Where do you think the real trade-off is, for you?" },
-    { id: 'service-heavy',
-      when: function (s) { return s.dominantPurposeCategory === 'Achievement & Impact' && s.totalPurposeTags >= 3; },
-      text: "Across your three, the purposes you keep returning to are about making an impact. That's a strong signal. Is there a moment — recent or remembered — that started that pull?" },
-    { id: 'competence-heavy',
-      when: function (s) { return s.dominantPurposeCategory === 'Personal Development' && s.totalPurposeTags >= 3; },
-      text: "Your picks tilt toward growth — becoming someone who can make a difference. Which of your three gives you the most room to do that, and why?" },
-    { id: 'fallback',
-      when: function () { return true; },
-      text: "Your three picks aren't obvious neighbours — which is interesting. What's the thread you'd use to tie them together, if you had to?" }
+    { id: 'all-planet',       when: function (s) { return s.themes.planet === 3; } },
+    { id: 'all-people',       when: function (s) { return s.themes.people === 3; } },
+    { id: 'all-prosperity',   when: function (s) { return s.themes.prosperity === 3; } },
+    { id: 'partnerships',     when: function (s) { return s.topThreeIds.indexOf(17) !== -1; } },
+    { id: 'people-planet',    when: function (s) { return s.themes.people >= 1 && s.themes.planet >= 1 && s.themes.prosperity === 0; } },
+    { id: 'service-heavy',    when: function (s) { return s.dominantPurposeCategory === 'Achievement & Impact' && s.totalPurposeTags >= 3; } },
+    { id: 'competence-heavy', when: function (s) { return s.dominantPurposeCategory === 'Personal Development' && s.totalPurposeTags >= 3; } },
+    { id: 'fallback',         when: function () { return true; } }
   ];
 
   function computeReflectionSignals() {
@@ -2999,7 +2991,9 @@ button.tray-slot { cursor: pointer; }
       if (REFLECTION_TEMPLATES[i].when(signals)) { template = REFLECTION_TEMPLATES[i]; break; }
     }
     if (!template) return '';
-    var text = template.text.replace('{top1Name}', top1Name);
+    var rawText = (REFLECTIONS && REFLECTIONS[template.id]) || '';
+    if (!rawText) return '';
+    var text = rawText.replace('{top1Name}', top1Name);
     return '<div class="reflection-card">' +
       '<p class="reflection-eyebrow">' + escapeHtml(UI.reflectionEyebrow || 'A thought to sit with') + '</p>' +
       '<p class="reflection-body">' + escapeHtml(text) + '</p>' +
