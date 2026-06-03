@@ -256,6 +256,25 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
 }
 .mode-option.is-selected .mode-option-title { color: #FFFFFF; }
 .mode-option-title { font-size: 15px; font-weight: 700; color: #1A1A2E; }
+
+/* Dedicated level-selection page (shown before the landing page) */
+.mode-page {
+  max-width: 560px; margin: 0 auto;
+  display: flex; flex-direction: column; align-items: stretch;
+  padding-top: 24px;
+}
+.mode-page-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 5vw, 40px); line-height: 1.15; margin-bottom: 10px;
+}
+.mode-page-sub { font-size: 17px; color: #3A3A4A; margin-bottom: 28px; line-height: 1.6; }
+.mode-page .mode-selector { margin-bottom: 28px; }
+.mode-continue { align-self: flex-start; }
+.landing-cta:disabled {
+  opacity: 0.45; cursor: not-allowed; box-shadow: none;
+}
+.landing-cta:disabled:hover { background: #1A4F8A; transform: none; }
+
 .landing-cta {
   background: #1A4F8A; color: #FFFFFF; border: none;
   padding: 14px 32px; border-radius: 10px;
@@ -1613,10 +1632,10 @@ button.tray-slot { cursor: pointer; }
   </div>
 </div>
 
-<script src="data/sdg-content.js?v=3"></script>
-<script src="data/content-pre-university.js?v=3"></script>
-<script src="data/content-secondary.js?v=3"></script>
-<script src="data/content-primary.js?v=3"></script>
+<script src="data/sdg-content.js?v=4"></script>
+<script src="data/content-pre-university.js?v=4"></script>
+<script src="data/content-secondary.js?v=4"></script>
+<script src="data/content-primary.js?v=4"></script>
 <script>
 /* ============================================================
    SDG Career Explorer — Application Logic
@@ -1705,8 +1724,8 @@ button.tray-slot { cursor: pointer; }
   CONTENT.sdgs.forEach(function (s) { initialSortings[s.id] = null; });
 
   var appState = {
-    currentStage: 'landing',
-    mode: DEFAULT_MODE,
+    currentStage: 'mode',
+    mode: null,            // null = no level chosen yet (level page requires a pick)
     sdgSortings: Object.assign({}, initialSortings),
     topThreeOrder: [],
     expandedCards: new Set(),
@@ -1827,7 +1846,7 @@ button.tray-slot { cursor: pointer; }
   }
 
   function resetState() {
-    appState.currentStage = 'landing';
+    appState.currentStage = 'mode';
     appState.sdgSortings = Object.assign({}, initialSortings);
     appState.topThreeOrder = [];
     appState.expandedCards = new Set();
@@ -1976,10 +1995,24 @@ button.tray-slot { cursor: pointer; }
     labelGroup.innerHTML = '';
     actionSlot.innerHTML = '';
 
+    if (appState.currentStage === 'mode') {
+      labelGroup.innerHTML =
+        '<div class="header-stage-label">SDG Career Explorer</div>' +
+        '<div style="font-size:14px;font-weight:500;color:#4A4A5A;">An MOE ECG activity</div>';
+      return;
+    }
+
     if (appState.currentStage === 'landing') {
       labelGroup.innerHTML =
         '<div class="header-stage-label">SDG Career Explorer</div>' +
         '<div style="font-size:14px;font-weight:500;color:#4A4A5A;">An MOE ECG activity</div>';
+
+      var landingBackBtn = document.createElement('button');
+      landingBackBtn.type = 'button';
+      landingBackBtn.className = 'header-back-link';
+      landingBackBtn.textContent = UI.landingBackBtn || 'Change level';
+      landingBackBtn.addEventListener('click', function () { goToStage('mode'); });
+      actionSlot.appendChild(landingBackBtn);
       return;
     }
 
@@ -1995,13 +2028,6 @@ button.tray-slot { cursor: pointer; }
           (complete ? ' complete' : '') + '" style="width:' + pct + '%;"></span></span>' +
           (complete ? '<span class="header-progress-tick" aria-hidden="true">✓</span>' : '') +
         '</div>';
-
-      var browseBackBtn = document.createElement('button');
-      browseBackBtn.type = 'button';
-      browseBackBtn.className = 'header-back-link';
-      browseBackBtn.textContent = UI.stage1BackLink || 'Change Level';
-      browseBackBtn.addEventListener('click', function () { goToStage('landing'); });
-      actionSlot.appendChild(browseBackBtn);
 
       var nextBtn = document.createElement('button');
       nextBtn.type = 'button';
@@ -2103,24 +2129,6 @@ button.tray-slot { cursor: pointer; }
         '</details>';
     }
 
-    // Mode selector — choose an age band before starting.
-    var modeHtml = '';
-    if (MODE_ORDER.length > 1) {
-      var modeBtns = MODE_ORDER.map(function (m) {
-        var lbl = (MODES.labels && MODES.labels[m]) || { title: m, sub: '' };
-        var sel = (appState.mode === m);
-        return '<button type="button" class="mode-option' + (sel ? ' is-selected' : '') + '" ' +
-          'data-mode="' + escapeHtml(m) + '" role="radio" aria-checked="' + (sel ? 'true' : 'false') + '">' +
-            '<span class="mode-option-title">' + escapeHtml(lbl.title) + '</span>' +
-        '</button>';
-      }).join('');
-      modeHtml =
-        '<div class="mode-selector">' +
-          (UI.landingModeLabel ? '<div class="mode-selector-label">' + escapeHtml(UI.landingModeLabel) + '</div>' : '') +
-          '<div class="mode-options" role="radiogroup" aria-label="' + escapeHtml(UI.landingModeLabel || 'Choose your level') + '">' + modeBtns + '</div>' +
-        '</div>';
-    }
-
     app.innerHTML =
       '<section class="landing" aria-labelledby="landing-title">' +
         '<div class="landing-copy">' +
@@ -2131,7 +2139,6 @@ button.tray-slot { cursor: pointer; }
             '<li class="landing-step"><span class="landing-step-num" aria-hidden="true">2</span><span class="landing-step-text">' + escapeHtml(UI.landingStep2) + '</span></li>' +
             '<li class="landing-step"><span class="landing-step-num" aria-hidden="true">3</span><span class="landing-step-text">' + escapeHtml(UI.landingStep3) + '</span></li>' +
           '</ol>' +
-          modeHtml +
           '<button type="button" class="landing-cta" id="landing-cta">' + escapeHtml(UI.landingCta) + '</button>' +
           refsHtml +
         '</div>' +
@@ -2139,16 +2146,44 @@ button.tray-slot { cursor: pointer; }
           '<img src="icons/SDG_Wheel_Transparent_WEB.png" alt="">' +
         '</div>' +
       '</section>';
+    document.getElementById('landing-cta').addEventListener('click', function () {
+      goToStage('browse');
+    });
+  }
+
+  function renderModeSelect() {
+    app.className = 'stage-container stage-transition';
+    var chosen = isValidMode(appState.mode);
+    var modeBtns = MODE_ORDER.map(function (m) {
+      var lbl = (MODES.labels && MODES.labels[m]) || { title: m };
+      var sel = (appState.mode === m);
+      return '<button type="button" class="mode-option' + (sel ? ' is-selected' : '') + '" ' +
+        'data-mode="' + escapeHtml(m) + '" role="radio" aria-checked="' + (sel ? 'true' : 'false') + '">' +
+          '<span class="mode-option-title">' + escapeHtml(lbl.title) + '</span>' +
+      '</button>';
+    }).join('');
+
+    app.innerHTML =
+      '<section class="mode-page" aria-labelledby="mode-title">' +
+        '<h1 id="mode-title" class="mode-page-title">' + escapeHtml(UI.modeSelectTitle || 'Choose your level') + '</h1>' +
+        (UI.modeSelectSubtitle ? '<p class="mode-page-sub">' + escapeHtml(UI.modeSelectSubtitle) + '</p>' : '') +
+        '<div class="mode-selector">' +
+          '<div class="mode-options" role="radiogroup" aria-label="' + escapeHtml(UI.landingModeLabel || 'Choose your level') + '">' + modeBtns + '</div>' +
+        '</div>' +
+        '<button type="button" class="landing-cta mode-continue" id="mode-continue"' + (chosen ? '' : ' disabled') + '>' +
+          escapeHtml(UI.modeSelectContinueBtn || 'Continue') + '</button>' +
+      '</section>';
+
     Array.prototype.forEach.call(document.querySelectorAll('.mode-option'), function (btn) {
       btn.addEventListener('click', function () {
         var m = btn.getAttribute('data-mode');
         if (m === appState.mode) return;
         setMode(m);
-        renderLanding();
+        renderModeSelect();
       });
     });
-    document.getElementById('landing-cta').addEventListener('click', function () {
-      goToStage('browse');
+    document.getElementById('mode-continue').addEventListener('click', function () {
+      if (isValidMode(appState.mode)) goToStage('landing');
     });
   }
 
@@ -3318,12 +3353,13 @@ button.tray-slot { cursor: pointer; }
     renderHeader();
     renderTop3Tray();
     switch (appState.currentStage) {
+      case 'mode':    renderModeSelect(); break;
       case 'landing': renderLanding(); break;
       case 'browse':  renderBrowse();  break;
       case 'select':  renderSelect();  break;
       case 'tag':     renderTag();     break;
       case 'summary': renderSummary(); break;
-      default:        renderLanding();
+      default:        renderModeSelect();
     }
   }
 

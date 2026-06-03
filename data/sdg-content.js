@@ -30,6 +30,11 @@ window.SDG_CONTENT = {
     landingStep3:       "Pick your top 3 and see what careers might be waiting for you",
     landingModeLabel:   "Choose your level",
     landingCta:         "Let's Begin",
+    landingBackBtn:     "Change level",
+
+    modeSelectTitle:    "Who's exploring today?",
+    modeSelectSubtitle: "Pick the level that fits you to get started.",
+    modeSelectContinueBtn: "Continue",
 
     stage1Heading:      "Which of these feel like yours?",
     stage1NextBtn:      "Next Step",
