@@ -152,13 +152,6 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
 .header-back-link.header-back-nav::before {
   content: "\2190"; margin-right: 6px; font-weight: 600;
 }
-/* Compact level switcher on the landing page (combined build only) */
-.landing-mode-switch { margin-bottom: 24px; }
-.landing-mode-switch .mode-options { gap: 8px; }
-.landing-mode-switch .mode-option {
-  flex: 0 1 auto; padding: 8px 16px; min-height: 44px;
-}
-
 @media (max-width: 767px) {
   .app-header, .app-header-inner { min-height: 56px; }
   .app-header-inner { padding: 8px 14px; gap: 10px; }
@@ -2180,32 +2173,14 @@ button.tray-slot { cursor: pointer; }
         '</details>';
     }
 
-    // Combined/preview build: a compact level switcher so reviewers can hop
-    // between Primary / Secondary / Pre-U without returning to the picker.
-    // Single-level builds omit it entirely (only one level exists).
-    var levelSwitchHtml = '';
-    if (MULTI_MODE) {
-      var switchOpts = AVAILABLE_MODES.map(function (m) {
-        var lbl = (MODES.labels && MODES.labels[m]) || { title: m };
-        var sel = (appState.mode === m);
-        return '<button type="button" class="mode-option' + (sel ? ' is-selected' : '') + '" ' +
-          'data-switch-mode="' + escapeHtml(m) + '" role="radio" aria-checked="' + (sel ? 'true' : 'false') + '">' +
-            '<span class="mode-option-title">' + escapeHtml(lbl.title) + '</span>' +
-        '</button>';
-      }).join('');
-      levelSwitchHtml =
-        '<div class="mode-selector landing-mode-switch">' +
-          '<div class="mode-selector-label">' + escapeHtml(UI.landingLevelLabel || 'Level') + '</div>' +
-          '<div class="mode-options" role="radiogroup" aria-label="' + escapeHtml(UI.landingModeLabel || 'Choose your level') + '">' + switchOpts + '</div>' +
-        '</div>';
-    }
+    // Note: the level is chosen once on the dedicated mode-select page and is
+    // not switchable here — the landing page intentionally has no level picker.
 
     app.innerHTML =
       '<section class="landing" aria-labelledby="landing-title">' +
         '<div class="landing-copy">' +
           '<h1 id="landing-title" class="landing-title">' + escapeHtml(UI.landingTitle) + '</h1>' +
           '<p class="landing-subtitle">' + escapeHtml(UI.landingSubtitle) + '</p>' +
-          levelSwitchHtml +
           '<ol class="landing-steps">' +
             '<li class="landing-step"><span class="landing-step-num" aria-hidden="true">1</span><span class="landing-step-text">' + escapeHtml(UI.landingStep1) + '</span></li>' +
             '<li class="landing-step"><span class="landing-step-num" aria-hidden="true">2</span><span class="landing-step-text">' + escapeHtml(UI.landingStep2) + '</span></li>' +
@@ -2221,41 +2196,6 @@ button.tray-slot { cursor: pointer; }
     document.getElementById('landing-cta').addEventListener('click', function () {
       goToStage('browse');
     });
-
-    Array.prototype.forEach.call(document.querySelectorAll('[data-switch-mode]'), function (btn) {
-      btn.addEventListener('click', function () {
-        requestModeSwitch(btn.getAttribute('data-switch-mode'));
-      });
-    });
-  }
-
-  // True if the student has started sorting or picked any top-3 goals.
-  function hasProgress() {
-    if (appState.topThreeOrder.length) return true;
-    for (var i = 1; i <= 17; i++) if (appState.sdgSortings[i]) return true;
-    return false;
-  }
-
-  // Switch level from the landing page. Switching clears progress (sortings and
-  // tags belong to the old level's phrasing), so confirm first if any exists.
-  function requestModeSwitch(m) {
-    if (!isValidMode(m) || m === appState.mode) return;
-    function doSwitch() {
-      setMode(m);              // resets progress + re-resolves content
-      appState.currentStage = 'landing';
-      render();
-    }
-    if (hasProgress()) {
-      openConfirmModal({
-        title: UI.switchModeTitle || 'Switch level?',
-        body: UI.switchModeBody || 'Switching level will clear your current progress.',
-        confirmLabel: UI.switchModeConfirmBtn || 'Yes, switch',
-        cancelLabel: UI.switchModeCancelBtn || 'Cancel',
-        onConfirm: doSwitch
-      });
-    } else {
-      doSwitch();
-    }
   }
 
   function renderModeSelect() {
