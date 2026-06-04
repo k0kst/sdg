@@ -50,7 +50,10 @@
 
 /* ---- Reset & base ---- */
 *, *::before, *::after { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; overflow-x: hidden; }
+/* overflow-x:clip stops horizontal overflow WITHOUT making body a scroll
+   container (which `hidden` does — that silently breaks the sticky header on
+   mobile). `hidden` stays first as a fallback for browsers without `clip`. */
+html, body { margin: 0; padding: 0; overflow-x: hidden; overflow-x: clip; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   font-family: var(--font-body);
@@ -880,10 +883,13 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
 }
 .action-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 12px 22px; border-radius: 10px; border: none;
   font-size: 15px; font-weight: 600; min-height: 48px;
   transition: background-color var(--dur-mid) ease-out, color var(--dur-mid) ease-out;
 }
+/* Icon shows only on the fixed mobile action bar; desktop shows the text label. */
+.action-btn-icon { display: none; width: 22px; height: 22px; flex: 0 0 auto; }
 .action-btn.primary { background: #1A4F8A; color: #FFFFFF; }
 .action-btn.primary:hover { background: #14416F; }
 .action-btn.secondary {
@@ -1300,6 +1306,34 @@ button.tray-slot { cursor: pointer; }
   .browse-stack-stage:not(.is-review) {
     padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
   }
+
+  /* Summary page: pin the action buttons to the bottom (same pattern as the
+     sorting zone bar) and collapse them to icons so all three fit one row. */
+  .action-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 30;
+    margin: 0;
+    gap: 8px;
+    padding: 10px 14px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.10);
+    flex-wrap: nowrap;
+  }
+  .action-bar .action-btn { flex: 1 1 0; padding: 12px 8px; }
+  .action-bar .action-btn-icon { display: block; }
+  /* Hide the text label but keep it for screen readers. */
+  .action-bar .action-btn-label {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+  /* Keep the summary content clear of the fixed bar (and its copy-confirm note). */
+  section[aria-labelledby="stage3-heading"] {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* ---- Summary hero ---- */
@@ -1637,11 +1671,11 @@ button.tray-slot { cursor: pointer; }
 </div>
 
 <!-- Shared base content (goal data + the modes registry). Identical in every build. -->
-<script src="data/sdg-content.js?v=5"></script>
+<script src="data/sdg-content.js?v=6"></script>
 <!-- Active level pack for THIS build. A single-level ZIP ships one level here;
      the combined/preview build ships all three (see tools/README.md). The app
      auto-detects how many levels registered and shows the picker only if 2+. -->
-<script src="data/content.js?v=5"></script>
+<script src="data/content.js?v=6"></script>
 <script>
 /* ============================================================
    SDG Career Explorer — Application Logic
@@ -1660,6 +1694,15 @@ button.tray-slot { cursor: pointer; }
   // whenever the age mode changes. Every render site reads them by name, so
   // re-assignment here makes the whole app mode-aware with no call-site edits.
   var UI, SDGS, SDG_BY_ID, PURPOSES, PURPOSE_BY_ID, REFLECTIONS;
+
+  // -- Inline SVG icons -------------------------------------
+  // Bundled as markup (no extra image files needed). Used on the summary page's
+  // action buttons — labels show on desktop, these icons show on the fixed
+  // mobile action bar. They inherit the button's text colour via currentColor.
+  var ICON_SVG_OPEN = '<svg class="action-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">';
+  var ICON_DOWNLOAD = ICON_SVG_OPEN + '<path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>';
+  var ICON_COPY = ICON_SVG_OPEN + '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  var ICON_RESTART = ICON_SVG_OPEN + '<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v5h-5"/></svg>';
 
   // -- Age modes --------------------------------------------
   var MODES = CONTENT.modes || {};
@@ -3142,11 +3185,16 @@ button.tray-slot { cursor: pointer; }
       '</div>' +
     '</div>';
 
-    // Section D: Actions
+    // Section D: Actions. Each button carries an inline-SVG icon (shown on the
+    // fixed mobile bar) plus a text label (shown on desktop) — see ICON_*
+    // constants and the .action-btn CSS.
     html += '<div class="action-bar">' +
-      '<button type="button" class="action-btn primary" id="pdf-btn">' + escapeHtml(UI.stage3PdfBtn || 'Download as PDF') + '</button>' +
-      '<button type="button" class="action-btn secondary" id="copy-btn">' + escapeHtml(UI.stage3CopyBtn) + '</button>' +
-      '<button type="button" class="action-btn ghost" id="restart-btn">' + escapeHtml(UI.stage3RestartBtn) + '</button>' +
+      '<button type="button" class="action-btn primary" id="pdf-btn">' +
+        ICON_DOWNLOAD + '<span class="action-btn-label">' + escapeHtml(UI.stage3PdfBtn || 'Download as PDF') + '</span></button>' +
+      '<button type="button" class="action-btn secondary" id="copy-btn">' +
+        ICON_COPY + '<span class="action-btn-label">' + escapeHtml(UI.stage3CopyBtn) + '</span></button>' +
+      '<button type="button" class="action-btn ghost" id="restart-btn">' +
+        ICON_RESTART + '<span class="action-btn-label">' + escapeHtml(UI.stage3RestartBtn) + '</span></button>' +
     '</div>';
     html += '<div class="copy-confirm" id="copy-confirm">' + escapeHtml(UI.stage3CopyConfirm) + '</div>';
 
@@ -3310,22 +3358,28 @@ button.tray-slot { cursor: pointer; }
     var btn = document.getElementById('copy-btn');
     var confirmBox = document.getElementById('copy-confirm');
     if (!btn) return;
-    btn.textContent = UI.stage3CopyingBtn;
+    // Update only the label span so the inline icon (mobile bar) survives;
+    // fall back to the whole button if the span is absent.
+    var setLabel = function (t) {
+      var lbl = btn.querySelector('.action-btn-label');
+      if (lbl) lbl.textContent = t; else btn.textContent = t;
+    };
+    setLabel(UI.stage3CopyingBtn);
     btn.disabled = true;
 
     var text = buildCopyText();
     var done = function (success) {
       if (success) {
-        btn.textContent = UI.stage3CopiedBtn;
+        setLabel(UI.stage3CopiedBtn);
         btn.classList.add('copied');
         if (confirmBox) confirmBox.classList.add('show');
         setTimeout(function () {
-          btn.textContent = UI.stage3CopyBtn;
+          setLabel(UI.stage3CopyBtn);
           btn.classList.remove('copied');
           btn.disabled = false;
         }, 3000);
       } else {
-        btn.textContent = UI.stage3CopyBtn;
+        setLabel(UI.stage3CopyBtn);
         btn.disabled = false;
         if (confirmBox) {
           confirmBox.textContent = 'Copy failed. Please select and copy manually.';
