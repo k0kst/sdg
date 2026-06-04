@@ -148,6 +148,16 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   text-decoration: underline; text-underline-offset: 3px;
 }
 .header-back-link:hover { color: #14416F; }
+#header-nav-slot { flex-shrink: 0; }
+.header-back-link.header-back-nav::before {
+  content: "\2190"; margin-right: 6px; font-weight: 600;
+}
+/* Compact level switcher on the landing page (combined build only) */
+.landing-mode-switch { margin-bottom: 24px; }
+.landing-mode-switch .mode-options { gap: 8px; }
+.landing-mode-switch .mode-option {
+  flex: 0 1 auto; padding: 8px 16px; min-height: 44px;
+}
 
 @media (max-width: 767px) {
   .app-header, .app-header-inner { min-height: 56px; }
@@ -1606,6 +1616,7 @@ button.tray-slot { cursor: pointer; }
   <!-- Sticky header -->
   <header class="app-header" role="banner">
     <div class="app-header-inner" id="header-inner">
+      <div id="header-nav-slot"></div>
       <div class="header-label-group" id="header-label-group"></div>
       <div id="header-action-slot"></div>
     </div>
@@ -1632,10 +1643,12 @@ button.tray-slot { cursor: pointer; }
   </div>
 </div>
 
-<script src="data/sdg-content.js?v=4"></script>
-<script src="data/content-pre-university.js?v=4"></script>
-<script src="data/content-secondary.js?v=4"></script>
-<script src="data/content-primary.js?v=4"></script>
+<!-- Shared base content (goal data + the modes registry). Identical in every build. -->
+<script src="data/sdg-content.js?v=5"></script>
+<!-- Active level pack for THIS build. A single-level ZIP ships one level here;
+     the combined/preview build ships all three (see tools/README.md). The app
+     auto-detects how many levels registered and shows the picker only if 2+. -->
+<script src="data/content.js?v=5"></script>
 <script>
 /* ============================================================
    SDG Career Explorer — Application Logic
@@ -1660,6 +1673,19 @@ button.tray-slot { cursor: pointer; }
   var MODE_ORDER = (MODES.order && MODES.order.length) ? MODES.order : ['pre-university'];
   var DEFAULT_MODE = MODES.defaultMode || MODE_ORDER[MODE_ORDER.length - 1];
   function isValidMode(m) { return MODE_ORDER.indexOf(m) !== -1; }
+
+  // -- Build shape (single-level vs combined) ---------------
+  // AVAILABLE_MODES = the levels that actually registered a content file in
+  // THIS build. A shipped single-level ZIP includes one content-<level>.js, so
+  // exactly one mode registers and the app boots straight into it with no level
+  // picker. The combined/preview build includes all three, so the picker and
+  // the landing level-switch appear. If nothing registered (content.js missing)
+  // fall back to the default so the app still renders on base content.
+  var AVAILABLE_MODES = MODE_ORDER.filter(function (m) {
+    return MODES.overrides && MODES.overrides[m];
+  });
+  if (!AVAILABLE_MODES.length) AVAILABLE_MODES = [DEFAULT_MODE];
+  var MULTI_MODE = AVAILABLE_MODES.length > 1;
 
   // Resolves the base content + the active mode's sparse overrides into the
   // effective UI / SDGS / PURPOSES bindings. Pre-university has no overrides,
@@ -1724,8 +1750,10 @@ button.tray-slot { cursor: pointer; }
   CONTENT.sdgs.forEach(function (s) { initialSortings[s.id] = null; });
 
   var appState = {
-    currentStage: 'mode',
-    mode: null,            // null = no level chosen yet (level page requires a pick)
+    // Single-level builds skip the picker and boot into their one level;
+    // combined builds open on the picker with no level chosen yet.
+    currentStage: MULTI_MODE ? 'mode' : 'landing',
+    mode: MULTI_MODE ? null : AVAILABLE_MODES[0],
     sdgSortings: Object.assign({}, initialSortings),
     topThreeOrder: [],
     expandedCards: new Set(),
@@ -1816,8 +1844,12 @@ button.tray-slot { cursor: pointer; }
     // Resolve the saved mode (and recompute the fingerprint) before the guard,
     // so a normal reload keeps progress and only a genuine mode change discards it.
     var d = (parsed && parsed.data) || {};
-    if (parsed && isValidMode(d.mode)) {
-      appState.mode = d.mode;
+    // In a single-level build the mode is fixed to this build's level, so a save
+    // written under any other level fails the fingerprint guard below and is
+    // discarded. In a combined build the saved mode is honoured.
+    var savedMode = MULTI_MODE ? d.mode : AVAILABLE_MODES[0];
+    if (parsed && isValidMode(savedMode)) {
+      appState.mode = savedMode;
       resolveContent(appState.mode);
       STORAGE_CONTENT_FINGERPRINT = buildFingerprint();
     }
@@ -1837,6 +1869,9 @@ button.tray-slot { cursor: pointer; }
     if (Array.isArray(d.browseHistory)) appState.browseHistory = d.browseHistory;
     if (typeof d.rankingMode === 'boolean') appState.rankingMode = d.rankingMode;
     if (Array.isArray(d.rankingProgress)) appState.rankingProgress = d.rankingProgress;
+    // Single-level builds have no picker, so a restored 'mode' stage has nowhere
+    // to go — land on the intro instead.
+    if (!MULTI_MODE && appState.currentStage === 'mode') appState.currentStage = 'landing';
     return true;
   }
 
@@ -1846,7 +1881,7 @@ button.tray-slot { cursor: pointer; }
   }
 
   function resetState() {
-    appState.currentStage = 'mode';
+    appState.currentStage = MULTI_MODE ? 'mode' : 'landing';
     appState.sdgSortings = Object.assign({}, initialSortings);
     appState.topThreeOrder = [];
     appState.expandedCards = new Set();
@@ -1994,6 +2029,7 @@ button.tray-slot { cursor: pointer; }
     var actionSlot = document.getElementById('header-action-slot');
     labelGroup.innerHTML = '';
     actionSlot.innerHTML = '';
+    renderBackButton();
 
     if (appState.currentStage === 'mode') {
       labelGroup.innerHTML =
@@ -2006,13 +2042,6 @@ button.tray-slot { cursor: pointer; }
       labelGroup.innerHTML =
         '<div class="header-stage-label">SDG Career Explorer</div>' +
         '<div style="font-size:14px;font-weight:500;color:#4A4A5A;">An MOE ECG activity</div>';
-
-      var landingBackBtn = document.createElement('button');
-      landingBackBtn.type = 'button';
-      landingBackBtn.className = 'header-back-link';
-      landingBackBtn.textContent = UI.landingBackBtn || 'Change level';
-      landingBackBtn.addEventListener('click', function () { goToStage('mode'); });
-      actionSlot.appendChild(landingBackBtn);
       return;
     }
 
@@ -2073,13 +2102,6 @@ button.tray-slot { cursor: pointer; }
           '<span>' + escapeHtml(progressText) + '</span>' +
         '</div>';
 
-      var tagBackBtn = document.createElement('button');
-      tagBackBtn.type = 'button';
-      tagBackBtn.className = 'header-back-link';
-      tagBackBtn.textContent = UI.stage2bBackLink;
-      tagBackBtn.addEventListener('click', function () { goToStage('select'); });
-      actionSlot.appendChild(tagBackBtn);
-
       var currentSdgId = currentTagSdgId();
       var tagsCount = currentSdgId ? getPurposeTagsFor(currentSdgId).length : 0;
       var isFinal = tagIdx >= 2;
@@ -2099,15 +2121,44 @@ button.tray-slot { cursor: pointer; }
       labelGroup.innerHTML =
         '<div class="header-stage-label">Step 3 of 3</div>' +
         '<div style="font-size:14px;font-weight:600;color:#1A4F8A;">' + escapeHtml(UI.stage3Heading) + '</div>';
-
-      var backBtn = document.createElement('button');
-      backBtn.type = 'button';
-      backBtn.className = 'header-back-link';
-      backBtn.textContent = UI.stage3BackLink;
-      backBtn.addEventListener('click', function () { goToStage('select'); });
-      actionSlot.appendChild(backBtn);
       return;
     }
+  }
+
+  // Back navigation lives in a fixed left slot and is consistent across stages:
+  // each section steps back to the previous one (and the purpose stage steps
+  // back through its three goals first). Single-level builds have no level
+  // picker, so the intro has no Back. The right-hand CTA still drives "Next".
+  function renderBackButton() {
+    var navSlot = document.getElementById('header-nav-slot');
+    if (!navSlot) return;
+    navSlot.innerHTML = '';
+    var stage = appState.currentStage;
+    var handler = null;
+    var label = UI.navBackBtn || 'Back';
+
+    if (stage === 'landing') {
+      if (!MULTI_MODE) return;                 // nothing to go back to
+      handler = function () { goToStage('mode'); };
+      label = UI.landingBackBtn || 'Change level';
+    } else if (stage === 'browse') {
+      handler = function () { goToStage('landing'); };
+    } else if (stage === 'select') {
+      handler = function () { goToStage('browse'); };
+    } else if (stage === 'tag') {
+      handler = handleTagBack;                 // steps goal 3 -> 2 -> 1 -> select
+    } else if (stage === 'summary') {
+      handler = function () { goToStage('select'); };
+    } else {
+      return;                                  // 'mode' (and unknown) have no Back
+    }
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'header-back-link header-back-nav';
+    btn.textContent = label;
+    btn.addEventListener('click', handler);
+    navSlot.appendChild(btn);
   }
 
   // -- Stage renderers --------------------------------------
@@ -2129,11 +2180,32 @@ button.tray-slot { cursor: pointer; }
         '</details>';
     }
 
+    // Combined/preview build: a compact level switcher so reviewers can hop
+    // between Primary / Secondary / Pre-U without returning to the picker.
+    // Single-level builds omit it entirely (only one level exists).
+    var levelSwitchHtml = '';
+    if (MULTI_MODE) {
+      var switchOpts = AVAILABLE_MODES.map(function (m) {
+        var lbl = (MODES.labels && MODES.labels[m]) || { title: m };
+        var sel = (appState.mode === m);
+        return '<button type="button" class="mode-option' + (sel ? ' is-selected' : '') + '" ' +
+          'data-switch-mode="' + escapeHtml(m) + '" role="radio" aria-checked="' + (sel ? 'true' : 'false') + '">' +
+            '<span class="mode-option-title">' + escapeHtml(lbl.title) + '</span>' +
+        '</button>';
+      }).join('');
+      levelSwitchHtml =
+        '<div class="mode-selector landing-mode-switch">' +
+          '<div class="mode-selector-label">' + escapeHtml(UI.landingLevelLabel || 'Level') + '</div>' +
+          '<div class="mode-options" role="radiogroup" aria-label="' + escapeHtml(UI.landingModeLabel || 'Choose your level') + '">' + switchOpts + '</div>' +
+        '</div>';
+    }
+
     app.innerHTML =
       '<section class="landing" aria-labelledby="landing-title">' +
         '<div class="landing-copy">' +
           '<h1 id="landing-title" class="landing-title">' + escapeHtml(UI.landingTitle) + '</h1>' +
           '<p class="landing-subtitle">' + escapeHtml(UI.landingSubtitle) + '</p>' +
+          levelSwitchHtml +
           '<ol class="landing-steps">' +
             '<li class="landing-step"><span class="landing-step-num" aria-hidden="true">1</span><span class="landing-step-text">' + escapeHtml(UI.landingStep1) + '</span></li>' +
             '<li class="landing-step"><span class="landing-step-num" aria-hidden="true">2</span><span class="landing-step-text">' + escapeHtml(UI.landingStep2) + '</span></li>' +
@@ -2149,12 +2221,47 @@ button.tray-slot { cursor: pointer; }
     document.getElementById('landing-cta').addEventListener('click', function () {
       goToStage('browse');
     });
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-switch-mode]'), function (btn) {
+      btn.addEventListener('click', function () {
+        requestModeSwitch(btn.getAttribute('data-switch-mode'));
+      });
+    });
+  }
+
+  // True if the student has started sorting or picked any top-3 goals.
+  function hasProgress() {
+    if (appState.topThreeOrder.length) return true;
+    for (var i = 1; i <= 17; i++) if (appState.sdgSortings[i]) return true;
+    return false;
+  }
+
+  // Switch level from the landing page. Switching clears progress (sortings and
+  // tags belong to the old level's phrasing), so confirm first if any exists.
+  function requestModeSwitch(m) {
+    if (!isValidMode(m) || m === appState.mode) return;
+    function doSwitch() {
+      setMode(m);              // resets progress + re-resolves content
+      appState.currentStage = 'landing';
+      render();
+    }
+    if (hasProgress()) {
+      openConfirmModal({
+        title: UI.switchModeTitle || 'Switch level?',
+        body: UI.switchModeBody || 'Switching level will clear your current progress.',
+        confirmLabel: UI.switchModeConfirmBtn || 'Yes, switch',
+        cancelLabel: UI.switchModeCancelBtn || 'Cancel',
+        onConfirm: doSwitch
+      });
+    } else {
+      doSwitch();
+    }
   }
 
   function renderModeSelect() {
     app.className = 'stage-container stage-transition';
     var chosen = isValidMode(appState.mode);
-    var modeBtns = MODE_ORDER.map(function (m) {
+    var modeBtns = AVAILABLE_MODES.map(function (m) {
       var lbl = (MODES.labels && MODES.labels[m]) || { title: m };
       var sel = (appState.mode === m);
       return '<button type="button" class="mode-option' + (sel ? ' is-selected' : '') + '" ' +
@@ -2955,6 +3062,18 @@ button.tray-slot { cursor: pointer; }
     }
   }
 
+  // Mirror of handleTagNext for the header Back control: step back through the
+  // three goals, then out to the Top 3 selection once at the first goal.
+  function handleTagBack() {
+    if (appState.currentTaggingIndex > 0) {
+      appState.currentTaggingIndex -= 1;
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      render();
+    } else {
+      goToStage('select');
+    }
+  }
+
   // -- Reflection engine ------------------------------------
   // Condition logic lives here (first match wins); the prompt TEXT for each id
   // is supplied per level in the content files (resolved into REFLECTIONS).
@@ -3305,17 +3424,18 @@ button.tray-slot { cursor: pointer; }
     }
   }
 
-  // -- Restart modal ----------------------------------------
+  // -- Confirm modal ----------------------------------------
+  // Generic in-page confirm dialog (no window.confirm, blocked in SLS iframes).
+  // Used for Start Over and for switching level (both discard progress).
   var modal = document.getElementById('restart-modal');
-  document.getElementById('modal-title').textContent = UI.restartTitle;
-  document.getElementById('modal-body').textContent = UI.restartBody;
-  document.getElementById('modal-cancel').textContent = UI.restartCancelBtn;
-  document.getElementById('modal-confirm').textContent = UI.restartConfirmBtn;
+  var lastFocusedBeforeModal = null;
+  var modalOnConfirm = null;
   document.getElementById('modal-cancel').addEventListener('click', closeRestartModal);
   document.getElementById('modal-confirm').addEventListener('click', function () {
+    var fn = modalOnConfirm;
+    modalOnConfirm = null;
     closeRestartModal();
-    resetState();
-    render();
+    if (fn) fn();
   });
   modal.addEventListener('click', function (e) {
     if (e.target === modal) closeRestartModal();
@@ -3324,8 +3444,13 @@ button.tray-slot { cursor: pointer; }
     if (e.key === 'Escape' && modal.classList.contains('show')) closeRestartModal();
   });
 
-  var lastFocusedBeforeModal = null;
-  function openRestartModal() {
+  function openConfirmModal(opts) {
+    opts = opts || {};
+    document.getElementById('modal-title').textContent = opts.title || '';
+    document.getElementById('modal-body').textContent = opts.body || '';
+    document.getElementById('modal-cancel').textContent = opts.cancelLabel || UI.restartCancelBtn || 'Cancel';
+    document.getElementById('modal-confirm').textContent = opts.confirmLabel || UI.restartConfirmBtn || 'OK';
+    modalOnConfirm = opts.onConfirm || null;
     lastFocusedBeforeModal = document.activeElement;
     modal.classList.add('show');
     setTimeout(function () {
@@ -3333,7 +3458,17 @@ button.tray-slot { cursor: pointer; }
       if (btn) btn.focus();
     }, 50);
   }
+  function openRestartModal() {
+    openConfirmModal({
+      title: UI.restartTitle,
+      body: UI.restartBody,
+      confirmLabel: UI.restartConfirmBtn,
+      cancelLabel: UI.restartCancelBtn,
+      onConfirm: function () { resetState(); render(); }
+    });
+  }
   function closeRestartModal() {
+    modalOnConfirm = null;
     modal.classList.remove('show');
     if (lastFocusedBeforeModal && lastFocusedBeforeModal.focus) lastFocusedBeforeModal.focus();
   }

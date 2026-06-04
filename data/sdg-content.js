@@ -29,12 +29,19 @@ window.SDG_CONTENT = {
     landingStep2:       "Sort each one by how much it interests you",
     landingStep3:       "Pick your top 3 and see what careers might be waiting for you",
     landingModeLabel:   "Choose your level",
+    landingLevelLabel:  "Level",
     landingCta:         "Let's Begin",
     landingBackBtn:     "Change level",
+    navBackBtn:         "Back",
 
     modeSelectTitle:    "Who's exploring today?",
     modeSelectSubtitle: "Pick the level that fits you to get started.",
     modeSelectContinueBtn: "Continue",
+
+    switchModeTitle:       "Switch level?",
+    switchModeBody:        "Switching level will clear your current progress.",
+    switchModeConfirmBtn:  "Yes, switch",
+    switchModeCancelBtn:   "Cancel",
 
     stage1Heading:      "Which of these feel like yours?",
     stage1NextBtn:      "Next Step",
