@@ -1671,11 +1671,11 @@ button.tray-slot { cursor: pointer; }
 </div>
 
 <!-- Shared base content (goal data + the modes registry). Identical in every build. -->
-<script src="data/sdg-content.js?v=3030618159"></script>
+<script src="data/sdg-content.js?v=4105062744"></script>
 <!-- Active level pack for THIS build. A single-level ZIP ships one level here;
      the combined/preview build ships all three (see tools/README.md). The app
      auto-detects how many levels registered and shows the picker only if 2+. -->
-<script src="data/content.js?v=3030618159"></script>
+<script src="data/content.js?v=4105062744"></script>
 <script>
 /* ============================================================
    SDG Pathways Explorer — Application Logic
@@ -2033,20 +2033,6 @@ button.tray-slot { cursor: pointer; }
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { el.classList.remove('visible'); }, 3000);
   }
-
-  function sortedCount() {
-    var c = 0;
-    for (var i = 1; i <= 17; i++) if (appState.sdgSortings[i]) c++;
-    return c;
-  }
-
-  function countByCategory(cat) {
-    var c = 0;
-    for (var i = 1; i <= 17; i++) if (appState.sdgSortings[i] === cat) c++;
-    return c;
-  }
-
-  function pad2(n) { return n < 10 ? '0' + n : String(n); }
 
   function computePool() {
     var very = [], slightly = [];

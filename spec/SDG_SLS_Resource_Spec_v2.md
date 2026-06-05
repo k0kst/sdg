@@ -244,7 +244,6 @@ Tapping "Read More" expands the card in-place (no modal, no page navigation) to 
 | Industries | `industries` |
 | Study Pathways | `studyPathways` |
 | Career Roles | `careerRoles` |
-| What Drives This | `purposefulIntention` |
 | In Singapore | `singaporeContext` |
 
 A "Read Less" toggle collapses back to default.
@@ -493,7 +492,6 @@ window.SDG_CONTENT = {
       industries:          "Industries",
       studyPathways:       "Study Pathways",
       careerRoles:         "Career Roles",
-      purposefulIntention: "What Drives This",
       singaporeContext:    "In Singapore"
     }
   },
@@ -510,7 +508,6 @@ window.SDG_CONTENT = {
       industries: "Social services, public policy, housing, community development, CSR and philanthropy",
       studyPathways: "Social Work; Sociology; Public Policy; Community Development; Urban Studies; Business for social impact",
       careerRoles: "Social worker; community development officer; policy analyst; programme executive; housing officer",
-      purposefulIntention: "Service; Positive impact"
     },
     {
       id: 2,
@@ -522,7 +519,6 @@ window.SDG_CONTENT = {
       industries: "Agri-food tech, urban farming, aquaculture, food manufacturing, supply chain, food science",
       studyPathways: "Food Science; Environmental Science; Biotechnology; Engineering; Supply Chain; Business",
       careerRoles: "Food technologist; urban farm executive; aquaculture specialist; quality assurance officer; supply chain analyst",
-      purposefulIntention: "Positive impact; Physical health"
     },
     {
       id: 3,
@@ -534,7 +530,6 @@ window.SDG_CONTENT = {
       industries: "Healthcare, public health, biomedical science, fitness and wellness, medtech, aged care",
       studyPathways: "Medicine; Nursing; Pharmacy; Public Health; Psychology; Sport Science; Biomedical Science",
       careerRoles: "Doctor; nurse; pharmacist; public health officer; psychologist; health data analyst",
-      purposefulIntention: "Physical health; Service"
     },
     {
       id: 4,
@@ -546,7 +541,6 @@ window.SDG_CONTENT = {
       industries: "Education, training, edtech, learning design, youth development, HR and L&D",
       studyPathways: "Education; Psychology; English and History; Learning Sciences; HR; Communications; Computer Science for edtech",
       careerRoles: "Teacher; curriculum specialist; learning designer; education policy officer; training executive",
-      purposefulIntention: "Self-improvement; Positive impact"
     },
     {
       id: 5,
@@ -558,7 +552,6 @@ window.SDG_CONTENT = {
       industries: "HR, legal services, social policy, workplace consulting, advocacy, communications",
       studyPathways: "Law; Sociology; Psychology; HR; Communications; Public Policy; Business",
       careerRoles: "HR partner; diversity and inclusion executive; policy officer; legal associate; counsellor",
-      purposefulIntention: "Internal standards; Positive impact"
     },
     {
       id: 6,
@@ -570,7 +563,6 @@ window.SDG_CONTENT = {
       industries: "Water engineering, utilities, environmental services, wastewater treatment, cleantech, R&D",
       studyPathways: "Civil and Environmental Engineering; Chemistry; Sustainability; Data and Automation; Life Sciences",
       careerRoles: "Water engineer; process engineer; hydrologist; environmental consultant; laboratory analyst",
-      purposefulIntention: "Positive impact; Service"
     },
     {
       id: 7,
@@ -582,7 +574,6 @@ window.SDG_CONTENT = {
       industries: "Renewable energy, grid systems, energy storage, power engineering, carbon services, clean transport",
       studyPathways: "Electrical Engineering; Mechanical Engineering; Energy Studies; Physics; Data Science; Economics",
       careerRoles: "Energy analyst; solar engineer; grid systems engineer; ESG analyst; carbon project associate",
-      purposefulIntention: "Positive impact; Occupational fulfillment"
     },
     {
       id: 8,
@@ -594,7 +585,6 @@ window.SDG_CONTENT = {
       industries: "Finance, advanced manufacturing, tourism, logistics, digital economy, workforce development",
       studyPathways: "Business; Economics; Accountancy; Engineering; Computing; Hospitality; HR",
       careerRoles: "Economist; operations manager; HR executive; business analyst; workforce planner",
-      purposefulIntention: "Occupational fulfillment; Self-sufficiency"
     },
     {
       id: 9,
@@ -606,7 +596,6 @@ window.SDG_CONTENT = {
       industries: "Advanced manufacturing, construction, semiconductors, infrastructure, smart cities, R&D",
       studyPathways: "Engineering; Architecture; Computer Science; Data Science; Materials Science; Design",
       careerRoles: "Engineer; product manager; architect; urban systems analyst; R&D scientist",
-      purposefulIntention: "Occupational fulfillment; Positive impact"
     },
     {
       id: 10,
@@ -618,7 +607,6 @@ window.SDG_CONTENT = {
       industries: "Social policy, inclusive design, accessibility, NGOs, healthcare outreach, public service",
       studyPathways: "Social Work; Psychology; Public Policy; Occupational Therapy; Design; Communications",
       careerRoles: "Case worker; inclusive design specialist; accessibility consultant; outreach coordinator; policy analyst",
-      purposefulIntention: "Service; Positive impact"
     },
     {
       id: 11,
@@ -630,7 +618,6 @@ window.SDG_CONTENT = {
       industries: "Urban planning, architecture, real estate, transport, municipal services, placemaking",
       studyPathways: "Architecture; Urban Planning; Geography; Civil Engineering; Real Estate; Environmental Studies",
       careerRoles: "Urban planner; architect; transport planner; estate manager; sustainability consultant",
-      purposefulIntention: "Positive impact; Service"
     },
     {
       id: 12,
@@ -642,7 +629,6 @@ window.SDG_CONTENT = {
       industries: "Circular economy, waste management, sustainable retail, packaging, procurement, life-cycle assessment",
       studyPathways: "Environmental Science; Industrial Design; Supply Chain; Materials; Business; Chemistry",
       careerRoles: "Sustainability executive; waste systems planner; packaging engineer; procurement analyst; LCA specialist",
-      purposefulIntention: "Internal standards; Positive impact"
     },
     {
       id: 13,
@@ -654,7 +640,6 @@ window.SDG_CONTENT = {
       industries: "Climate policy, carbon markets, risk advisory, adaptation planning, sustainability consulting, insurance",
       studyPathways: "Environmental Policy; Economics; Geography; Engineering; Data Science; Finance",
       careerRoles: "Climate risk analyst; carbon trader; sustainability consultant; policy officer; resilience planner",
-      purposefulIntention: "Positive impact; Persevering"
     },
     {
       id: 14,
@@ -666,7 +651,6 @@ window.SDG_CONTENT = {
       industries: "Marine science, port operations, maritime decarbonisation, aquaculture, conservation, shipping",
       studyPathways: "Marine Science; Environmental Science; Naval Architecture; Engineering; Logistics",
       careerRoles: "Marine biologist; port sustainability officer; maritime engineer; fisheries specialist; ESG manager",
-      purposefulIntention: "Positive impact; Service"
     },
     {
       id: 15,
@@ -678,7 +662,6 @@ window.SDG_CONTENT = {
       industries: "Biodiversity conservation, landscape design, ecology, parks management, environmental education",
       studyPathways: "Biological Sciences; Environmental Studies; Landscape Architecture; Geography; Education",
       careerRoles: "Ecologist; landscape architect; park manager; conservation educator; arborist",
-      purposefulIntention: "Positive impact; Inner peace"
     },
     {
       id: 16,
@@ -690,7 +673,6 @@ window.SDG_CONTENT = {
       industries: "Law, governance, compliance, cybersecurity, audit, public administration",
       studyPathways: "Law; Political Science; Public Policy; Accountancy; Cybersecurity; Criminology",
       careerRoles: "Lawyer; compliance officer; auditor; policy officer; investigator; governance analyst",
-      purposefulIntention: "Internal standards; Service"
     },
     {
       id: 17,
@@ -702,7 +684,6 @@ window.SDG_CONTENT = {
       industries: "International development, diplomacy, sustainability consulting, trade, partnerships, NGOs",
       studyPathways: "International Relations; Economics; Public Policy; Business; Communications; Sustainability",
       careerRoles: "Foreign service officer; partnership manager; development specialist; consultant; programme manager",
-      purposefulIntention: "Relationships; Service; Positive impact"
     }
   ]
 

@@ -35,7 +35,6 @@
       stage2Intro:     "These are the goals you liked the most. Pick the three that matter most to you.",
       stage2TooFewMsg: "You picked only a few. Go back and choose some more that you like.",
       stage3Heading:   "What Matters to You",
-      stage3Subheading: "Here's what your choices say about you, and the jobs they could lead to.",
       summaryKicker:   "The things you care about, in your own words.",
       reflectionEyebrow: "Something to think about",
       stage2bSubheading: "For each of your top 3, why does it matter to you? Pick up to 3.",

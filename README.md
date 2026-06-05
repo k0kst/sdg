@@ -170,7 +170,6 @@ These tables show the common things you might change and where students see them
 | `name` | The goal's title | Goal cards, everywhere |
 | `industries` | The list of related industries | On each goal card |
 | `careerRoles` | The list of related jobs | On each goal card |
-| `purposefulIntention` | The short "what drives this" note | On each goal card |
 | `singaporeContext` | The default "In Singapore…" sentence (used unless a level file overrides it) | Goal cards |
 | `purposes` (the big list) | The names/descriptions of all 16 sources of purpose | The purpose-tagging step |
 | `references` | The references and declaration list | Bottom of the first page |
