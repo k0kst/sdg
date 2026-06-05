@@ -47,6 +47,20 @@ DIST="dist"
 echo "regenerated data/content.js (preview = all levels)"
 
 # ------------------------------------------------------------
+# 1b. Stamp the asset cache-busting version into index.html.
+# ------------------------------------------------------------
+# index.html loads the content scripts as data/...js?v=<VER>. Browsers cache
+# those files under that exact URL, so the page only picks up content changes
+# when <VER> changes. Deriving <VER> from a checksum of the content files means
+# it updates automatically whenever (and only when) the content changes — no
+# manual bumping. cksum is POSIX, so this works on Linux and macOS alike.
+VER="$(cat data/sdg-content.js data/content.js | cksum | cut -d' ' -f1)"
+tmp="$(mktemp)"
+sed -E "s#(data/(sdg-content|content)\.js)\?v=[A-Za-z0-9]+#\1?v=$VER#g" index.html > "$tmp"
+mv "$tmp" index.html
+echo "stamped index.html asset version v=$VER"
+
+# ------------------------------------------------------------
 # 2. Assemble the ZIPs.
 # ------------------------------------------------------------
 rm -rf "$DIST"
