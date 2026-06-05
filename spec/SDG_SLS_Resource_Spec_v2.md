@@ -1,4 +1,4 @@
-# Specification Document: SDG Career Explorer
+# Specification Document: SDG Pathways Explorer
 ## Interactive SLS Resource — ECG/CCE Module for JC1 Students
 
 **Version:** 2.0
@@ -401,7 +401,7 @@ Implementation: use `navigator.clipboard.writeText()` with a try-catch fallback 
 
 Button states: default > "Copying..." > "Copied!" (green tick). Resets to default after 3 seconds.
 
-After copying, show inline confirmation: *"Copied! Paste this into your reflection journal or share it with your ECG counsellor."*
+After copying, show inline confirmation: *"Copied! Paste this into your reflection journal or share it with your teacher, parent or ECG counsellor."* (Primary drops the counsellor: *"…share it with your teacher or parent."*)
 
 ### 10.7 Restart Confirmation Modal
 
@@ -427,7 +427,7 @@ The application script reads from `window.SDG_CONTENT` and never hardcodes conte
 
 ```javascript
 // ============================================================
-// SDG Career Explorer — Editable Content File
+// SDG Pathways Explorer — Editable Content File
 // ============================================================
 // Edit this file to update any SDG content.
 // Do not change the variable name (window.SDG_CONTENT) or
@@ -465,7 +465,7 @@ window.SDG_CONTENT = {
     stage3CopyBtn:      "Copy My Results",
     stage3CopyingBtn:   "Copying...",
     stage3CopiedBtn:    "Copied!",
-    stage3CopyConfirm:  "Copied! Paste this into your reflection journal or share it with your ECG counsellor.",
+    stage3CopyConfirm:  "Copied! Paste this into your reflection journal or share it with your teacher, parent or ECG counsellor.",
     stage3RestartBtn:   "Start Over",
 
     restartTitle:       "Are you sure you want to start over?",

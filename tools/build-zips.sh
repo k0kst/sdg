@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================
-# Build the SDG Career Explorer release ZIPs.
+# Build the SDG Pathways Explorer release ZIPs.
 # ============================================================
 # Architecture
 #   index.html + data/sdg-content.js are the shared BASE, identical in every

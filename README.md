@@ -1,4 +1,4 @@
-# SDG Career Explorer
+# SDG Pathways Explorer
 
 A self-contained, single-page web app that helps students explore the UN
 Sustainable Development Goals and connect them to career interests. It runs

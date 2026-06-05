@@ -1,6 +1,6 @@
 # Building the three age-group versions
 
-The SDG Career Explorer ships as **three separate ZIPs** (Primary, Secondary,
+The SDG Pathways Explorer ships as **three separate ZIPs** (Primary, Secondary,
 Pre-University). They all share the same code; only the content differs.
 
 ## How it fits together

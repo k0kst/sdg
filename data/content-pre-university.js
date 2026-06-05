@@ -1,5 +1,5 @@
 // ============================================================
-// SDG Career Explorer — PRE-UNIVERSITY (ages 17–20) content
+// SDG Pathways Explorer — PRE-UNIVERSITY (ages 17–20) content
 // ============================================================
 // Loaded after data/sdg-content.js. Holds the content unique to
 // the pre-university level: the formal goal descriptions, the

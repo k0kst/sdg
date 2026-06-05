@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1A4F8A">
-<title>SDG Career Explorer</title>
+<title>SDG Pathways Explorer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   SDG Career Explorer — Inline Styles
+   SDG Pathways Explorer — Inline Styles
    ============================================================ */
 
 :root {
@@ -1401,7 +1401,7 @@ button.tray-slot { cursor: pointer; }
   size: A4 portrait;
   margin: 14mm;
   @top-left   { content: none; }
-  @top-center { content: "SDG Career Explorer"; font-family: Arial, sans-serif; font-size: 9pt; color: #555555; }
+  @top-center { content: "SDG Pathways Explorer"; font-family: Arial, sans-serif; font-size: 9pt; color: #555555; }
   @top-right  { content: none; }
   @bottom-left  { content: none; }
   @bottom-center { content: none; }
@@ -1678,7 +1678,7 @@ button.tray-slot { cursor: pointer; }
 <script src="data/content.js?v=6"></script>
 <script>
 /* ============================================================
-   SDG Career Explorer — Application Logic
+   SDG Pathways Explorer — Application Logic
    ============================================================ */
 (function () {
   'use strict';
@@ -2069,14 +2069,14 @@ button.tray-slot { cursor: pointer; }
 
     if (appState.currentStage === 'mode') {
       labelGroup.innerHTML =
-        '<div class="header-stage-label">SDG Career Explorer</div>' +
+        '<div class="header-stage-label">SDG Pathways Explorer</div>' +
         '<div style="font-size:14px;font-weight:500;color:#4A4A5A;">An MOE ECG activity</div>';
       return;
     }
 
     if (appState.currentStage === 'landing') {
       labelGroup.innerHTML =
-        '<div class="header-stage-label">SDG Career Explorer</div>' +
+        '<div class="header-stage-label">SDG Pathways Explorer</div>' +
         '<div style="font-size:14px;font-weight:500;color:#4A4A5A;">An MOE ECG activity</div>';
       return;
     }
@@ -2429,7 +2429,7 @@ button.tray-slot { cursor: pointer; }
   }
 
   function renderSection(label, body) {
-    // Skip empty sections (e.g. study pathways hidden in primary mode).
+    // Skip empty sections (e.g. a goal with no entries, or a field a mode omits).
     if (Array.isArray(body) ? body.length === 0 : !body) return '';
     var bodyHtml;
     if (Array.isArray(body)) {
@@ -2446,7 +2446,7 @@ button.tray-slot { cursor: pointer; }
   }
 
   function renderSpotlightSection(label, body) {
-    // Skip empty sections (e.g. study pathways hidden in primary mode).
+    // Skip empty sections (e.g. a goal with no entries, or a field a mode omits).
     if (Array.isArray(body) ? body.length === 0 : !body) return '';
     var bodyHtml;
     if (Array.isArray(body)) {
@@ -3335,14 +3335,14 @@ button.tray-slot { cursor: pointer; }
     titleBlock.className = 'pdf-title-block';
     var dateStr = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
     titleBlock.innerHTML =
-      '<div class="pdf-brand">SDG Explorer</div>' +
+      '<div class="pdf-brand">SDG Pathways Explorer</div>' +
       '<div class="pdf-doc-title">Your Purpose Compass</div>' +
       '<div class="pdf-date">' + escapeHtml(dateStr) + '</div>';
     document.body.insertBefore(titleBlock, document.body.firstChild);
 
     var footer = document.createElement('div');
     footer.className = 'pdf-footer';
-    footer.textContent = 'Generated ' + dateStr + ' · SDG Explorer';
+    footer.textContent = 'Generated ' + dateStr + ' · SDG Pathways Explorer';
     document.body.appendChild(footer);
 
     var cleanup = function () {
