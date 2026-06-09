@@ -1,45 +1,62 @@
 // ============================================================
-// SDG Career Explorer — Editable Content File
+// SDG Pathways Explorer — Base Content File
 // ============================================================
-// Edit this file to update any SDG content.
-// Do not change the variable name (window.SDG_CONTENT) or
-// the field names — the application depends on them.
+// This is the SHARED base. It holds content that is identical
+// across all age levels (goal names, colours, icons, themes,
+// industries, career roles, Singapore context, the purpose
+// structure, references and universal UI strings).
+//
+// Level-specific phrasing lives in separate override files,
+// loaded AFTER this one:
+//   data/content-pre-university.js
+//   data/content-secondary.js
+//   data/content-primary.js
+// Each registers itself onto window.SDG_CONTENT.modes.overrides.
+//
+// Do not change the variable name (window.SDG_CONTENT) or the
+// field names — the application depends on them.
 // ============================================================
 
 window.SDG_CONTENT = {
 
   // -- Resource-level copy ----------------------------------
+  // These are the default (pre-university) UI strings. Level files
+  // override only the keys whose wording differs.
   ui: {
     landingTitle:       "What Kind of World Do You Want to Build?",
     landingSubtitle:    "Discover how your interests connect to global goals, and the careers that make them happen.",
     landingStep1:       "Read through the 17 UN Sustainable Development Goals",
     landingStep2:       "Sort each one by how much it interests you",
     landingStep3:       "Pick your top 3 and see what careers might be waiting for you",
+    landingModeLabel:   "Choose your level",
     landingCta:         "Let's Begin",
+    landingBackBtn:     "Change level",
+    navBackBtn:         "Back",
+
+    modeSelectTitle:    "Who's exploring today?",
+    modeSelectSubtitle: "Pick the level that fits you to get started.",
+    modeSelectContinueBtn: "Continue",
 
     stage1Heading:      "Which of these feel like yours?",
     stage1NextBtn:      "Next Step",
-    stage1NotDoneMsg:   "You've sorted {x} of 17. Keep going — there are a few left.",
+    cardNumberPrefix:   "SDG ",
     stage1TallyLabel:   ["Very interested", "Slightly interested", "Not at all"],
 
     stage2Heading:      "Pick your top 3",
     stage2Intro:        "These are the goals you leaned into. Choose the three that matter most — they'll shape your career reflection.",
     stage2BackLink:     "Change My Sorting",
     stage2NudgeLink:    "Want to include a different goal? Go back to change your categories.",
-    stage2FullMsg:      "You've already picked 3. Tap one to swap it out.",
     stage2TooFewMsg:    "You've been picky — go back and flag a few more that caught your eye.",
     stage2ResultsBtn:   "See My Results",
 
     stage3Heading:      "Your Purpose Compass",
-    stage3Subheading:   "Here's what your choices say about you, and where they might take you.",
-    stage3BackLink:     "Change My Top 3",
     stage3CopyBtn:      "Copy to clipboard",
     stage3CopyingBtn:   "Copying...",
     stage3CopiedBtn:    "Copied!",
-    stage3CopyConfirm:  "Copied! Paste this into your reflection journal or share it with your ECG counsellor.",
+    stage3CopyConfirm:  "Copied! Paste this into your reflection journal or share it with your teacher, parent or ECG counsellor.",
     stage3PdfBtn:       "Download as PDF",
     stage3RestartBtn:   "Start Over",
-    stage3SaveBanner:   "Your results live only in this browser. Download as PDF or copy to clipboard to keep them — or share with your ECG counsellor.",
+    stage3SaveBanner:   "Your results live only in this browser. Download as PDF or copy to clipboard to keep them. Share what you have learnt with your teacher, parent or ECG counsellor!",
 
     restartTitle:       "Are you sure you want to start over?",
     restartBody:        "Your choices will not be saved.",
@@ -49,8 +66,6 @@ window.SDG_CONTENT = {
     orientationNudge:   "This activity looks best in landscape mode. Try rotating your device!",
     orientationDismiss: "Got it",
 
-    cardReadMore:       "Read more",
-    cardReadLess:       "Read less",
     cardAddBtn:         "Add to My Top 3",
     cardRemoveBtn:      "Remove from My Top 3",
     cardBackSortBtn:    "Back to Sorting",
@@ -95,20 +110,18 @@ window.SDG_CONTENT = {
       very:     "Very interested"
     },
 
-    rankLabels: ["1st", "2nd", "3rd"],
-
     sectionLabels: {
       industries:          "Potential Industries",
-      studyPathways:       "Potential Study Pathways",
+      studyPathways:       "Relevant Courses",
       careerRoles:         "Potential Career Roles",
-      purposefulIntention: "What Drives This",
       singaporeContext:    "📍 In Singapore"
     }
   },
 
   // -- Sources of Purpose -----------------------------------
   // Grouped into 4 categories. Each source has { id, name, description }.
-  // Used in Stage 2b (tagging) and referenced by id in appState.purposeTags.
+  // Names/descriptions here are the default (pre-university) wording; level
+  // files override the wording by source id. Used in Stage 2b (tagging).
   purposes: [
     {
       category: "Personal Development",
@@ -159,7 +172,10 @@ window.SDG_CONTENT = {
     ]
   },
 
-  // -- SDG data ---------------------------------------------
+  // -- SDG data (shared fields) -----------------------------
+  // Each goal's `description` and `studyPathways` differ by level, so they are
+  // NOT defined here — they come from the level files. Everything below is
+  // shared across all levels (primary overrides `singaporeContext` only).
   sdgs: [
     {
       id: 1,
@@ -167,12 +183,9 @@ window.SDG_CONTENT = {
       color: "#E5243B",
       iconFile: "E-WEB-Goal-01.png",
       theme: "people",
-      description: "End poverty in all its forms everywhere.",
       singaporeContext: "ComLink+ supports lower-income families toward stability, self-reliance and social mobility. Public housing and grants remain a major social foundation.",
       industries: ["Social Services", "Public Administration", "Real Estate", "Social Services"],
-      studyPathways: ["Social Work", "Sociology", "Public Policy", "Community Development", "Urban Studies", "Business for Social Impact"],
       careerRoles: ["Social Worker", "Community Development Executive", "Policy Manager", "Programme Executive", "Estate Manager"],
-      purposefulIntention: "Service; Positive impact"
     },
     {
       id: 2,
@@ -180,12 +193,9 @@ window.SDG_CONTENT = {
       color: "#DDA63A",
       iconFile: "E-WEB-Goal-02.png",
       theme: "people",
-      description: "End hunger, achieve food security and improved nutrition, and promote sustainable agriculture.",
       singaporeContext: "30 by 30 aims to produce 30% of Singapore's nutritional needs locally and sustainably by 2030, supported by agri-food innovation and capability building.",
       industries: ["Agrifood", "Manufacturing", "Logistics", "Research and Development"],
-      studyPathways: ["Food Science", "Environmental Science", "Biotechnology", "Engineering", "Supply Chain", "Business"],
       careerRoles: ["Food Technologist", "Farm Nursery Worker", "Aquarist", "Quality Assurance Manager", "Logistics Solutions Analyst"],
-      purposefulIntention: "Positive impact; Physical health"
     },
     {
       id: 3,
@@ -193,12 +203,9 @@ window.SDG_CONTENT = {
       color: "#4C9F38",
       iconFile: "E-WEB-Goal-03.png",
       theme: "people",
-      description: "Ensure healthy lives and promote well-being for all at all ages.",
       singaporeContext: "Healthier SG shifts healthcare towards preventive care through family doctors, healthier lifestyles and stronger primary care.",
       industries: ["Healthcare", "Research and Development", "Sports and Recreation", "Manufacturing", "Social Services"],
-      studyPathways: ["Medicine", "Nursing", "Pharmacy", "Public Health", "Psychology", "Sport Science", "Biomedical Science"],
       careerRoles: ["Doctor", "Nurse", "Pharmacist", "Environmental Health and Safety Specialist", "Psychologist", "Health Data Analyst"],
-      purposefulIntention: "Physical health; Service"
     },
     {
       id: 4,
@@ -206,12 +213,9 @@ window.SDG_CONTENT = {
       color: "#C5192D",
       iconFile: "E-WEB-Goal-04.png",
       theme: "people",
-      description: "Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all.",
       singaporeContext: "MOE's Eco Stewardship Programme and lifelong learning through SkillsFuture show the push for relevant, future-ready and sustainability-linked education.",
       industries: ["Education", "Information and Communications Technology", "Design", "Social Services", "Human Resources"],
-      studyPathways: ["Education", "Psychology", "English and History", "Learning Sciences", "HR", "Communications", "Computer Science for Edtech"],
       careerRoles: ["Teacher", "Curriculum Lead", "Learning Technology Designer", "Education Methods Adviser", "Training Manager"],
-      purposefulIntention: "Self-improvement; Positive impact"
     },
     {
       id: 5,
@@ -219,12 +223,9 @@ window.SDG_CONTENT = {
       color: "#FF3A21",
       iconFile: "E-WEB-Goal-05.png",
       theme: "people",
-      description: "Achieve gender equality and empower all women and girls.",
       singaporeContext: "The White Paper on Singapore Women's Development sets actions to empower, protect and uplift women in a fairer and more inclusive society.",
       industries: ["Human Resource", "Legal Services", "Public Administration", "Consulting", "Social Services", "Marketing"],
-      studyPathways: ["Law", "Sociology", "Psychology", "HR", "Communications", "Public Policy", "Business"],
       careerRoles: ["HR Partner", "Employee Experience and Relations Manager", "Policy Officer", "Legal Associate", "Counsellor"],
-      purposefulIntention: "Internal standards; Positive impact"
     },
     {
       id: 6,
@@ -232,12 +233,9 @@ window.SDG_CONTENT = {
       color: "#26BDE2",
       iconFile: "E-WEB-Goal-06.png",
       theme: "planet",
-      description: "Ensure availability and sustainable management of water and sanitation for all.",
       singaporeContext: "Singapore's Four National Taps (local catchment, imported water, NEWater and desalination) anchor water security and sanitation planning.",
       industries: ["Environmental Services", "Energy and Power", "Research and Development"],
-      studyPathways: ["Civil and Environmental Engineering", "Chemistry", "Sustainability", "Data and Automation", "Life Sciences"],
       careerRoles: ["Water Works Manager", "Process Engineer", "Geologist", "Environmental Officer", "Laboratory Technician"],
-      purposefulIntention: "Positive impact; Service"
     },
     {
       id: 7,
@@ -245,12 +243,9 @@ window.SDG_CONTENT = {
       color: "#FCC30B",
       iconFile: "E-WEB-Goal-07.png",
       theme: "prosperity",
-      description: "Ensure access to affordable, reliable, sustainable and modern energy for all.",
       singaporeContext: "Under the Green Plan, Singapore targets large-scale solar deployment, greener power systems, storage and cleaner-energy transport.",
       industries: ["Energy and Power", "Environmental Services", "Land Transport"],
-      studyPathways: ["Electrical Engineering", "Mechanical Engineering", "Energy Studies", "Physics", "Data Science", "Economics"],
       careerRoles: ["Energy Engineer", "Solar Engineer", "Network Development Engineer", "Sustainability Officer", "Energy Trading Manager"],
-      purposefulIntention: "Positive impact; Occupational fulfillment"
     },
     {
       id: 8,
@@ -258,12 +253,9 @@ window.SDG_CONTENT = {
       color: "#A21942",
       iconFile: "E-WEB-Goal-08.png",
       theme: "prosperity",
-      description: "Promote sustained, inclusive and sustainable economic growth, full and productive employment, and decent work for all.",
       singaporeContext: "Singapore links inclusive growth to upskilling and better jobs through tripartism, SkillsFuture and the Progressive Wage Model.",
       industries: ["Finance", "Manufacturing", "Tourism", "Logistics", "Information and Communications Technology", "Human Resource"],
-      studyPathways: ["Business", "Economics", "Accountancy", "Engineering", "Computing", "Hospitality", "HR"],
       careerRoles: ["Economist", "Operations Manager", "Human Resource", "Business Analyst", "Talent Manager"],
-      purposefulIntention: "Occupational fulfillment; Self-sufficiency"
     },
     {
       id: 9,
@@ -271,12 +263,9 @@ window.SDG_CONTENT = {
       color: "#FD6925",
       iconFile: "E-WEB-Goal-09.png",
       theme: "prosperity",
-      description: "Build resilient infrastructure, promote inclusive and sustainable industrialisation and foster innovation.",
       singaporeContext: "Green buildings, sustainable industry and innovation are major Green Plan themes, including greener infrastructure and industrial transformation.",
       industries: ["Manufacturing", "Built Environment", "Electronics", "Built Environment", "Information and Communications Technology", "Research and Development"],
-      studyPathways: ["Engineering", "Architecture", "Computer Science", "Data Science", "Materials Science", "Design"],
       careerRoles: ["Engineer", "Product Manager", "Architect", "Town Planner"],
-      purposefulIntention: "Occupational fulfillment; Positive impact"
     },
     {
       id: 10,
@@ -284,12 +273,9 @@ window.SDG_CONTENT = {
       color: "#DD1367",
       iconFile: "E-WEB-Goal-10.png",
       theme: "people",
-      description: "Reduce inequality within and among countries.",
       singaporeContext: "Policies such as ComLink+, social mobility efforts and targeted support aim to reduce disadvantage across income and life outcomes.",
       industries: ["Public Administration", "Design", "Social Services", "Healthcare"],
-      studyPathways: ["Social Work", "Psychology", "Public Policy", "Occupational Therapy", "Design", "Communications"],
       careerRoles: ["Social Work Associate", "Design Researcher", "Design Facilitator", "Volunteer Manager", "Policy Manager"],
-      purposefulIntention: "Service; Positive impact"
     },
     {
       id: 11,
@@ -297,12 +283,9 @@ window.SDG_CONTENT = {
       color: "#FD9D24",
       iconFile: "E-WEB-Goal-11.png",
       theme: "prosperity",
-      description: "Make cities and human settlements inclusive, safe, resilient and sustainable.",
       singaporeContext: "HDB's town planning, green buildings, transit targets and park access reflect Singapore's push for liveable, inclusive and low-carbon communities.",
       industries: ["Built Environment", "Architecture", "Real Estate", "Land Transport", "Public Administration", "Design"],
-      studyPathways: ["Architecture", "Urban Planning", "Geography", "Civil Engineering", "Real Estate", "Environmental Studies"],
       careerRoles: ["Town Planner", "Building Architect", "Network Planning Manager", "Estate Manager", "Sustainability Officer"],
-      purposefulIntention: "Positive impact; Service"
     },
     {
       id: 12,
@@ -310,12 +293,9 @@ window.SDG_CONTENT = {
       color: "#BF8B2E",
       iconFile: "E-WEB-Goal-12.png",
       theme: "prosperity",
-      description: "Ensure sustainable consumption and production patterns.",
       singaporeContext: "The Green Plan targets lower waste to landfill, greener buildings and more circular resource use across households and industry.",
       industries: ["Environmental Services", "Retail", "Manufacturing", "Wholesale Trade", "Research and Development"],
-      studyPathways: ["Environmental Science", "Industrial Design", "Supply Chain", "Materials", "Business", "Chemistry"],
       careerRoles: ["Sustainability Officer", "Cleaning Operations Manager", "Manufacturing Engineer", "Procurement Engineer", "Environmental Health and Safety Specialist"],
-      purposefulIntention: "Internal standards; Positive impact"
     },
     {
       id: 13,
@@ -323,12 +303,9 @@ window.SDG_CONTENT = {
       color: "#3F7E44",
       iconFile: "E-WEB-Goal-13.png",
       theme: "planet",
-      description: "Take urgent action to combat climate change and its impacts.",
       singaporeContext: "Singapore has a carbon tax, emissions reduction targets and a net-zero-by-2050 goal, alongside coastal and heat resilience work.",
       industries: ["Public Administration", "Financial Services", "Consulting", "Environmental Services"],
-      studyPathways: ["Environmental Policy", "Economics", "Geography", "Engineering", "Data Science", "Finance"],
       careerRoles: ["Risk Manager", "Energy Trader", "Sustainability Officer", "Policy Manager", "Strategic Planning Manager"],
-      purposefulIntention: "Positive impact; Persevering"
     },
     {
       id: 14,
@@ -336,12 +313,9 @@ window.SDG_CONTENT = {
       color: "#0A97D9",
       iconFile: "E-WEB-Goal-14.png",
       theme: "planet",
-      description: "Conserve and sustainably use the oceans, seas and marine resources for sustainable development.",
       singaporeContext: "Singapore is greening maritime activity and strengthening coastal resilience, including cleaner harbour craft and maritime decarbonisation.",
       industries: ["Research and Development", "Sea Transport", "Marine and Offshore Engineering", "Agrifood", "Environmental Services"],
-      studyPathways: ["Marine Science", "Environmental Science", "Naval Architecture", "Engineering", "Logistics"],
       careerRoles: ["Marine Biologist", "Port Operations Manager", "Marine Engineer", "Aquarist", "Sustainability Officer"],
-      purposefulIntention: "Positive impact; Service"
     },
     {
       id: 15,
@@ -349,12 +323,9 @@ window.SDG_CONTENT = {
       color: "#56C02B",
       iconFile: "E-WEB-Goal-15.png",
       theme: "planet",
-      description: "Protect, restore and promote sustainable use of terrestrial ecosystems, sustainably manage forests, combat desertification, and halt biodiversity loss.",
       singaporeContext: "City in Nature includes more trees, nature parks and improved access to green spaces.",
       industries: ["Environmental Services", "Design", "Research and Development", "Facilities and Maintenance Services", "Education"],
-      studyPathways: ["Biological Sciences", "Environmental Studies", "Landscape Architecture", "Geography", "Education"],
       careerRoles: ["Biologist", "Landscape Architect", "Park Manager", "Outdoor Adventure Educator", "Arborist"],
-      purposefulIntention: "Positive impact; Inner peace"
     },
     {
       id: 16,
@@ -362,12 +333,9 @@ window.SDG_CONTENT = {
       color: "#00689D",
       iconFile: "E-WEB-Goal-16.png",
       theme: "peace",
-      description: "Promote peaceful and inclusive societies for sustainable development, provide access to justice for all and build effective, accountable and inclusive institutions at all levels.",
       singaporeContext: "Strong institutions are supported by anti-corruption enforcement, public trust, rule of law and transparent governance systems.",
       industries: ["Legal", "Public Administration", "Information and Communications Technology", "Accounting"],
-      studyPathways: ["Law", "Political Science", "Public Policy", "Accountancy", "Cybersecurity", "Criminology"],
       careerRoles: ["Lawyer", "Compliance Officer", "Auditor", "Policy Manager", "Forensics Specialist", "Operational Risk Analyst"],
-      purposefulIntention: "Internal standards; Service"
     },
     {
       id: 17,
@@ -375,13 +343,25 @@ window.SDG_CONTENT = {
       color: "#19486A",
       iconFile: "E-WEB-Goal-17.png",
       theme: "peace",
-      description: "Strengthen the means of implementation and revitalise the Global Partnership for Sustainable Development.",
       singaporeContext: "Singapore advances regional and international cooperation through the Singapore Cooperation Programme and public-private partnerships.",
       industries: ["Public Administration", "Consulting", "Wholesale Trade", "Administrative and Business Support Services", "Social Services"],
-      studyPathways: ["International Relations", "Economics", "Public Policy", "Business", "Communications", "Sustainability"],
       careerRoles: ["Foreign Diplomatic Representative", "Business Development Manager", "Consultant", "Programme Manager"],
-      purposefulIntention: "Relationships; Service; Positive impact"
     }
-  ]
+  ],
+
+  // -- Age modes --------------------------------------------
+  // Mode metadata. The actual per-level content (descriptions, study pathways,
+  // purpose wording, reflections, UI tweaks) is registered onto
+  // modes.overrides by the three level files loaded after this one.
+  modes: {
+    order: ["primary", "secondary", "pre-university"],
+    defaultMode: "pre-university",
+    labels: {
+      "primary":        { title: "Primary" },
+      "secondary":      { title: "Secondary" },
+      "pre-university": { title: "Pre-University" }
+    },
+    overrides: {}
+  }
 
 }; // end window.SDG_CONTENT

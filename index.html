@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1A4F8A">
-<title>SDG Career Explorer</title>
+<title>SDG Pathways Explorer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   SDG Career Explorer — Inline Styles
+   SDG Pathways Explorer — Inline Styles
    ============================================================ */
 
 :root {
@@ -50,7 +50,10 @@
 
 /* ---- Reset & base ---- */
 *, *::before, *::after { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; overflow-x: hidden; }
+/* overflow-x:clip stops horizontal overflow WITHOUT making body a scroll
+   container (which `hidden` does — that silently breaks the sticky header on
+   mobile). `hidden` stays first as a fallback for browsers without `clip`. */
+html, body { margin: 0; padding: 0; overflow-x: hidden; overflow-x: clip; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   font-family: var(--font-body);
@@ -74,13 +77,6 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   border-radius: 4px;
 }
 
-/* Screen-reader only text */
-.sr-only {
-  position: absolute; width: 1px; height: 1px;
-  padding: 0; margin: -1px; overflow: hidden;
-  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
-}
-
 /* ---- Layout shell ---- */
 .app-shell { min-height: 100vh; display: flex; flex-direction: column; }
 
@@ -101,9 +97,6 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   padding: 6px 20px;
   display: flex; align-items: center; gap: 14px;
   min-height: 44px;
-}
-.header-logo {
-  height: 28px; width: auto; flex-shrink: 0;
 }
 .header-label-group {
   display: flex; flex-direction: column; gap: 1px;
@@ -148,11 +141,13 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   text-decoration: underline; text-underline-offset: 3px;
 }
 .header-back-link:hover { color: #14416F; }
-
+#header-nav-slot { flex-shrink: 0; }
+.header-back-link.header-back-nav::before {
+  content: "\2190"; margin-right: 6px; font-weight: 600;
+}
 @media (max-width: 767px) {
   .app-header, .app-header-inner { min-height: 56px; }
   .app-header-inner { padding: 8px 14px; gap: 10px; }
-  .header-logo { height: 28px; }
   .header-stage-label { font-size: 11px; }
   .header-progress { font-size: 13px; gap: 8px; }
   .header-progress-bar { max-width: 120px; height: 6px; }
@@ -223,7 +218,7 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   margin-bottom: 32px; padding: 0; list-style: none;
 }
 .landing-step {
-  display: flex; align-items: flex-start; gap: 14px;
+  display: flex; align-items: center; gap: 14px;
   background: #FFFFFF; border: 1px solid rgba(26, 79, 138, 0.1);
   padding: 14px 16px; border-radius: 10px;
 }
@@ -235,6 +230,42 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   font-weight: 700; font-size: 15px;
 }
 .landing-step-text { font-size: 15px; line-height: 1.5; }
+.mode-selector { margin-bottom: 28px; }
+.mode-options { display: flex; flex-wrap: wrap; gap: 10px; }
+.mode-option {
+  flex: 1 1 140px;
+  display: flex; align-items: center; justify-content: center;
+  background: #FFFFFF; border: 1.5px solid rgba(26, 79, 138, 0.18);
+  padding: 12px 16px; border-radius: 10px; cursor: pointer;
+  text-align: center; min-height: 48px;
+  transition: border-color var(--dur-fast) ease-out, background-color var(--dur-fast) ease-out, transform var(--dur-fast) ease-out;
+}
+.mode-option:hover { border-color: #1A4F8A; transform: translateY(-1px); }
+.mode-option.is-selected {
+  background: #1A4F8A; border-color: #1A4F8A;
+  box-shadow: 0 2px 6px rgba(26, 79, 138, 0.25);
+}
+.mode-option.is-selected .mode-option-title { color: #FFFFFF; }
+.mode-option-title { font-size: 15px; font-weight: 700; color: #1A1A2E; }
+
+/* Dedicated level-selection page (shown before the landing page) */
+.mode-page {
+  max-width: 560px; margin: 0 auto;
+  display: flex; flex-direction: column; align-items: stretch;
+  padding-top: 24px;
+}
+.mode-page-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 5vw, 40px); line-height: 1.15; margin-bottom: 10px;
+}
+.mode-page-sub { font-size: 17px; color: #3A3A4A; margin-bottom: 28px; line-height: 1.6; }
+.mode-page .mode-selector { margin-bottom: 28px; }
+.mode-continue { align-self: flex-start; }
+.landing-cta:disabled {
+  opacity: 0.45; cursor: not-allowed; box-shadow: none;
+}
+.landing-cta:disabled:hover { background: #1A4F8A; transform: none; }
+
 .landing-cta {
   background: #1A4F8A; color: #FFFFFF; border: none;
   padding: 14px 32px; border-radius: 10px;
@@ -512,7 +543,6 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
 .sdg-card.is-open .sdg-card-chev { transform: rotate(180deg); }
 @media (prefers-reduced-motion: reduce) { .sdg-card-chev { transition: none; } }
 
-.sdg-card-body { flex: 1; display: flex; flex-direction: column; gap: 12px; }
 .sdg-card-top {
   display: flex; align-items: center; gap: 12px;
 }
@@ -537,31 +567,9 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   margin-top: 2px;
 }
 
-.sdg-card-badge {
-  display: inline-flex; align-items: center;
-  padding: 4px 10px; border-radius: 999px;
-  font-size: 12px; font-weight: 600;
-  align-self: flex-start;
-}
-.sdg-card-badge::before {
-  content: ''; width: 8px; height: 8px; border-radius: 50%;
-  margin-right: 6px; background: currentColor;
-}
-.badge-not      { background: var(--cat-not-tint);      color: #4A4A52; }
-.badge-slightly { background: var(--cat-slightly-tint); color: #7A5200; }
-.badge-very     { background: var(--cat-very-tint);     color: #2A5A18; }
-
 .sdg-card-desc {
   font-size: 14px; color: #3A3A4A; line-height: 1.5;
   margin: 0;
-}
-
-.sdg-card-readmore {
-  background: transparent; border: none;
-  color: #1A4F8A; font-weight: 600; font-size: 14px;
-  padding: 6px 0; align-self: flex-start;
-  text-decoration: underline; text-underline-offset: 3px;
-  min-height: 36px;
 }
 
 .sdg-card-expanded {
@@ -612,13 +620,6 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   background: #1A4F8A; color: #FFFFFF; outline: none;
 }
 .stage2-back .stage2-back-arrow { font-size: 16px; line-height: 1; }
-
-.select-counter {
-  background: #E8EFF7; color: #1A4F8A;
-  padding: 6px 12px; border-radius: 999px;
-  font-size: 13px; font-weight: 700;
-  display: inline-block;
-}
 
 .sdg-card.selectable .sdg-card-select-btn {
   margin-top: auto;
@@ -683,17 +684,12 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
 /* ============================================================
    SUMMARY STAGE
    ============================================================ */
-.summary-header-row {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
-}
 .summary-heading {
   font-family: var(--font-display);
   font-size: 36px; font-weight: 600;
   letter-spacing: -0.015em; line-height: 1.1;
   margin-bottom: 6px; color: var(--ink);
 }
-.summary-sub { font-size: 16px; color: var(--ink-2); margin: 0; }
 @media (max-width: 767px) {
   .summary-heading { font-size: 26px; }
 }
@@ -837,10 +833,13 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
 }
 .action-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 12px 22px; border-radius: 10px; border: none;
   font-size: 15px; font-weight: 600; min-height: 48px;
   transition: background-color var(--dur-mid) ease-out, color var(--dur-mid) ease-out;
 }
+/* Icon shows only on the fixed mobile action bar; desktop shows the text label. */
+.action-btn-icon { display: none; width: 22px; height: 22px; flex: 0 0 auto; }
 .action-btn.primary { background: #1A4F8A; color: #FFFFFF; }
 .action-btn.primary:hover { background: #14416F; }
 .action-btn.secondary {
@@ -951,14 +950,6 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   font-size: 14px; color: #3A3A4A; line-height: 1.5;
   margin: 6px 0 0;
 }
-.tag-goal-progress {
-  display: inline-block;
-  background: #E8EFF7; color: #1A4F8A;
-  padding: 4px 12px; border-radius: 999px;
-  font-size: 12px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.04em;
-  margin-bottom: 10px;
-}
 .tag-prompt {
   font-size: 16px; color: #1A1A2E; font-weight: 600;
   margin: 4px 0 14px;
@@ -1028,10 +1019,6 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0 0 0.5em; line-height: 1.25; }
   font-size: 13px; font-weight: 600; color: inherit;
   line-height: 1.2;
 }
-.purpose-item-desc {
-  display: none;
-}
-
 /* Description panel for the active selection */
 .purpose-active-desc {
   background: #F5F2EA; border-left: 3px solid #1A4F8A;
@@ -1257,6 +1244,34 @@ button.tray-slot { cursor: pointer; }
   .browse-stack-stage:not(.is-review) {
     padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
   }
+
+  /* Summary page: pin the action buttons to the bottom (same pattern as the
+     sorting zone bar) and collapse them to icons so all three fit one row. */
+  .action-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 30;
+    margin: 0;
+    gap: 8px;
+    padding: 10px 14px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.10);
+    flex-wrap: nowrap;
+  }
+  .action-bar .action-btn { flex: 1 1 0; padding: 12px 8px; }
+  .action-bar .action-btn-icon { display: block; }
+  /* Hide the text label but keep it for screen readers. */
+  .action-bar .action-btn-label {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+  /* Keep the summary content clear of the fixed bar (and its copy-confirm note). */
+  section[aria-labelledby="stage3-heading"] {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* ---- Summary hero ---- */
@@ -1324,7 +1339,7 @@ button.tray-slot { cursor: pointer; }
   size: A4 portrait;
   margin: 14mm;
   @top-left   { content: none; }
-  @top-center { content: "SDG Career Explorer"; font-family: Arial, sans-serif; font-size: 9pt; color: #555555; }
+  @top-center { content: "SDG Pathways Explorer"; font-family: Arial, sans-serif; font-size: 9pt; color: #555555; }
   @top-right  { content: none; }
   @bottom-left  { content: none; }
   @bottom-center { content: none; }
@@ -1566,6 +1581,7 @@ button.tray-slot { cursor: pointer; }
   <!-- Sticky header -->
   <header class="app-header" role="banner">
     <div class="app-header-inner" id="header-inner">
+      <div id="header-nav-slot"></div>
       <div class="header-label-group" id="header-label-group"></div>
       <div id="header-action-slot"></div>
     </div>
@@ -1592,10 +1608,15 @@ button.tray-slot { cursor: pointer; }
   </div>
 </div>
 
-<script src="data/sdg-content.js"></script>
+<!-- Shared base content (goal data + the modes registry). Identical in every build. -->
+<script src="data/sdg-content.js?v=4105062744"></script>
+<!-- Active level pack for THIS build. A single-level ZIP ships one level here;
+     the combined/preview build ships all three (see tools/README.md). The app
+     auto-detects how many levels registered and shows the picker only if 2+. -->
+<script src="data/content.js?v=4105062744"></script>
 <script>
 /* ============================================================
-   SDG Career Explorer — Application Logic
+   SDG Pathways Explorer — Application Logic
    ============================================================ */
 (function () {
   'use strict';
@@ -1606,17 +1627,107 @@ button.tray-slot { cursor: pointer; }
       '<p style="padding:40px;text-align:center;color:#B91C1C;">Content failed to load. Check data/sdg-content.js.</p>';
     return;
   }
-  var UI = CONTENT.ui;
-  var SDGS = CONTENT.sdgs;
-  var SDG_BY_ID = {};
-  SDGS.forEach(function (s) { SDG_BY_ID[s.id] = s; });
+  // -- Effective content (mode-aware) -----------------------
+  // These bindings are populated by resolveContent(mode) and re-assigned
+  // whenever the age mode changes. Every render site reads them by name, so
+  // re-assignment here makes the whole app mode-aware with no call-site edits.
+  var UI, SDGS, SDG_BY_ID, PURPOSES, PURPOSE_BY_ID, REFLECTIONS;
+
+  // -- Inline SVG icons -------------------------------------
+  // Bundled as markup (no extra image files needed). Used on the summary page's
+  // action buttons — labels show on desktop, these icons show on the fixed
+  // mobile action bar. They inherit the button's text colour via currentColor.
+  var ICON_SVG_OPEN = '<svg class="action-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">';
+  var ICON_DOWNLOAD = ICON_SVG_OPEN + '<path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>';
+  var ICON_COPY = ICON_SVG_OPEN + '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  var ICON_RESTART = ICON_SVG_OPEN + '<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v5h-5"/></svg>';
+
+  // -- Age modes --------------------------------------------
+  var MODES = CONTENT.modes || {};
+  var MODE_ORDER = (MODES.order && MODES.order.length) ? MODES.order : ['pre-university'];
+  var DEFAULT_MODE = MODES.defaultMode || MODE_ORDER[MODE_ORDER.length - 1];
+  function isValidMode(m) { return MODE_ORDER.indexOf(m) !== -1; }
+
+  // -- Build shape (single-level vs combined) ---------------
+  // AVAILABLE_MODES = the levels that actually registered a content file in
+  // THIS build. A shipped single-level ZIP includes one content-<level>.js, so
+  // exactly one mode registers and the app boots straight into it with no level
+  // picker. The combined/preview build includes all three, so the picker and
+  // the landing level-switch appear. If nothing registered (content.js missing)
+  // fall back to the default so the app still renders on base content.
+  var AVAILABLE_MODES = MODE_ORDER.filter(function (m) {
+    return MODES.overrides && MODES.overrides[m];
+  });
+  if (!AVAILABLE_MODES.length) AVAILABLE_MODES = [DEFAULT_MODE];
+  var MULTI_MODE = AVAILABLE_MODES.length > 1;
+
+  // Resolves the base content + the active mode's sparse overrides into the
+  // effective UI / SDGS / PURPOSES bindings. Pre-university has no overrides,
+  // so it returns the base content untouched.
+  function resolveContent(mode) {
+    if (!isValidMode(mode)) mode = DEFAULT_MODE;
+    var ov = (MODES.overrides && MODES.overrides[mode]) || {};
+
+    // UI: shallow-merge top-level keys, with a nested merge for the
+    // sectionLabels / categoryLabels sub-objects so a mode can override a
+    // single label without restating the whole object.
+    UI = Object.assign({}, CONTENT.ui, ov.ui || {});
+    if (ov.ui) {
+      if (ov.ui.sectionLabels) UI.sectionLabels = Object.assign({}, CONTENT.ui.sectionLabels, ov.ui.sectionLabels);
+      if (ov.ui.categoryLabels) UI.categoryLabels = Object.assign({}, CONTENT.ui.categoryLabels, ov.ui.categoryLabels);
+    }
+
+    // SDGS: clone each base goal, merge per-id field overrides, then clear any
+    // hidden sections so they disappear from every render path.
+    var sdgOv = ov.sdgs || {};
+    var hidden = ov.hiddenSections || [];
+    SDGS = CONTENT.sdgs.map(function (base) {
+      var o = sdgOv[base.id];
+      var merged = o ? Object.assign({}, base, o) : Object.assign({}, base);
+      hidden.forEach(function (field) { merged[field] = Array.isArray(base[field]) ? [] : ''; });
+      return merged;
+    });
+    SDG_BY_ID = {};
+    SDGS.forEach(function (s) { SDG_BY_ID[s.id] = s; });
+
+    // PURPOSES: clone groups, merge per-source-id overrides.
+    var purpOv = ov.purposes || {};
+    PURPOSES = (CONTENT.purposes || []).map(function (group) {
+      return {
+        category: group.category,
+        sources: (group.sources || []).map(function (src) {
+          var o = purpOv[src.id];
+          return o ? Object.assign({}, src, o) : src;
+        })
+      };
+    });
+    PURPOSE_BY_ID = {};
+    PURPOSES.forEach(function (group) {
+      (group.sources || []).forEach(function (src) { PURPOSE_BY_ID[src.id] = src; });
+    });
+
+    // Reflection prompt text for this mode (keyed by template id).
+    REFLECTIONS = ov.reflections || {};
+
+    // Card heights differ by mode (e.g. secondary's longer course names wrap
+    // taller), so drop the cached max height — it is re-measured per mode.
+    if (typeof appState !== 'undefined' && appState) appState._stackCardHeight = null;
+  }
+
+  // Mode-aware goal label, e.g. "SDG 12" (default) or "Goal 12" (primary).
+  function goalNum(id) { return (UI.cardNumberPrefix || 'SDG ') + id; }
 
   // -- State ------------------------------------------------
+  // SDG ids never change across modes, so the initial sortings map and the
+  // storage fingerprint build from the base content directly.
   var initialSortings = {};
-  SDGS.forEach(function (s) { initialSortings[s.id] = null; });
+  CONTENT.sdgs.forEach(function (s) { initialSortings[s.id] = null; });
 
   var appState = {
-    currentStage: 'landing',
+    // Single-level builds skip the picker and boot into their one level;
+    // combined builds open on the picker with no level chosen yet.
+    currentStage: MULTI_MODE ? 'mode' : 'landing',
+    mode: MULTI_MODE ? null : AVAILABLE_MODES[0],
     sdgSortings: Object.assign({}, initialSortings),
     topThreeOrder: [],
     expandedCards: new Set(),
@@ -1635,12 +1746,22 @@ button.tray-slot { cursor: pointer; }
     resortingId: null
   };
 
+  // Populate UI/SDGS/PURPOSES for the default mode up front, so all top-level
+  // init code (modal text, orientation nudge, etc.) sees resolved content.
+  // loadPersistedState() may re-resolve later if a saved mode is restored.
+  resolveContent(appState.mode);
+
   // -- Persistence ------------------------------------------
   // Spec §2 originally forbade browser storage (SLS sandbox).
   // Override: persist state across refresh; degrade silently if storage is blocked.
   var STORAGE_KEY = 'sdg-career-explorer:v1';
-  var STORAGE_SCHEMA_VERSION = 1;
-  var STORAGE_CONTENT_FINGERPRINT = SDGS.map(function (s) { return s.id; }).sort().join(',');
+  var STORAGE_SCHEMA_VERSION = 2;
+  // Fingerprint folds in the active mode so progress saved under a different
+  // age mode (or with a changed SDG set) is invalidated on load.
+  function buildFingerprint() {
+    return appState.mode + '|' + CONTENT.sdgs.map(function (s) { return s.id; }).sort().join(',');
+  }
+  var STORAGE_CONTENT_FINGERPRINT;
   var _storageCache; // null = blocked, undefined = not yet probed
 
   function _pickStorage() {
@@ -1669,6 +1790,7 @@ button.tray-slot { cursor: pointer; }
       savedAt: Date.now(),
       data: {
         currentStage: appState.currentStage,
+        mode: appState.mode,
         sdgSortings: appState.sdgSortings,
         topThreeOrder: appState.topThreeOrder,
         expandedCards: Array.from(appState.expandedCards),
@@ -1693,11 +1815,22 @@ button.tray-slot { cursor: pointer; }
     var parsed;
     try { parsed = JSON.parse(raw); }
     catch (e) { try { store.removeItem(STORAGE_KEY); } catch (_) {} return false; }
+    // Resolve the saved mode (and recompute the fingerprint) before the guard,
+    // so a normal reload keeps progress and only a genuine mode change discards it.
+    var d = (parsed && parsed.data) || {};
+    // In a single-level build the mode is fixed to this build's level, so a save
+    // written under any other level fails the fingerprint guard below and is
+    // discarded. In a combined build the saved mode is honoured.
+    var savedMode = MULTI_MODE ? d.mode : AVAILABLE_MODES[0];
+    if (parsed && isValidMode(savedMode)) {
+      appState.mode = savedMode;
+      resolveContent(appState.mode);
+      STORAGE_CONTENT_FINGERPRINT = buildFingerprint();
+    }
     if (!parsed || parsed.v !== STORAGE_SCHEMA_VERSION || parsed.fp !== STORAGE_CONTENT_FINGERPRINT) {
       try { store.removeItem(STORAGE_KEY); } catch (_) {}
       return false;
     }
-    var d = parsed.data || {};
     if (d.currentStage) appState.currentStage = d.currentStage;
     if (d.sdgSortings) appState.sdgSortings = Object.assign({}, initialSortings, d.sdgSortings);
     if (Array.isArray(d.topThreeOrder)) appState.topThreeOrder = d.topThreeOrder.filter(function (id) { return !!SDG_BY_ID[id]; });
@@ -1710,6 +1843,9 @@ button.tray-slot { cursor: pointer; }
     if (Array.isArray(d.browseHistory)) appState.browseHistory = d.browseHistory;
     if (typeof d.rankingMode === 'boolean') appState.rankingMode = d.rankingMode;
     if (Array.isArray(d.rankingProgress)) appState.rankingProgress = d.rankingProgress;
+    // Single-level builds have no picker, so a restored 'mode' stage has nowhere
+    // to go — land on the intro instead.
+    if (!MULTI_MODE && appState.currentStage === 'mode') appState.currentStage = 'landing';
     return true;
   }
 
@@ -1719,7 +1855,7 @@ button.tray-slot { cursor: pointer; }
   }
 
   function resetState() {
-    appState.currentStage = 'landing';
+    appState.currentStage = MULTI_MODE ? 'mode' : 'landing';
     appState.sdgSortings = Object.assign({}, initialSortings);
     appState.topThreeOrder = [];
     appState.expandedCards = new Set();
@@ -1736,7 +1872,20 @@ button.tray-slot { cursor: pointer; }
     appState.rankingProgress = [];
     appState.resortingId = null;
     // orientationNudgeDismissed is session-scoped per spec 7.x (dismiss "for the session")
+    // appState.mode is intentionally NOT reset here, so restarting the activity
+    // keeps the chosen age band.
     clearPersistedState();
+  }
+
+  // Switch age mode (landing only). Re-resolves content and clears progress,
+  // since sortings/tags belong to the previous mode's phrasing.
+  function setMode(mode) {
+    if (!isValidMode(mode) || mode === appState.mode) return;
+    resetState();
+    appState.mode = mode;
+    resolveContent(mode);
+    STORAGE_CONTENT_FINGERPRINT = buildFingerprint();
+    persistState();
   }
 
   // -- Top-3 mutation helpers -------------------------------
@@ -1773,12 +1922,7 @@ button.tray-slot { cursor: pointer; }
   }
 
   // -- Purpose lookup helpers -------------------------------
-  var PURPOSES = (CONTENT.purposes && CONTENT.purposes.length) ? CONTENT.purposes : [];
-  var PURPOSE_BY_ID = {};
-  PURPOSES.forEach(function (group) {
-    (group.sources || []).forEach(function (src) { PURPOSE_BY_ID[src.id] = src; });
-  });
-
+  // PURPOSES / PURPOSE_BY_ID are populated by resolveContent() (mode-aware).
   function getPurposeTagsFor(sdgId) {
     return appState.purposeTags[sdgId] || [];
   }
@@ -1828,20 +1972,6 @@ button.tray-slot { cursor: pointer; }
     toastTimer = setTimeout(function () { el.classList.remove('visible'); }, 3000);
   }
 
-  function sortedCount() {
-    var c = 0;
-    for (var i = 1; i <= 17; i++) if (appState.sdgSortings[i]) c++;
-    return c;
-  }
-
-  function countByCategory(cat) {
-    var c = 0;
-    for (var i = 1; i <= 17; i++) if (appState.sdgSortings[i] === cat) c++;
-    return c;
-  }
-
-  function pad2(n) { return n < 10 ? '0' + n : String(n); }
-
   function computePool() {
     var very = [], slightly = [];
     SDGS.forEach(function (s) {
@@ -1859,10 +1989,18 @@ button.tray-slot { cursor: pointer; }
     var actionSlot = document.getElementById('header-action-slot');
     labelGroup.innerHTML = '';
     actionSlot.innerHTML = '';
+    renderBackButton();
+
+    if (appState.currentStage === 'mode') {
+      labelGroup.innerHTML =
+        '<div class="header-stage-label">SDG Pathways Explorer</div>' +
+        '<div style="font-size:14px;font-weight:500;color:#4A4A5A;">An MOE ECG activity</div>';
+      return;
+    }
 
     if (appState.currentStage === 'landing') {
       labelGroup.innerHTML =
-        '<div class="header-stage-label">SDG Career Explorer</div>' +
+        '<div class="header-stage-label">SDG Pathways Explorer</div>' +
         '<div style="font-size:14px;font-weight:500;color:#4A4A5A;">An MOE ECG activity</div>';
       return;
     }
@@ -1924,13 +2062,6 @@ button.tray-slot { cursor: pointer; }
           '<span>' + escapeHtml(progressText) + '</span>' +
         '</div>';
 
-      var tagBackBtn = document.createElement('button');
-      tagBackBtn.type = 'button';
-      tagBackBtn.className = 'header-back-link';
-      tagBackBtn.textContent = UI.stage2bBackLink;
-      tagBackBtn.addEventListener('click', function () { goToStage('select'); });
-      actionSlot.appendChild(tagBackBtn);
-
       var currentSdgId = currentTagSdgId();
       var tagsCount = currentSdgId ? getPurposeTagsFor(currentSdgId).length : 0;
       var isFinal = tagIdx >= 2;
@@ -1950,15 +2081,44 @@ button.tray-slot { cursor: pointer; }
       labelGroup.innerHTML =
         '<div class="header-stage-label">Step 3 of 3</div>' +
         '<div style="font-size:14px;font-weight:600;color:#1A4F8A;">' + escapeHtml(UI.stage3Heading) + '</div>';
-
-      var backBtn = document.createElement('button');
-      backBtn.type = 'button';
-      backBtn.className = 'header-back-link';
-      backBtn.textContent = UI.stage3BackLink;
-      backBtn.addEventListener('click', function () { goToStage('select'); });
-      actionSlot.appendChild(backBtn);
       return;
     }
+  }
+
+  // Back navigation lives in a fixed left slot and is consistent across stages:
+  // each section steps back to the previous one (and the purpose stage steps
+  // back through its three goals first). Single-level builds have no level
+  // picker, so the intro has no Back. The right-hand CTA still drives "Next".
+  function renderBackButton() {
+    var navSlot = document.getElementById('header-nav-slot');
+    if (!navSlot) return;
+    navSlot.innerHTML = '';
+    var stage = appState.currentStage;
+    var handler = null;
+    var label = UI.navBackBtn || 'Back';
+
+    if (stage === 'landing') {
+      if (!MULTI_MODE) return;                 // nothing to go back to
+      handler = function () { goToStage('mode'); };
+      label = UI.landingBackBtn || 'Change level';
+    } else if (stage === 'browse') {
+      handler = function () { goToStage('landing'); };
+    } else if (stage === 'select') {
+      handler = function () { goToStage('browse'); };
+    } else if (stage === 'tag') {
+      handler = handleTagBack;                 // steps goal 3 -> 2 -> 1 -> select
+    } else if (stage === 'summary') {
+      handler = function () { goToStage('select'); };
+    } else {
+      return;                                  // 'mode' (and unknown) have no Back
+    }
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'header-back-link header-back-nav';
+    btn.textContent = label;
+    btn.addEventListener('click', handler);
+    navSlot.appendChild(btn);
   }
 
   // -- Stage renderers --------------------------------------
@@ -1980,6 +2140,9 @@ button.tray-slot { cursor: pointer; }
         '</details>';
     }
 
+    // Note: the level is chosen once on the dedicated mode-select page and is
+    // not switchable here — the landing page intentionally has no level picker.
+
     app.innerHTML =
       '<section class="landing" aria-labelledby="landing-title">' +
         '<div class="landing-copy">' +
@@ -1999,6 +2162,42 @@ button.tray-slot { cursor: pointer; }
       '</section>';
     document.getElementById('landing-cta').addEventListener('click', function () {
       goToStage('browse');
+    });
+  }
+
+  function renderModeSelect() {
+    app.className = 'stage-container stage-transition';
+    var chosen = isValidMode(appState.mode);
+    var modeBtns = AVAILABLE_MODES.map(function (m) {
+      var lbl = (MODES.labels && MODES.labels[m]) || { title: m };
+      var sel = (appState.mode === m);
+      return '<button type="button" class="mode-option' + (sel ? ' is-selected' : '') + '" ' +
+        'data-mode="' + escapeHtml(m) + '" role="radio" aria-checked="' + (sel ? 'true' : 'false') + '">' +
+          '<span class="mode-option-title">' + escapeHtml(lbl.title) + '</span>' +
+      '</button>';
+    }).join('');
+
+    app.innerHTML =
+      '<section class="mode-page" aria-labelledby="mode-title">' +
+        '<h1 id="mode-title" class="mode-page-title">' + escapeHtml(UI.modeSelectTitle || 'Choose your level') + '</h1>' +
+        (UI.modeSelectSubtitle ? '<p class="mode-page-sub">' + escapeHtml(UI.modeSelectSubtitle) + '</p>' : '') +
+        '<div class="mode-selector">' +
+          '<div class="mode-options" role="radiogroup" aria-label="' + escapeHtml(UI.landingModeLabel || 'Choose your level') + '">' + modeBtns + '</div>' +
+        '</div>' +
+        '<button type="button" class="landing-cta mode-continue" id="mode-continue"' + (chosen ? '' : ' disabled') + '>' +
+          escapeHtml(UI.modeSelectContinueBtn || 'Continue') + '</button>' +
+      '</section>';
+
+    Array.prototype.forEach.call(document.querySelectorAll('.mode-option'), function (btn) {
+      btn.addEventListener('click', function () {
+        var m = btn.getAttribute('data-mode');
+        if (m === appState.mode) return;
+        setMode(m);
+        renderModeSelect();
+      });
+    });
+    document.getElementById('mode-continue').addEventListener('click', function () {
+      if (isValidMode(appState.mode)) goToStage('landing');
     });
   }
 
@@ -2045,7 +2244,7 @@ button.tray-slot { cursor: pointer; }
     if (resorting) {
       var rs = SDG_BY_ID[appState.resortingId];
       var currentRsCat = appState.sdgSortings[appState.resortingId];
-      html += '<div class="resort-pill" aria-live="polite">Re-sorting SDG ' + rs.id + '</div>';
+      html += '<div class="resort-pill" aria-live="polite">Re-sorting ' + goalNum(rs.id) + '</div>';
       html += '<div class="card-stack">' + renderStackFrontCard(rs) + '</div>';
       html += '<div class="zone-row" role="group" aria-label="Re-sort this goal">' +
         '<button type="button" class="zone zone-not' + (currentRsCat === 'not' ? ' is-current' : '') +
@@ -2123,11 +2322,11 @@ button.tray-slot { cursor: pointer; }
 
   function renderStackFrontCard(s) {
     return '<article class="stack-card front" style="--sdg-color:' + s.color + ';" ' +
-      'data-id="' + s.id + '" aria-label="SDG ' + s.id + ', ' + escapeHtml(s.name) + '">' +
+      'data-id="' + s.id + '" aria-label="' + goalNum(s.id) + ', ' + escapeHtml(s.name) + '">' +
       '<div class="sdg-card-top">' +
         '<span class="sdg-card-icon" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
         '<div class="sdg-card-title-group">' +
-          '<div class="sdg-card-number">SDG ' + s.id + '</div>' +
+          '<div class="sdg-card-number">' + goalNum(s.id) + '</div>' +
           '<div class="sdg-card-name">' + escapeHtml(s.name) + '</div>' +
         '</div>' +
       '</div>' +
@@ -2146,7 +2345,7 @@ button.tray-slot { cursor: pointer; }
       '<div class="sdg-card-top">' +
         '<span class="sdg-card-icon" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
         '<div class="sdg-card-title-group">' +
-          '<div class="sdg-card-number">SDG ' + s.id + '</div>' +
+          '<div class="sdg-card-number">' + goalNum(s.id) + '</div>' +
           '<div class="sdg-card-name">' + escapeHtml(s.name) + '</div>' +
         '</div>' +
       '</div>' +
@@ -2154,6 +2353,8 @@ button.tray-slot { cursor: pointer; }
   }
 
   function renderSection(label, body) {
+    // Skip empty sections (e.g. a goal with no entries, or a field a mode omits).
+    if (Array.isArray(body) ? body.length === 0 : !body) return '';
     var bodyHtml;
     if (Array.isArray(body)) {
       bodyHtml = '<ul class="chip-list">' +
@@ -2169,6 +2370,8 @@ button.tray-slot { cursor: pointer; }
   }
 
   function renderSpotlightSection(label, body) {
+    // Skip empty sections (e.g. a goal with no entries, or a field a mode omits).
+    if (Array.isArray(body) ? body.length === 0 : !body) return '';
     var bodyHtml;
     if (Array.isArray(body)) {
       bodyHtml = '<ul class="chip-list">' +
@@ -2362,7 +2565,7 @@ button.tray-slot { cursor: pointer; }
 
       if (filled) {
         slotsHtml += '<button type="button" class="' + cls + '" data-slot-id="' + sid + '" ' +
-          'aria-label="SDG ' + ss.id + ' ' + escapeHtml(ss.name) + '">' +
+          'aria-label="' + goalNum(ss.id) + ' ' + escapeHtml(ss.name) + '">' +
           '<span class="slot-rank" aria-hidden="true">' + rankLabel + '</span>' +
           '<span class="slot-icon" style="background:' + ss.color + ';" aria-hidden="true">' + ss.id + '</span>' +
           '<span class="slot-name">' + escapeHtml(ss.name) + '</span>' +
@@ -2531,13 +2734,13 @@ button.tray-slot { cursor: pointer; }
     if (full) classes.push('disabled-slot');
 
     var html = '<article class="' + classes.join(' ') + '" data-id="' + s.id + '" ' +
-               'style="--sdg-color:' + s.color + ';" aria-label="SDG ' + s.id + ', ' + escapeHtml(s.name) + '">';
+               'style="--sdg-color:' + s.color + ';" aria-label="' + goalNum(s.id) + ', ' + escapeHtml(s.name) + '">';
 
     html += '<button type="button" class="sdg-card-header" data-action="toggle-expand" ' +
       'aria-expanded="' + (expanded ? 'true' : 'false') + '" aria-controls="expand-' + s.id + '">' +
       '<span class="sdg-card-icon" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
       '<div class="sdg-card-title-group">' +
-        '<div class="sdg-card-number">SDG ' + s.id + '</div>' +
+        '<div class="sdg-card-number">' + goalNum(s.id) + '</div>' +
         '<div class="sdg-card-name">' + escapeHtml(s.name) + '</div>' +
         '<p class="sdg-card-desc">' + escapeHtml(s.description) + '</p>' +
       '</div>' +
@@ -2636,7 +2839,7 @@ button.tray-slot { cursor: pointer; }
       '<article class="tag-sdg-strip" style="--sdg-color:' + s.color + ';">' +
         '<span class="tag-sdg-icon-wrap" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
         '<div class="tag-sdg-title-group">' +
-          '<div class="tag-sdg-number">SDG ' + s.id + '</div>' +
+          '<div class="tag-sdg-number">' + goalNum(s.id) + '</div>' +
           '<div class="tag-sdg-name" id="tag-sdg-name">' + escapeHtml(s.name) + '</div>' +
           '<p class="tag-sdg-desc">' + escapeHtml(s.description) + '</p>' +
         '</div>' +
@@ -2766,32 +2969,30 @@ button.tray-slot { cursor: pointer; }
     }
   }
 
+  // Mirror of handleTagNext for the header Back control: step back through the
+  // three goals, then out to the Top 3 selection once at the first goal.
+  function handleTagBack() {
+    if (appState.currentTaggingIndex > 0) {
+      appState.currentTaggingIndex -= 1;
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      render();
+    } else {
+      goToStage('select');
+    }
+  }
+
   // -- Reflection engine ------------------------------------
+  // Condition logic lives here (first match wins); the prompt TEXT for each id
+  // is supplied per level in the content files (resolved into REFLECTIONS).
   var REFLECTION_TEMPLATES = [
-    { id: 'all-planet',
-      when: function (s) { return s.themes.planet === 3; },
-      text: "All three of your picks centre on the living world — ecosystems, climate, the systems that hold life. That's rare focus. What does {top1Name} ask of you that the other two don't?" },
-    { id: 'all-people',
-      when: function (s) { return s.themes.people === 3; },
-      text: "Your three are all about people — their dignity, learning, health, equity. You're drawn to the human scale. Which of the three feels closest to people you actually know?" },
-    { id: 'all-prosperity',
-      when: function (s) { return s.themes.prosperity === 3; },
-      text: "You've chosen three goals about how economies and cities should work. You think in systems. Where does your picture of a fair economy start — with {top1Name}?" },
-    { id: 'partnerships',
-      when: function (s) { return s.topThreeIds.indexOf(17) !== -1; },
-      text: "SDG 17 shows up for you — partnerships, the connective tissue. That's often a sign you see yourself in the joins between groups, not inside any one of them." },
-    { id: 'people-planet',
-      when: function (s) { return s.themes.people >= 1 && s.themes.planet >= 1 && s.themes.prosperity === 0; },
-      text: "You're holding people and planet together — two priorities that sometimes pull against each other. Where do you think the real trade-off is, for you?" },
-    { id: 'service-heavy',
-      when: function (s) { return s.dominantPurposeCategory === 'Achievement & Impact' && s.totalPurposeTags >= 3; },
-      text: "Across your three, the purposes you keep returning to are about making an impact. That's a strong signal. Is there a moment — recent or remembered — that started that pull?" },
-    { id: 'competence-heavy',
-      when: function (s) { return s.dominantPurposeCategory === 'Personal Development' && s.totalPurposeTags >= 3; },
-      text: "Your picks tilt toward growth — becoming someone who can make a difference. Which of your three gives you the most room to do that, and why?" },
-    { id: 'fallback',
-      when: function () { return true; },
-      text: "Your three picks aren't obvious neighbours — which is interesting. What's the thread you'd use to tie them together, if you had to?" }
+    { id: 'all-planet',       when: function (s) { return s.themes.planet === 3; } },
+    { id: 'all-people',       when: function (s) { return s.themes.people === 3; } },
+    { id: 'all-prosperity',   when: function (s) { return s.themes.prosperity === 3; } },
+    { id: 'partnerships',     when: function (s) { return s.topThreeIds.indexOf(17) !== -1; } },
+    { id: 'people-planet',    when: function (s) { return s.themes.people >= 1 && s.themes.planet >= 1 && s.themes.prosperity === 0; } },
+    { id: 'service-heavy',    when: function (s) { return s.dominantPurposeCategory === 'Achievement & Impact' && s.totalPurposeTags >= 3; } },
+    { id: 'competence-heavy', when: function (s) { return s.dominantPurposeCategory === 'Personal Development' && s.totalPurposeTags >= 3; } },
+    { id: 'fallback',         when: function () { return true; } }
   ];
 
   function computeReflectionSignals() {
@@ -2851,7 +3052,9 @@ button.tray-slot { cursor: pointer; }
       if (REFLECTION_TEMPLATES[i].when(signals)) { template = REFLECTION_TEMPLATES[i]; break; }
     }
     if (!template) return '';
-    var text = template.text.replace('{top1Name}', top1Name);
+    var rawText = (REFLECTIONS && REFLECTIONS[template.id]) || '';
+    if (!rawText) return '';
+    var text = rawText.replace('{top1Name}', top1Name);
     return '<div class="reflection-card">' +
       '<p class="reflection-eyebrow">' + escapeHtml(UI.reflectionEyebrow || 'A thought to sit with') + '</p>' +
       '<p class="reflection-body">' + escapeHtml(text) + '</p>' +
@@ -2867,7 +3070,7 @@ button.tray-slot { cursor: pointer; }
     var triptychHtml = top.map(function (id) {
       var s = SDG_BY_ID[id];
       return '<div class="hero-sdg-chip" style="background:' + s.color + ';">' +
-        '<span class="hero-sdg-chip-num">SDG ' + s.id + '</span>' +
+        '<span class="hero-sdg-chip-num">' + goalNum(s.id) + '</span>' +
         '<img class="hero-sdg-chip-icon" src="icons/' + encodeURIComponent(s.iconFile) + '" alt="">' +
       '</div>';
     }).join('');
@@ -2906,11 +3109,16 @@ button.tray-slot { cursor: pointer; }
       '</div>' +
     '</div>';
 
-    // Section D: Actions
+    // Section D: Actions. Each button carries an inline-SVG icon (shown on the
+    // fixed mobile bar) plus a text label (shown on desktop) — see ICON_*
+    // constants and the .action-btn CSS.
     html += '<div class="action-bar">' +
-      '<button type="button" class="action-btn primary" id="pdf-btn">' + escapeHtml(UI.stage3PdfBtn || 'Download as PDF') + '</button>' +
-      '<button type="button" class="action-btn secondary" id="copy-btn">' + escapeHtml(UI.stage3CopyBtn) + '</button>' +
-      '<button type="button" class="action-btn ghost" id="restart-btn">' + escapeHtml(UI.stage3RestartBtn) + '</button>' +
+      '<button type="button" class="action-btn primary" id="pdf-btn">' +
+        ICON_DOWNLOAD + '<span class="action-btn-label">' + escapeHtml(UI.stage3PdfBtn || 'Download as PDF') + '</span></button>' +
+      '<button type="button" class="action-btn secondary" id="copy-btn">' +
+        ICON_COPY + '<span class="action-btn-label">' + escapeHtml(UI.stage3CopyBtn) + '</span></button>' +
+      '<button type="button" class="action-btn ghost" id="restart-btn">' +
+        ICON_RESTART + '<span class="action-btn-label">' + escapeHtml(UI.stage3RestartBtn) + '</span></button>' +
     '</div>';
     html += '<div class="copy-confirm" id="copy-confirm">' + escapeHtml(UI.stage3CopyConfirm) + '</div>';
 
@@ -2924,11 +3132,11 @@ button.tray-slot { cursor: pointer; }
   }
 
   function renderSpotlight(s, idx) {
-    return '<article class="spotlight-card" style="--sdg-color:' + s.color + ';" aria-label="SDG ' + s.id + ', ' + escapeHtml(s.name) + '">' +
+    return '<article class="spotlight-card" style="--sdg-color:' + s.color + ';" aria-label="' + goalNum(s.id) + ', ' + escapeHtml(s.name) + '">' +
       '<div class="spotlight-header-strip">' +
         '<span class="spotlight-icon-wrap" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
         '<div class="spotlight-title-group">' +
-          '<div class="spotlight-number">SDG ' + s.id + '</div>' +
+          '<div class="spotlight-number">' + goalNum(s.id) + '</div>' +
           '<div class="spotlight-name">' + escapeHtml(s.name) + '</div>' +
         '</div>' +
       '</div>' +
@@ -2968,7 +3176,7 @@ button.tray-slot { cursor: pointer; }
         var s = SDG_BY_ID[id];
         return '<span class="sort-chip" style="--sdg-color:' + s.color + ';">' +
           '<span class="sort-chip-icon" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
-          '<span class="sort-chip-text">SDG ' + s.id + ': ' + escapeHtml(s.name) + '</span>' +
+          '<span class="sort-chip-text">' + goalNum(s.id) + ': ' + escapeHtml(s.name) + '</span>' +
         '</span>';
       }).join('');
     }
@@ -3001,10 +3209,10 @@ button.tray-slot { cursor: pointer; }
         var s = SDG_BY_ID[id];
         return '<button type="button" class="sort-chip is-editable" ' +
           'data-sdg-id="' + s.id + '" ' +
-          'aria-label="SDG ' + s.id + ' ' + escapeHtml(s.name) + '. Tap to re-sort this goal." ' +
+          'aria-label="' + goalNum(s.id) + ' ' + escapeHtml(s.name) + '. Tap to re-sort this goal." ' +
           'style="--sdg-color:' + s.color + ';">' +
           '<span class="sort-chip-icon" aria-hidden="true"><img src="icons/' + encodeURIComponent(s.iconFile) + '" alt=""></span>' +
-          '<span class="sort-chip-text">SDG ' + s.id + ': ' + escapeHtml(s.name) + '</span>' +
+          '<span class="sort-chip-text">' + goalNum(s.id) + ': ' + escapeHtml(s.name) + '</span>' +
         '</button>';
       }).join('');
     }
@@ -3025,7 +3233,7 @@ button.tray-slot { cursor: pointer; }
     lines.push('Top 3:');
     appState.topThreeOrder.forEach(function (id, i) {
       var s = SDG_BY_ID[id];
-      lines.push((i + 1) + '. SDG ' + s.id + ' ' + s.name);
+      lines.push((i + 1) + '. ' + goalNum(s.id) + ' ' + s.name);
     });
 
     var purposeLines = [];
@@ -3033,7 +3241,7 @@ button.tray-slot { cursor: pointer; }
       var pids = getPurposeTagsFor(id);
       if (!pids.length) return;
       var names = pids.map(function (pid) { return (PURPOSE_BY_ID[pid] || {}).name; }).filter(Boolean);
-      if (names.length) purposeLines.push('- SDG ' + id + ': ' + names.join(', '));
+      if (names.length) purposeLines.push('- ' + goalNum(id) + ': ' + names.join(', '));
     });
     if (purposeLines.length) {
       lines.push('');
@@ -3051,14 +3259,14 @@ button.tray-slot { cursor: pointer; }
     titleBlock.className = 'pdf-title-block';
     var dateStr = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
     titleBlock.innerHTML =
-      '<div class="pdf-brand">SDG Explorer</div>' +
+      '<div class="pdf-brand">SDG Pathways Explorer</div>' +
       '<div class="pdf-doc-title">Your Purpose Compass</div>' +
       '<div class="pdf-date">' + escapeHtml(dateStr) + '</div>';
     document.body.insertBefore(titleBlock, document.body.firstChild);
 
     var footer = document.createElement('div');
     footer.className = 'pdf-footer';
-    footer.textContent = 'Generated ' + dateStr + ' · SDG Explorer';
+    footer.textContent = 'Generated ' + dateStr + ' · SDG Pathways Explorer';
     document.body.appendChild(footer);
 
     var cleanup = function () {
@@ -3074,22 +3282,28 @@ button.tray-slot { cursor: pointer; }
     var btn = document.getElementById('copy-btn');
     var confirmBox = document.getElementById('copy-confirm');
     if (!btn) return;
-    btn.textContent = UI.stage3CopyingBtn;
+    // Update only the label span so the inline icon (mobile bar) survives;
+    // fall back to the whole button if the span is absent.
+    var setLabel = function (t) {
+      var lbl = btn.querySelector('.action-btn-label');
+      if (lbl) lbl.textContent = t; else btn.textContent = t;
+    };
+    setLabel(UI.stage3CopyingBtn);
     btn.disabled = true;
 
     var text = buildCopyText();
     var done = function (success) {
       if (success) {
-        btn.textContent = UI.stage3CopiedBtn;
+        setLabel(UI.stage3CopiedBtn);
         btn.classList.add('copied');
         if (confirmBox) confirmBox.classList.add('show');
         setTimeout(function () {
-          btn.textContent = UI.stage3CopyBtn;
+          setLabel(UI.stage3CopyBtn);
           btn.classList.remove('copied');
           btn.disabled = false;
         }, 3000);
       } else {
-        btn.textContent = UI.stage3CopyBtn;
+        setLabel(UI.stage3CopyBtn);
         btn.disabled = false;
         if (confirmBox) {
           confirmBox.textContent = 'Copy failed. Please select and copy manually.';
@@ -3128,17 +3342,18 @@ button.tray-slot { cursor: pointer; }
     }
   }
 
-  // -- Restart modal ----------------------------------------
+  // -- Confirm modal ----------------------------------------
+  // Generic in-page confirm dialog (no window.confirm, blocked in SLS iframes).
+  // Used for Start Over and for switching level (both discard progress).
   var modal = document.getElementById('restart-modal');
-  document.getElementById('modal-title').textContent = UI.restartTitle;
-  document.getElementById('modal-body').textContent = UI.restartBody;
-  document.getElementById('modal-cancel').textContent = UI.restartCancelBtn;
-  document.getElementById('modal-confirm').textContent = UI.restartConfirmBtn;
+  var lastFocusedBeforeModal = null;
+  var modalOnConfirm = null;
   document.getElementById('modal-cancel').addEventListener('click', closeRestartModal);
   document.getElementById('modal-confirm').addEventListener('click', function () {
+    var fn = modalOnConfirm;
+    modalOnConfirm = null;
     closeRestartModal();
-    resetState();
-    render();
+    if (fn) fn();
   });
   modal.addEventListener('click', function (e) {
     if (e.target === modal) closeRestartModal();
@@ -3147,8 +3362,13 @@ button.tray-slot { cursor: pointer; }
     if (e.key === 'Escape' && modal.classList.contains('show')) closeRestartModal();
   });
 
-  var lastFocusedBeforeModal = null;
-  function openRestartModal() {
+  function openConfirmModal(opts) {
+    opts = opts || {};
+    document.getElementById('modal-title').textContent = opts.title || '';
+    document.getElementById('modal-body').textContent = opts.body || '';
+    document.getElementById('modal-cancel').textContent = opts.cancelLabel || UI.restartCancelBtn || 'Cancel';
+    document.getElementById('modal-confirm').textContent = opts.confirmLabel || UI.restartConfirmBtn || 'OK';
+    modalOnConfirm = opts.onConfirm || null;
     lastFocusedBeforeModal = document.activeElement;
     modal.classList.add('show');
     setTimeout(function () {
@@ -3156,7 +3376,17 @@ button.tray-slot { cursor: pointer; }
       if (btn) btn.focus();
     }, 50);
   }
+  function openRestartModal() {
+    openConfirmModal({
+      title: UI.restartTitle,
+      body: UI.restartBody,
+      confirmLabel: UI.restartConfirmBtn,
+      cancelLabel: UI.restartCancelBtn,
+      onConfirm: function () { resetState(); render(); }
+    });
+  }
   function closeRestartModal() {
+    modalOnConfirm = null;
     modal.classList.remove('show');
     if (lastFocusedBeforeModal && lastFocusedBeforeModal.focus) lastFocusedBeforeModal.focus();
   }
@@ -3176,15 +3406,19 @@ button.tray-slot { cursor: pointer; }
     renderHeader();
     renderTop3Tray();
     switch (appState.currentStage) {
+      case 'mode':    renderModeSelect(); break;
       case 'landing': renderLanding(); break;
       case 'browse':  renderBrowse();  break;
       case 'select':  renderSelect();  break;
       case 'tag':     renderTag();     break;
       case 'summary': renderSummary(); break;
-      default:        renderLanding();
+      default:        renderModeSelect();
     }
   }
 
+  // Initialise the fingerprint for the default mode before loading saved state.
+  // loadPersistedState() re-resolves content + recomputes this if a saved mode exists.
+  STORAGE_CONTENT_FINGERPRINT = buildFingerprint();
   loadPersistedState();
 
   // -- Orientation nudge ------------------------------------
@@ -3218,8 +3452,25 @@ button.tray-slot { cursor: pointer; }
   window.addEventListener('orientationchange', updateOrientationNudge);
   updateOrientationNudge();
 
+  // The web font can finish loading after the first measure, reflowing card
+  // text taller; re-measure once fonts are ready so the zones never overlap.
+  if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === 'function') {
+    document.fonts.ready.then(function () {
+      appState._stackCardHeight = null;
+      if (appState.currentStage === 'browse') render();
+    });
+  }
+
   // -- Boot -------------------------------------------------
+  // The app rebuilds its content (and remembers its stage) on every load, so
+  // the browser's automatic scroll restoration has nothing meaningful to
+  // restore and can leave the page nudged down after a refresh. Disable it and
+  // always start at the top.
+  if ('scrollRestoration' in history) {
+    try { history.scrollRestoration = 'manual'; } catch (e) {}
+  }
   render();
+  window.scrollTo(0, 0);
 })();
 </script>
 
