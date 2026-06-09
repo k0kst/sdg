@@ -1,6 +1,6 @@
 # Building the three age-group versions
 
-The SDG Career Explorer ships as **three separate ZIPs** (Primary, Secondary,
+The SDG Pathways Explorer ships as **three separate ZIPs** (Primary, Secondary,
 Pre-University). They all share the same code; only the content differs.
 
 ## How it fits together
@@ -68,6 +68,11 @@ paste the three source files one after another into `data/content.js`.
 
 - `data/content.js` is generated. Do not edit it directly; edit the three
   `data/content-<level>.js` files and rebuild.
+- Cache-busting is automatic. The content scripts load as `data/...js?v=<VER>`;
+  the build stamps `<VER>` from a checksum of the content files, so it changes
+  whenever (and only when) the content changes. You no longer bump it by hand —
+  just rerun the build. (If you edit content without rebuilding, the old `?v=`
+  sticks and browsers may serve cached JS, so always rebuild before shipping.)
 - Deployment: this base + `content.js` model works for the standard SLS *ZIP
   package* (relative paths resolve). If you ever deploy via *signed URLs* (where
   the iframe cannot fetch sub-resources), the content would need to be inlined
