@@ -10,11 +10,13 @@ exit /b
 # ============================================================
 $ErrorActionPreference = "Stop"
 
-# Load the ultra-reliable native Windows .NET compression engine
+# Load the reliable native Windows .NET compression engine
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
-# Move up to the project root directory (assuming script is in tools/)
+# Move up to the project root directory
 Set-Location ..
+# FIX: Force the underlying .NET engine to sync its directory with PowerShell
+[System.Environment]::CurrentDirectory = $PWD.ProviderPath
 
 $LEVELS = @("primary", "secondary", "pre-university")
 $DIST = "dist"
@@ -86,13 +88,13 @@ function Make-Zip ($name, $contentSrc) {
     Stage-Common $stage
     Copy-Item $contentSrc -Destination "$stage\data\content.js"
     
-    # Resolve absolute paths required by the .NET compression engine
-    $absoluteStage = [System.IO.Path]::GetFullPath($stage)
-    $absoluteZip = [System.IO.Path]::GetFullPath("$DIST\sdg-explorer-$name.zip")
+    # FIX: Explicitly build absolute paths using PowerShell's true current directory
+    $absoluteStage = Join-Path $PWD.ProviderPath $stage
+    $absoluteZip = Join-Path $PWD.ProviderPath "$DIST\sdg-explorer-$name.zip"
     
     if (Test-Path $absoluteZip) { Remove-Item $absoluteZip }
     
-    # Create the ZIP cleanly using the bulletproof .NET method
+    # Create the ZIP cleanly using the absolute paths
     [System.IO.Compression.ZipFile]::CreateFromDirectory($absoluteStage, $absoluteZip)
     
     Remove-Item -Recurse -Force $stage
