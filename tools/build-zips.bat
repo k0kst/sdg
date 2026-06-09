@@ -10,6 +10,9 @@ exit /b
 # ============================================================
 $ErrorActionPreference = "Stop"
 
+# Load the ultra-reliable native Windows .NET compression engine
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+
 # Move up to the project root directory (assuming script is in tools/)
 Set-Location ..
 
@@ -32,6 +35,8 @@ foreach ($lvl in $LEVELS) {
     [void]$sb.AppendLine("// ===== data/content-$lvl.js =====")
     if (Test-Path "data/content-$lvl.js") {
         [void]$sb.AppendLine((Get-Content "data/content-$lvl.js" -Raw))
+    } else {
+        Write-Error "Missing source file: data/content-$lvl.js"
     }
     [void]$sb.AppendLine()
 }
@@ -43,7 +48,6 @@ Write-Host "regenerated data/content.js (preview = all levels)"
 # ------------------------------------------------------------
 # 1b. Stamp the asset cache-busting version into index.html.
 # ------------------------------------------------------------
-# Replaces 'cksum' by generating an MD5 hash of the combined content files
 $combinedText = (Get-Content "data/sdg-content.js" -Raw) + (Get-Content "data/content.js" -Raw)
 $tmpHashFile = [System.IO.Path]::GetTempFileName()
 Set-Content -Path $tmpHashFile -Value $combinedText -Encoding utf8
@@ -53,12 +57,11 @@ Remove-Item $tmpHashFile
 if (Test-Path "index.html") {
     $indexContent = Get-Content "index.html" -Raw
     $regex = '(data/(sdg-content|content)\.js)\?v=[A-Za-z0-9]+'
-    # Replaces 'sed' using PowerShell's native regex engine
     $newIndexContent = $indexContent -replace $regex, "`$1?v=$VER"
     Set-Content "index.html" -Value $newIndexContent -Encoding utf8
     Write-Host "stamped index.html asset version v=$VER"
 } else {
-    Write-Warning "index.html not found!"
+    Write-Error "index.html not found!"
 }
 
 # ------------------------------------------------------------
@@ -83,12 +86,14 @@ function Make-Zip ($name, $contentSrc) {
     Stage-Common $stage
     Copy-Item $contentSrc -Destination "$stage\data\content.js"
     
-    # Absolute path for the target zip file
-    $targetZip = Join-Path (Get-Location) "$DIST\sdg-explorer-$name.zip"
-    if (Test-Path $targetZip) { Remove-Item $targetZip }
+    # Resolve absolute paths required by the .NET compression engine
+    $absoluteStage = [System.IO.Path]::GetFullPath($stage)
+    $absoluteZip = [System.IO.Path]::GetFullPath("$DIST\sdg-explorer-$name.zip")
     
-    # Replaces 'zip' command with Windows native Compress-Archive
-    Get-ChildItem $stage | Compress-Archive -DestinationPath $targetZip
+    if (Test-Path $absoluteZip) { Remove-Item $absoluteZip }
+    
+    # Create the ZIP cleanly using the bulletproof .NET method
+    [System.IO.Compression.ZipFile]::CreateFromDirectory($absoluteStage, $absoluteZip)
     
     Remove-Item -Recurse -Force $stage
     Write-Host "built $DIST/sdg-explorer-$name.zip"
