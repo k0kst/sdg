@@ -34,9 +34,8 @@ differs for its level; everything else is inherited from `data/sdg-content.js`.
 
 ## Option A - build everything with the script (recommended)
 
-```bash
-bash tools/build-zips.sh
-```
+Double-click `tools/build-zips.bat` in File Explorer (Windows). It opens a
+command window and runs automatically.
 
 This:
 
@@ -48,7 +47,8 @@ This:
    - `sdg-explorer-pre-university.zip`
    - `sdg-explorer-preview.zip` (all levels + picker, for your own review)
 
-Upload the three single-level ZIPs to SLS. Requires `bash` and `zip`.
+Upload the three single-level ZIPs to SLS. Requires Windows with PowerShell
+(built into all modern Windows versions).
 
 ## Option B - do it by hand (no shell needed)
 
@@ -61,7 +61,7 @@ For any one level, e.g. Primary:
    `content-pre-university.js` for the other two.
 
 To get back to the editing/preview view (picker for all three), restore
-`data/content.js` to the combined pack by re-running `tools/build-zips.sh`, or
+`data/content.js` to the combined pack by re-running `tools/build-zips.bat`, or
 paste the three source files one after another into `data/content.js`.
 
 ## Notes

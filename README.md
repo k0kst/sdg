@@ -275,18 +275,14 @@ level file before zipping.
 
 ## 10. Optional faster way (for a technical helper)
 
-If you have a colleague comfortable with the command line, there's a script that
-builds **all three ZIPs at once** and handles the cache version automatically:
+If you have a colleague comfortable with Windows scripting, there is a script
+that builds **all three ZIPs at once** and handles the cache version
+automatically.
 
-```bash
-bash tools/build-zips.sh
-```
+Double-click `tools/build-zips.bat` in File Explorer. It will open a command
+window, build everything, and wait for you to press Enter when done.
 
 It produces the ready-to-upload ZIPs in a `dist` folder.
-
-> ⚠️ Plain Windows can't run this on its own — it needs an extra free tool
-> (Git Bash or WSL) installed first. Ask your IT/technical helper. If that's not
-> available, use the manual steps in Section 9 — they produce the same result.
 
 See [`tools/README.md`](tools/README.md) for the technical details.
 
@@ -342,3 +338,83 @@ please contact a developer and share:
 
 - [`tools/README.md`](tools/README.md) — the technical build and packaging notes
 - the `spec/` folder — the full specification of how the activity works
+
+---
+
+## 15. Project Architecture (for developers)
+
+The SDG Pathways Explorer is a **self-contained, offline-first single-page
+application** — no backend, no package manager, no build step required to run.
+
+### File layout
+
+```
+sdg-explorer/
+├── index.html                      # The entire app: HTML + CSS + JS (~4 000 lines)
+├── data/
+│   ├── sdg-content.js              # Shared base: 17 SDGs, industries, career roles,
+│   │                               #   purposes, default UI labels (all levels)
+│   ├── content-primary.js          # Level overrides + UI copy (ages 11–12)
+│   ├── content-secondary.js        # Level overrides + UI copy (ages 13–16)
+│   ├── content-pre-university.js   # Level overrides + UI copy (ages 17–20)
+│   └── content.js                  # Generated — do not edit; rebuilt by build-zips.bat
+├── fonts/
+│   └── DMSans-Variable.ttf         # Bundled — loaded locally, no CDN at runtime
+├── icons/
+│   └── E-WEB-Goal-*.png            # Official UN SDG icon set
+├── spec/                           # Design and functional specification documents
+└── tools/
+    ├── build-zips.bat              # Windows build script (see below)
+    └── README.md                   # Developer build guide
+```
+
+### Runtime model
+
+`index.html` loads two scripts in order:
+
+1. **`data/sdg-content.js`** — registers the shared content (SDG names,
+   industries, career roles, 16 sources of purpose) into a global `SDG_CONTENT`
+   registry.
+2. **`data/content.js`** — registers one or more **level packs** (Primary,
+   Secondary, Pre-U). Each pack overrides or extends the shared data for its age
+   group and supplies its own UI copy.
+
+After both scripts load, the app's `init()` function inspects which levels are
+registered:
+
+- **One level** — boots straight into that level (no picker). This is the
+  published ZIP that students use.
+- **Multiple levels** — shows the level-picker and an on-page level switch.
+  This is the preview build used when reviewing all three at once.
+
+All state is kept in-memory. There are no `localStorage`, `fetch()`, or network
+calls — required by the SLS sandboxed iframe environment.
+
+### Content model
+
+```
+data/sdg-content.js         shared base (17 × SDG goals, purposes, industries,
+                                career roles, default UI labels)
+         ↑ merged at runtime
+data/content-<level>.js     per-level overrides (descriptions, study pathways,
+                                Singapore context, UI labels for that age group)
+         ↓ combined into
+data/content.js             runtime content — one level for a publish ZIP,
+                                all three concatenated for the preview build
+```
+
+### Build pipeline (`tools/build-zips.bat`)
+
+1. Concatenates the three level files into `data/content.js` (preview pack).
+2. Computes an MD5 hash of `sdg-content.js` + `content.js`, then stamps
+   `?v=<hash>` on both `<script>` tags in `index.html` (automatic cache-busting).
+3. Packages four ZIPs into `dist/`:
+
+| ZIP | Contents | Purpose |
+|---|---|---|
+| `sdg-explorer-primary.zip` | `index.html`, shared data, primary content, fonts, icons | Upload to SLS (Primary) |
+| `sdg-explorer-secondary.zip` | Same, but secondary content | Upload to SLS (Secondary) |
+| `sdg-explorer-pre-university.zip` | Same, but pre-university content | Upload to SLS (Pre-U) |
+| `sdg-explorer-preview.zip` | All three levels + level picker | Local review only |
+
+The three single-level ZIPs are the ones published to SLS.
