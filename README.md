@@ -157,7 +157,7 @@ These tables show the common things you might change and where students see them
 |---|---|---|
 | `description` | The one-line explanation of a goal | On each goal card |
 | `singaporeContext` | The "In Singapore…" sentence for a goal | On each goal card |
-| `studyPathways` | A list of study/talent areas. Shown as **"Possible DSA Areas"** (Primary), **"Relevant Courses/Subjects"** (Secondary), or **"Relevant Courses"** (Pre-U) | On each goal card |
+| `studyPathways` | A list of study/talent areas. Shown as **"Possible Areas of Exploration"** (Primary, listing CCAs and subjects offered in Singapore secondary schools), **"Relevant Courses/Subjects"** (Secondary), or **"Relevant Courses"** (Pre-U) | On each goal card |
 | `reflections` | The reflection prompts at the end | The results page |
 | `purposes` → `name` / `description` | The wording of each "source of purpose" | The purpose-tagging step and results |
 | `ui` labels (e.g. `landingSubtitle`, `stage1Heading`) | Headings and instructions on each screen | Across the activity, that version only |
