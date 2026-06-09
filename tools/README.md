@@ -34,9 +34,8 @@ differs for its level; everything else is inherited from `data/sdg-content.js`.
 
 ## Option A - build everything with the script (recommended)
 
-```bash
-bash tools/build-zips.sh
-```
+Double-click `tools/build-zips.bat` in File Explorer (Windows). It opens a
+command window and runs automatically.
 
 This:
 
@@ -48,7 +47,8 @@ This:
    - `sdg-explorer-pre-university.zip`
    - `sdg-explorer-preview.zip` (all levels + picker, for your own review)
 
-Upload the three single-level ZIPs to SLS. Requires `bash` and `zip`.
+Upload the three single-level ZIPs to SLS. Requires Windows with PowerShell
+(built into all modern Windows versions).
 
 ## Option B - do it by hand (no shell needed)
 
@@ -61,7 +61,7 @@ For any one level, e.g. Primary:
    `content-pre-university.js` for the other two.
 
 To get back to the editing/preview view (picker for all three), restore
-`data/content.js` to the combined pack by re-running `tools/build-zips.sh`, or
+`data/content.js` to the combined pack by re-running `tools/build-zips.bat`, or
 paste the three source files one after another into `data/content.js`.
 
 ## Notes
@@ -73,6 +73,10 @@ paste the three source files one after another into `data/content.js`.
   whenever (and only when) the content changes. You no longer bump it by hand —
   just rerun the build. (If you edit content without rebuilding, the old `?v=`
   sticks and browsers may serve cached JS, so always rebuild before shipping.)
+  Note: `build-zips.bat` uses an MD5 hash for `<VER>` (e.g. `A3F0C1...`),
+  whereas the old `.sh` script used a decimal `cksum` value. The first `.bat`
+  run will therefore rewrite the `?v=` tag in `index.html` even with no content
+  changes — this is expected and harmless.
 - Deployment: this base + `content.js` model works for the standard SLS *ZIP
   package* (relative paths resolve). If you ever deploy via *signed URLs* (where
   the iframe cannot fetch sub-resources), the content would need to be inlined
