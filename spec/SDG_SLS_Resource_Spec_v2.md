@@ -1,9 +1,11 @@
 # Specification Document: SDG Pathways Explorer
-## Interactive SLS Resource — ECG/CCE Module for JC1 Students
+## Interactive SLS Resource — ECG/CCE Module (Primary, Secondary, Pre-University)
 
-**Version:** 2.0
+> **Implementation note (v3.0 amendments):** This document was originally written for a single JC1 deployment. The implemented resource diverges in three key ways: (1) it supports three age levels (Primary, Secondary, Pre-University) with a shared base and per-level content overrides; (2) it bundles two fonts — DM Sans (body) and Fraunces (display headings); (3) storage APIs (`localStorage`/`sessionStorage`) are used with `try-catch` for within-session persistence but the app degrades gracefully if they are blocked. Sections 2, 3, 11, 16, 17, and 18 have been updated to reflect the implementation. All other sections describe the original single-level brief and remain accurate for each deployed level ZIP.
+
+**Version:** 3.0 (v2.0 original brief; v3.0 amended to match implementation)
 **Prepared for:** MOE ECG Branch
-**Target audience:** JC1 students (approx. 17 to 18 years old)
+**Target audience:** Primary 5–6 (approx. 11–12), Secondary 3–4 (approx. 15–16), and Pre-University / JC1 (approx. 17–18)
 **Deployment platform:** MOE Student Learning Space (SLS)
 **Document purpose:** Complete build specification for generating a fully functional, self-contained HTML5 interactive resource
 
@@ -31,7 +33,7 @@ The pedagogical intent is to help students surface their existing values and mot
 | External dependencies | None — no CDN, no API calls, no `fetch()` |
 | Server-side code | Not permitted |
 | Asset bundling | All images, fonts, audio bundled within ZIP |
-| Storage APIs | No `localStorage`, `sessionStorage`, or file system access |
+| Storage APIs | `localStorage` and `sessionStorage` are used with `try-catch` for within-session state preservation (e.g. page refresh). The app functions correctly if both are blocked by the SLS sandbox — no hard dependency. File system access is not used. |
 | Offline operation | Must function fully offline after initial SLS page load |
 | Target ZIP size | 100MB or less (confirm with SLS team before final build) |
 | Acceptance testing | Must pass inside SLS student interface, not standalone browser |
@@ -60,9 +62,12 @@ SDG accent colours are used only for card left-border strip, icon background, an
 
 ### Typography
 
-Font: **DM Sans Variable** (bundled as WOFF2 within the ZIP, downloaded from Google Fonts as a static file, not loaded via CDN at runtime).
+Two fonts are bundled within the ZIP — no CDN calls at runtime:
 
-Fallback stack: `'DM Sans', 'Helvetica Neue', Arial, sans-serif`
+- **DM Sans Variable** (`fonts/DMSans-Variable.ttf`) — body text, UI labels, buttons. Fallback: `'Helvetica Neue', Arial, sans-serif`
+- **Fraunces Variable** (`fonts/Fraunces-Variable.woff2`) — display headings (landing title, stage headings, summary headings). Fallback: `Georgia, 'Times New Roman', serif`
+
+Body fallback stack: `'DM Sans', 'Helvetica Neue', Arial, sans-serif`
 
 | Element | Size | Weight |
 |---|---|---|
@@ -412,15 +417,23 @@ An in-page modal (not `window.confirm()`, which may be blocked in SLS iframes):
 
 ---
 
-## 11. Content Architecture: sdg-content.js
+## 11. Content Architecture: three-level system
 
-All student-facing content is stored in a single separate file: `data/sdg-content.js`
+Content is split across four files loaded before the application script:
 
-This file is loaded in `index.html` via a standard `<script src="data/sdg-content.js">` tag before the application script. It defines a single global object `window.SDG_CONTENT`.
+| File | Purpose |
+|---|---|
+| `data/sdg-content.js` | **Base** — shared across all three levels: goal names, colours, icons, UI strings, industries, career roles, Singapore context, source-of-purpose themes |
+| `data/content-primary.js` | **Primary overrides** — age-appropriate descriptions and study pathways for P5–6 |
+| `data/content-secondary.js` | **Secondary overrides** — descriptions and pathways for Sec 3–4 |
+| `data/content-pre-university.js` | **Pre-University overrides** — formal descriptions and university-style pathways for JC1 |
+| `data/content.js` | **Runtime content** — for a publish ZIP this file contains only one level's overrides; for the preview/review build it concatenates all three levels and triggers the in-app level picker |
+
+`data/sdg-content.js` defines `window.SDG_CONTENT`. Each level override file registers its content against that base. The application's `init()` inspects which levels are registered and either boots directly (one level) or shows the level-picker (multiple levels).
+
+**Content editors should only touch the three `content-<level>.js` files, never `sdg-content.js` or `content.js` directly. Run `tools/build-zips.bat` to regenerate `content.js` and the deploy ZIPs.**
 
 The application script reads from `window.SDG_CONTENT` and never hardcodes content strings directly.
-
-**This separation means content editors can update any SDG description, career list, or pathway without touching the application code.**
 
 ### sdg-content.js File Format
 
@@ -802,36 +815,40 @@ In-page modal only (not `window.confirm()`):
 
 ## 16. File Structure (ZIP Package)
 
+Each **single-level publish ZIP** (the ones uploaded to SLS) has this layout:
+
 ```
-sdg-explorer/
+sdg-explorer-<level>/
 ├── index.html                              -- application layout and logic
 ├── data/
-│   └── sdg-content.js                     -- all editable content (edit this to revise copy)
+│   ├── sdg-content.js                     -- shared base content (do not edit directly)
+│   └── content.js                         -- this level's overrides (generated by build-zips.bat)
 ├── fonts/
-│   └── DMSans-Variable.woff2              -- bundled from Google Fonts (not CDN)
+│   ├── DMSans-Variable.ttf                -- body font, bundled (not CDN)
+│   └── Fraunces-Variable.woff2            -- display heading font, bundled (not CDN)
 └── icons/
     ├── E-WEB-Goal-01.png                  -- SDG 1 icon
-    ├── E-WEB-Goal-02.png                  -- SDG 2 icon
-    ├── E-WEB-Goal-03.png
-    ├── E-WEB-Goal-04.png
-    ├── E-WEB-Goal-05.png
-    ├── E-WEB-Goal-06.png
-    ├── E-WEB-Goal-07.png
-    ├── E-WEB-Goal-08.png
-    ├── E-WEB-Goal-09.png
-    ├── E-WEB-Goal-10.png
-    ├── E-WEB-Goal-11.png
-    ├── E-WEB-Goal-12.png
-    ├── E-WEB-Goal-13.png
-    ├── E-WEB-Goal-14.png
-    ├── E-WEB-Goal-15.png
-    ├── E-WEB-Goal-16.png
+    ├── E-WEB-Goal-02.png
+    ├── ...
     ├── E-WEB-Goal-17.png
     ├── SDG_Wheel_Transparent_WEB.png      -- landing page decoration
     └── E_SDG_logo_horizontal_Transparent_WEB.png  -- optional header/footer logo
 ```
 
-All JavaScript and CSS is embedded inline within `index.html` (in `<style>` and `<script>` tags), with the exception of the externally loaded `data/sdg-content.js`. No other external files are loaded at runtime.
+The **preview ZIP** (`sdg-explorer-preview.zip`) is identical except `data/content.js` contains all three level packs concatenated, which triggers the in-app level picker.
+
+The source repository also contains three editable level files that are **not** shipped in the publish ZIPs:
+
+```
+data/
+├── sdg-content.js                         -- shared base (shipped in all ZIPs)
+├── content-primary.js                     -- edit for Primary content
+├── content-secondary.js                   -- edit for Secondary content
+├── content-pre-university.js              -- edit for Pre-University content
+└── content.js                             -- generated; do not edit directly
+```
+
+All JavaScript and CSS is embedded inline within `index.html` (in `<style>` and `<script>` tags), with the exception of the externally loaded content scripts. No other external files are loaded at runtime.
 
 The entire application is plain HTML5, CSS3 and vanilla JavaScript. No frameworks, no build tools, no external dependencies of any kind.
 
@@ -847,9 +864,11 @@ Opus should receive the following files to build the resource:
 | `E-WEB-Goal-01.png` through `E-WEB-Goal-17.png` | `E-SDG-Icons-WEB.zip` | SDG card icons |
 | `SDG_Wheel_Transparent_WEB.png` | `E-SDG-logos-SDG-wheel_No-UN-Emblem.zip` | Landing page decoration |
 | `E_SDG_logo_horizontal_Transparent_WEB.png` | `E-SDG-logos-SDG-wheel_No-UN-Emblem.zip` | Optional header logo |
-| `DMSans-Variable.woff2` | Download from fonts.google.com/specimen/DM+Sans (select "Download family", extract WOFF2) | Bundled body font |
+| `DMSans-Variable.ttf` | Download from fonts.google.com/specimen/DM+Sans (select "Download family", extract the variable TTF) | Bundled body font |
+| `Fraunces-Variable.woff2` | Download from fonts.google.com/specimen/Fraunces (or fetch from `fonts.gstatic.com` via the Google Fonts CSS API with a Chrome user-agent to get WOFF2) | Bundled display heading font |
+| `data/content-primary.js`, `data/content-secondary.js`, `data/content-pre-university.js` | Source repository | Per-level content overrides |
 
-Opus does not need to receive the source docx or the SDG reference md file — all content is already embedded in `sdg-content.js` within this spec.
+Opus does not need to receive the source docx or the SDG reference md file — all content is already embedded in `sdg-content.js` and the three level files.
 
 ---
 
@@ -879,7 +898,10 @@ The resource passes acceptance when all of the following are true:
 - [ ] Landscape 3-column grid renders correctly on tablet landscape (768 to 1279px)
 - [ ] Portrait 2-column or 1-column layout renders correctly on mobile (below 768px)
 - [ ] Orientation nudge appears on tablet in portrait mode and dismisses correctly
-- [ ] DM Sans font loads from bundled WOFF2 (no CDN call)
+- [ ] DM Sans font loads from bundled TTF (no CDN call)
+- [ ] Fraunces font loads from bundled WOFF2 (no CDN call; display headings only)
+- [ ] With one-level `content.js`: app boots directly with no level picker
+- [ ] With three-level `content.js`: level picker appears and switching levels updates all content
 - [ ] All interactions work via touch on iPadOS 16+ in Safari
 - [ ] All interactions work on SLS mobile app (iOS and Android)
 - [ ] Resource functions fully offline after initial load
@@ -902,4 +924,4 @@ The resource passes acceptance when all of the following are true:
 
 ---
 
-*End of specification. Version 2.0. Provide this document, the icon PNGs, the SDG wheel PNG, and the DM Sans WOFF2 to Opus as the complete build package.*
+*End of specification. Version 3.0. Provide this document, the icon PNGs, the SDG wheel PNG, the DM Sans TTF, the Fraunces WOFF2, and the three per-level content files to Opus as the complete build package.*

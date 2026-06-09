@@ -73,6 +73,10 @@ paste the three source files one after another into `data/content.js`.
   whenever (and only when) the content changes. You no longer bump it by hand —
   just rerun the build. (If you edit content without rebuilding, the old `?v=`
   sticks and browsers may serve cached JS, so always rebuild before shipping.)
+  Note: `build-zips.bat` uses an MD5 hash for `<VER>` (e.g. `A3F0C1...`),
+  whereas the old `.sh` script used a decimal `cksum` value. The first `.bat`
+  run will therefore rewrite the `?v=` tag in `index.html` even with no content
+  changes — this is expected and harmless.
 - Deployment: this base + `content.js` model works for the standard SLS *ZIP
   package* (relative paths resolve). If you ever deploy via *signed URLs* (where
   the iframe cannot fetch sub-resources), the content would need to be inlined
