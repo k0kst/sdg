@@ -1,9 +1,8 @@
 @echo off
 cd /d "%~dp0"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-Expression ((Get-Content '%~f0' -Raw) -replace '(?s)^.*?(?=\# POWERSHELL_START)','')"
-exit /b
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-Content '%~f0' | Select-Object -Skip 4 | Out-String | Invoke-Expression"
+goto :EOF
 
-# POWERSHELL_START
 # ============================================================
 # Build the SDG Pathways Explorer release ZIPs (Windows Native)
 # ============================================================
