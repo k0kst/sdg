@@ -1,10 +1,9 @@
-<# : batch portion
 @echo off
 cd /d "%~dp0"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-Expression (Get-Content '%~f0' -Raw)"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-Expression ((Get-Content '%~f0' -Raw) -replace '(?s)^.*?(?=\# POWERSHELL_START)','')"
 exit /b
-#>
 
+# POWERSHELL_START
 # ============================================================
 # Build the SDG Pathways Explorer release ZIPs (Windows Native)
 # ============================================================
@@ -13,9 +12,9 @@ $ErrorActionPreference = "Stop"
 # Load the reliable native Windows .NET compression engine
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
-# Move up to the project root directory
+# Move up to the project root directory (assuming script is in tools/)
 Set-Location ..
-# FIX: Force the underlying .NET engine to sync its directory with PowerShell
+# Force the underlying .NET engine to sync its directory with PowerShell
 [System.Environment]::CurrentDirectory = $PWD.ProviderPath
 
 $LEVELS = @("primary", "secondary", "pre-university")
@@ -88,7 +87,7 @@ function Make-Zip ($name, $contentSrc) {
     Stage-Common $stage
     Copy-Item $contentSrc -Destination "$stage\data\content.js"
     
-    # FIX: Explicitly build absolute paths using PowerShell's true current directory
+    # Explicitly build absolute paths using PowerShell's true current directory
     $absoluteStage = Join-Path $PWD.ProviderPath $stage
     $absoluteZip = Join-Path $PWD.ProviderPath "$DIST\sdg-explorer-$name.zip"
     
@@ -110,4 +109,4 @@ foreach ($lvl in $LEVELS) {
 Make-Zip "preview" "data/content.js"
 
 Write-Host "`ndone. ZIPs are in $DIST/"
-pause
+Read-Host "Press Enter to exit..."
