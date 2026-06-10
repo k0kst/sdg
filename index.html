@@ -2328,8 +2328,8 @@ button.tray-slot { cursor: pointer; }
       '</div>' +
       '<p class="sdg-card-desc">' + escapeHtml(s.description) + '</p>' +
       '<div class="stack-card-sections">' +
-        renderSection(UI.sectionLabels.careerRoles, s.careerRoles) +
         renderSection(UI.sectionLabels.industries, s.industries) +
+        renderSection(UI.sectionLabels.careerRoles, s.careerRoles) +
         renderSection(UI.sectionLabels.studyPathways, s.studyPathways) +
         renderSection(UI.sectionLabels.singaporeContext, s.singaporeContext) +
       '</div>' +
@@ -2744,8 +2744,8 @@ button.tray-slot { cursor: pointer; }
     '</button>';
 
     html += '<div id="expand-' + s.id + '" class="sdg-card-expanded">' +
-      renderSection(UI.sectionLabels.careerRoles, s.careerRoles) +
       renderSection(UI.sectionLabels.industries, s.industries) +
+      renderSection(UI.sectionLabels.careerRoles, s.careerRoles) +
       renderSection(UI.sectionLabels.studyPathways, s.studyPathways) +
       renderSection(UI.sectionLabels.singaporeContext, s.singaporeContext) +
     '</div>';
@@ -3139,8 +3139,8 @@ button.tray-slot { cursor: pointer; }
       '<div class="spotlight-body">' +
         '<p class="spotlight-desc">' + escapeHtml(s.description) + '</p>' +
         renderSpotlightPurposes(s.id) +
-        renderSpotlightSection(UI.sectionLabels.careerRoles, s.careerRoles) +
         renderSpotlightSection(UI.sectionLabels.industries, s.industries) +
+        renderSpotlightSection(UI.sectionLabels.careerRoles, s.careerRoles) +
         renderSpotlightSection(UI.sectionLabels.studyPathways, s.studyPathways) +
         renderSpotlightSection(UI.sectionLabels.singaporeContext, s.singaporeContext) +
       '</div>' +
