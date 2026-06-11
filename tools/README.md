@@ -68,15 +68,17 @@ paste the three source files one after another into `data/content.js`.
 
 - `data/content.js` is generated. Do not edit it directly; edit the three
   `data/content-<level>.js` files and rebuild.
-- Cache-busting is automatic. The content scripts load as `data/...js?v=<VER>`;
-  the build stamps `<VER>` from a checksum of the content files, so it changes
-  whenever (and only when) the content changes. You no longer bump it by hand —
-  just rerun the build. (If you edit content without rebuilding, the old `?v=`
-  sticks and browsers may serve cached JS, so always rebuild before shipping.)
-  Note: `build-zips.bat` uses an MD5 hash for `<VER>` (e.g. `A3F0C1...`),
-  whereas the old `.sh` script used a decimal `cksum` value. The first `.bat`
-  run will therefore rewrite the `?v=` tag in `index.html` even with no content
-  changes — this is expected and harmless.
+- No `?v=` cache-busting query string. The content scripts load as plain
+  relative paths (`data/sdg-content.js`, `data/content.js`). An earlier build
+  appended `?v=<hash>` for cache-busting, but the SLS packaged-resource server
+  serves files by exact path and 404s a path that carries a query string — so
+  `data/sdg-content.js?v=...` failed to load inside SLS and the app showed
+  "Content failed to load. Check data/sdg-content.js." The build now strips any
+  `?v=` it finds in `index.html` on every run. A re-uploaded SLS package is
+  served fresh, so per-file cache-busting is unnecessary there; for local
+  browser testing, hard-refresh with **Ctrl + F5** to bypass the cache.
+- Files are written as UTF-8 **without** a BOM (PowerShell's `Set-Content
+  -Encoding utf8` would add one, which the SLS sandbox can also choke on).
 - Deployment: this base + `content.js` model works for the standard SLS *ZIP
   package* (relative paths resolve). If you ever deploy via *signed URLs* (where
   the iframe cannot fetch sub-resources), the content would need to be inlined

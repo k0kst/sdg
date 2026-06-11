@@ -243,11 +243,12 @@ steps **once for each** version.
    (copy it, rename the copy to `content.js`, confirm replace) — exactly like
    the test step in Section 8.
 
-2. **(Only if you're updating something students have already used)** Open
-   `index.html` in Notepad, press **Ctrl + F**, and search for `?v=`. You'll
-   find it in **two** places, like `content.js?v=12345`. Change the number
-   (e.g. to today's date `20260605`) in **both** places so students' browsers
-   load the new version instead of an old saved copy. Save with **Ctrl + S**.
+2. **Do not add a `?v=` version tag to the script paths in `index.html`.**
+   The two content scripts must stay as plain paths (`data/sdg-content.js`
+   and `data/content.js`). SLS serves packaged files by exact path and will
+   return "not found" for a path with a `?v=...` query string, which makes the
+   app show *"Content failed to load. Check data/sdg-content.js."* Re-uploading
+   the ZIP to SLS already serves a fresh copy, so no version tag is needed.
 
 3. Select these **four items together**, in the project folder:
    `index.html`, the `data` folder, the `fonts` folder, and the `icons` folder.
@@ -313,7 +314,6 @@ Upload each single-level ZIP to the Student Learning Space (SLS) as a
 | **SLS** | Student Learning Space — where the activity is published |
 | **Preview build** | A version set up to show the age-group picker so you can check all three at once |
 | **Level pack** | The single content file (`content.js`) that decides which age group a ZIP is for |
-| **`?v=` number** | A version tag in `index.html` that tells browsers to load fresh content instead of an old saved copy |
 
 ---
 
@@ -323,7 +323,8 @@ Upload each single-level ZIP to the Student Learning Space (SLS) as a
 |---|---|---|
 | Blank page or red error message | A quote/comma/bracket was changed | Restore the file from backup, redo the edit |
 | New words don't show up | `content.js` not updated, or browser cached old page | Replace `content.js` with your level file, then press **Ctrl + F5** |
-| Students still see old text after you republished | The `?v=` number wasn't changed | Change both `?v=` numbers in `index.html` (Section 9, step 2) and republish |
+| Students still see old text after you republished | Browser cached the old page | Hard-refresh with **Ctrl + F5**; on SLS, confirm the new ZIP actually replaced the old resource |
+| "Content failed to load. Check data/sdg-content.js." | A `?v=...` query string was added to the script paths in `index.html` (SLS 404s those) | Remove the `?v=...` so the paths read `data/sdg-content.js` and `data/content.js`, then rebuild/republish |
 | Text overflows the card | Text too long | Shorten it |
 | Quotes look wrong / file won't load | Curly quotes from Word | Re-edit in **Notepad** and re-type the quote marks |
 | Age-group picker missing or extra | `content.js` has one level (no picker) vs all three (picker) | Expected — one level = a publish ZIP; all three = the preview |
@@ -406,8 +407,9 @@ data/content.js             runtime content — one level for a publish ZIP,
 ### Build pipeline (`tools/build-zips.bat`)
 
 1. Concatenates the three level files into `data/content.js` (preview pack).
-2. Computes an MD5 hash of `sdg-content.js` + `content.js`, then stamps
-   `?v=<hash>` on both `<script>` tags in `index.html` (automatic cache-busting).
+2. Strips any `?v=...` query string from the two content `<script>` tags in
+   `index.html` so they stay plain relative paths (a `?v=` makes SLS 404 the
+   scripts), and writes the files as UTF-8 without a BOM.
 3. Packages four ZIPs into `dist/`:
 
 | ZIP | Contents | Purpose |

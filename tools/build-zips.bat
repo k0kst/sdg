@@ -34,32 +34,42 @@ $sb = [System.Text.StringBuilder]::new()
 foreach ($lvl in $LEVELS) {
     [void]$sb.AppendLine("// ===== data/content-$lvl.js =====")
     if (Test-Path "data/content-$lvl.js") {
-        [void]$sb.AppendLine((Get-Content "data/content-$lvl.js" -Raw))
+        [void]$sb.AppendLine((Get-Content "data/content-$lvl.js" -Raw -Encoding UTF8))
     } else {
         Write-Error "Missing source file: data/content-$lvl.js"
     }
     [void]$sb.AppendLine()
 }
 
+# UTF-8 WITHOUT a BOM. PowerShell 5.1's `Set-Content -Encoding utf8` prepends a
+# BOM, which is another thing the SLS sandbox can choke on; write bytes directly
+# so the shipped files are clean UTF-8.
+$Utf8NoBom = New-Object System.Text.UTF8Encoding $false
+function Write-Text ($path, $text) {
+    [System.IO.File]::WriteAllText((Join-Path $PWD.ProviderPath $path), $text, $Utf8NoBom)
+}
+
 if (-not (Test-Path "data")) { New-Item -ItemType Directory -Path "data" | Out-Null }
-Set-Content -Path $contentPath -Value $sb.ToString() -Encoding utf8
+Write-Text $contentPath $sb.ToString()
 Write-Host "regenerated data/content.js (preview = all levels)"
 
 # ------------------------------------------------------------
-# 1b. Stamp the asset cache-busting version into index.html.
+# 1b. Strip any ?v= cache-busting query string from the content
+#     <script> tags in index.html.
+#
+#     The SLS packaged-resource server serves files by exact path and returns
+#     404 for a path that carries a query string, so `data/sdg-content.js?v=...`
+#     fails to load inside SLS and the app shows "Content failed to load".
+#     We therefore ship the scripts as plain relative paths. (A re-uploaded SLS
+#     package is served fresh, so per-file cache-busting is unnecessary there;
+#     for local browser testing use Ctrl+F5 to bypass the cache.)
 # ------------------------------------------------------------
-$combinedText = (Get-Content "data/sdg-content.js" -Raw) + (Get-Content "data/content.js" -Raw)
-$tmpHashFile = [System.IO.Path]::GetTempFileName()
-Set-Content -Path $tmpHashFile -Value $combinedText -Encoding utf8
-$VER = (Get-FileHash $tmpHashFile -Algorithm MD5).Hash
-Remove-Item $tmpHashFile
-
 if (Test-Path "index.html") {
-    $indexContent = Get-Content "index.html" -Raw
+    $indexContent = Get-Content "index.html" -Raw -Encoding UTF8
     $regex = '(data/(sdg-content|content)\.js)\?v=[A-Za-z0-9]+'
-    $newIndexContent = $indexContent -replace $regex, "`$1?v=$VER"
-    Set-Content "index.html" -Value $newIndexContent -Encoding utf8
-    Write-Host "stamped index.html asset version v=$VER"
+    $newIndexContent = $indexContent -replace $regex, '$1'
+    Write-Text "index.html" $newIndexContent
+    Write-Host "ensured index.html content scripts have no ?v= query string"
 } else {
     Write-Error "index.html not found!"
 }
