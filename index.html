@@ -1613,12 +1613,17 @@ button.tray-slot { cursor: pointer; }
   </div>
 </div>
 
-<!-- Shared base content (goal data + the modes registry). Identical in every build. -->
-<script src="data/sdg-content.js?v=86F5258AAEC7B4C1464CA5D25225EAB1"></script>
+<!-- Shared base content (goal data + the modes registry). Identical in every build.
+     Loaded as a plain relative path (no ?v= cache-busting query string): SLS
+     serves each re-uploaded package fresh, so a per-file version tag adds churn
+     for no benefit. NOTE: the path separators here are "/", and the build ZIP
+     must store its entries with "/" too (see tools/build-zips.bat) or SLS can't
+     resolve data/ and the app shows "Content failed to load". -->
+<script src="data/sdg-content.js"></script>
 <!-- Active level pack for THIS build. A single-level ZIP ships one level here;
      the combined/preview build ships all three (see tools/README.md). The app
      auto-detects how many levels registered and shows the picker only if 2+. -->
-<script src="data/content.js?v=86F5258AAEC7B4C1464CA5D25225EAB1"></script>
+<script src="data/content.js"></script>
 <script>
 /* ============================================================
    SDG Pathways Explorer — Application Logic

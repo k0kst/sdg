@@ -68,15 +68,23 @@ paste the three source files one after another into `data/content.js`.
 
 - `data/content.js` is generated. Do not edit it directly; edit the three
   `data/content-<level>.js` files and rebuild.
-- Cache-busting is automatic. The content scripts load as `data/...js?v=<VER>`;
-  the build stamps `<VER>` from a checksum of the content files, so it changes
-  whenever (and only when) the content changes. You no longer bump it by hand —
-  just rerun the build. (If you edit content without rebuilding, the old `?v=`
-  sticks and browsers may serve cached JS, so always rebuild before shipping.)
-  Note: `build-zips.bat` uses an MD5 hash for `<VER>` (e.g. `A3F0C1...`),
-  whereas the old `.sh` script used a decimal `cksum` value. The first `.bat`
-  run will therefore rewrite the `?v=` tag in `index.html` even with no content
-  changes — this is expected and harmless.
+- **ZIP entries use forward slashes.** This is the important one. The build no
+  longer uses `[System.IO.Compression.ZipFile]::CreateFromDirectory`, which
+  under Windows PowerShell 5.1 (.NET Framework) writes entry names with the OS
+  separator (`data\sdg-content.js`). Windows Explorer recreates the `data`
+  folder on extract so it looks fine locally, but the SLS package server reads
+  the entry name literally as one flat file — so `data/sdg-content.js` can't be
+  found and the app shows "Content failed to load. Check data/sdg-content.js."
+  `New-ZipFromDir` adds each file with a `/`-joined entry name instead. (Windows
+  Explorer's "Send to → Compressed folder" always did this, which is why
+  hand-zipping worked before.)
+- No `?v=` cache-busting query string. The content scripts load as plain
+  relative paths (`data/sdg-content.js`, `data/content.js`); the build strips
+  any `?v=` it finds in `index.html`. A re-uploaded SLS package is served fresh,
+  so a per-file version tag adds churn for no benefit; for local browser
+  testing, hard-refresh with **Ctrl + F5** to bypass the cache.
+- Files are written as UTF-8 **without** a BOM (PowerShell's `Set-Content
+  -Encoding utf8` would add one, which the SLS sandbox can also choke on).
 - Deployment: this base + `content.js` model works for the standard SLS *ZIP
   package* (relative paths resolve). If you ever deploy via *signed URLs* (where
   the iframe cannot fetch sub-resources), the content would need to be inlined
