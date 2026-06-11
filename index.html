@@ -1614,11 +1614,11 @@ button.tray-slot { cursor: pointer; }
 </div>
 
 <!-- Shared base content (goal data + the modes registry). Identical in every build. -->
-<script src="data/sdg-content.js?v=4105062744"></script>
+<script src="data/sdg-content.js?v=86F5258AAEC7B4C1464CA5D25225EAB1"></script>
 <!-- Active level pack for THIS build. A single-level ZIP ships one level here;
      the combined/preview build ships all three (see tools/README.md). The app
      auto-detects how many levels registered and shows the picker only if 2+. -->
-<script src="data/content.js?v=4105062744"></script>
+<script src="data/content.js?v=86F5258AAEC7B4C1464CA5D25225EAB1"></script>
 <script>
 /* ============================================================
    SDG Pathways Explorer — Application Logic
@@ -1915,15 +1915,6 @@ button.tray-slot { cursor: pointer; }
     renderTop3Tray();
     renderSelectCards();
     renderHeader();
-  }
-
-  function shuffleArray(arr) {
-    var a = arr.slice();
-    for (var i = a.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-    }
-    return a;
   }
 
   // -- Purpose lookup helpers -------------------------------
@@ -2337,8 +2328,8 @@ button.tray-slot { cursor: pointer; }
       '</div>' +
       '<p class="sdg-card-desc">' + escapeHtml(s.description) + '</p>' +
       '<div class="stack-card-sections">' +
-        renderSection(UI.sectionLabels.careerRoles, s.careerRoles) +
         renderSection(UI.sectionLabels.industries, s.industries) +
+        renderSection(UI.sectionLabels.careerRoles, s.careerRoles) +
         renderSection(UI.sectionLabels.studyPathways, s.studyPathways) +
         renderSection(UI.sectionLabels.singaporeContext, s.singaporeContext) +
       '</div>' +
@@ -2455,7 +2446,7 @@ button.tray-slot { cursor: pointer; }
           appState.browseHistory = [];
           appState.browseIndex = 0;
           appState.resortingId = null;
-          appState.browseOrder = shuffleArray(SDGS.map(function (s) { return s.id; }));
+          appState.browseOrder = SDGS.map(function (s) { return s.id; });
           renderBrowseStack();
           renderHeader();
         });
@@ -2753,8 +2744,8 @@ button.tray-slot { cursor: pointer; }
     '</button>';
 
     html += '<div id="expand-' + s.id + '" class="sdg-card-expanded">' +
-      renderSection(UI.sectionLabels.careerRoles, s.careerRoles) +
       renderSection(UI.sectionLabels.industries, s.industries) +
+      renderSection(UI.sectionLabels.careerRoles, s.careerRoles) +
       renderSection(UI.sectionLabels.studyPathways, s.studyPathways) +
       renderSection(UI.sectionLabels.singaporeContext, s.singaporeContext) +
     '</div>';
@@ -3148,8 +3139,8 @@ button.tray-slot { cursor: pointer; }
       '<div class="spotlight-body">' +
         '<p class="spotlight-desc">' + escapeHtml(s.description) + '</p>' +
         renderSpotlightPurposes(s.id) +
-        renderSpotlightSection(UI.sectionLabels.careerRoles, s.careerRoles) +
         renderSpotlightSection(UI.sectionLabels.industries, s.industries) +
+        renderSpotlightSection(UI.sectionLabels.careerRoles, s.careerRoles) +
         renderSpotlightSection(UI.sectionLabels.studyPathways, s.studyPathways) +
         renderSpotlightSection(UI.sectionLabels.singaporeContext, s.singaporeContext) +
       '</div>' +
