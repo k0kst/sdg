@@ -1614,10 +1614,11 @@ button.tray-slot { cursor: pointer; }
 </div>
 
 <!-- Shared base content (goal data + the modes registry). Identical in every build.
-     NOTE: no ?v= cache-busting query string. The SLS packaged-resource server
-     serves files by exact path and 404s a path that carries a query string, so
-     a ?v= here makes the content scripts fail to load inside SLS (the app then
-     shows "Content failed to load"). Keep these as plain relative paths. -->
+     Loaded as a plain relative path (no ?v= cache-busting query string): SLS
+     serves each re-uploaded package fresh, so a per-file version tag adds churn
+     for no benefit. NOTE: the path separators here are "/", and the build ZIP
+     must store its entries with "/" too (see tools/build-zips.bat) or SLS can't
+     resolve data/ and the app shows "Content failed to load". -->
 <script src="data/sdg-content.js"></script>
 <!-- Active level pack for THIS build. A single-level ZIP ships one level here;
      the combined/preview build ships all three (see tools/README.md). The app

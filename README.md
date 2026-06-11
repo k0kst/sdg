@@ -324,7 +324,7 @@ Upload each single-level ZIP to the Student Learning Space (SLS) as a
 | Blank page or red error message | A quote/comma/bracket was changed | Restore the file from backup, redo the edit |
 | New words don't show up | `content.js` not updated, or browser cached old page | Replace `content.js` with your level file, then press **Ctrl + F5** |
 | Students still see old text after you republished | Browser cached the old page | Hard-refresh with **Ctrl + F5**; on SLS, confirm the new ZIP actually replaced the old resource |
-| "Content failed to load. Check data/sdg-content.js." | A `?v=...` query string was added to the script paths in `index.html` (SLS 404s those) | Remove the `?v=...` so the paths read `data/sdg-content.js` and `data/content.js`, then rebuild/republish |
+| "Content failed to load. Check data/sdg-content.js." on SLS (but fine when you open the unzipped folder) | The ZIP stored its entries with backslash paths, so SLS can't find the `data/` folder | Rebuild with the current `build-zips.bat` (it now writes forward-slash ZIP entries), or zip by hand with Windows Explorer's "Send to → Compressed folder" |
 | Text overflows the card | Text too long | Shorten it |
 | Quotes look wrong / file won't load | Curly quotes from Word | Re-edit in **Notepad** and re-type the quote marks |
 | Age-group picker missing or extra | `content.js` has one level (no picker) vs all three (picker) | Expected — one level = a publish ZIP; all three = the preview |
@@ -408,9 +408,12 @@ data/content.js             runtime content — one level for a publish ZIP,
 
 1. Concatenates the three level files into `data/content.js` (preview pack).
 2. Strips any `?v=...` query string from the two content `<script>` tags in
-   `index.html` so they stay plain relative paths (a `?v=` makes SLS 404 the
-   scripts), and writes the files as UTF-8 without a BOM.
-3. Packages four ZIPs into `dist/`:
+   `index.html` so they stay plain relative paths, and writes the files as
+   UTF-8 without a BOM.
+3. Packages four ZIPs into `dist/`, writing **forward-slash** entry names so
+   the `data/` folder resolves inside the SLS package server (the previous
+   `ZipFile.CreateFromDirectory` wrote backslash paths, which SLS could not
+   resolve — the app then showed "Content failed to load"):
 
 | ZIP | Contents | Purpose |
 |---|---|---|

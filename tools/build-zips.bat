@@ -8,8 +8,11 @@ goto :EOF
 # ============================================================
 $ErrorActionPreference = "Stop"
 
-# Load the reliable native Windows .NET compression engine
+# Load the reliable native Windows .NET compression engine.
+# FileSystem provides ZipFile/ZipFileExtensions; System.IO.Compression
+# provides ZipArchive/ZipArchiveMode (used by New-ZipFromDir below).
 Add-Type -AssemblyName System.IO.Compression.FileSystem
+Add-Type -AssemblyName System.IO.Compression
 
 # Move up to the project root directory (assuming script is in tools/)
 Set-Location ..
@@ -55,14 +58,12 @@ Write-Host "regenerated data/content.js (preview = all levels)"
 
 # ------------------------------------------------------------
 # 1b. Strip any ?v= cache-busting query string from the content
-#     <script> tags in index.html.
+#     <script> tags in index.html, shipping plain relative paths.
 #
-#     The SLS packaged-resource server serves files by exact path and returns
-#     404 for a path that carries a query string, so `data/sdg-content.js?v=...`
-#     fails to load inside SLS and the app shows "Content failed to load".
-#     We therefore ship the scripts as plain relative paths. (A re-uploaded SLS
-#     package is served fresh, so per-file cache-busting is unnecessary there;
-#     for local browser testing use Ctrl+F5 to bypass the cache.)
+#     A re-uploaded SLS package is served fresh, so a per-file version tag adds
+#     churn for no benefit; for local browser testing use Ctrl+F5 to bypass the
+#     cache. (The real SLS load failure was the ZIP entry separators - see
+#     New-ZipFromDir below - not this query string.)
 # ------------------------------------------------------------
 if (Test-Path "index.html") {
     $indexContent = Get-Content "index.html" -Raw -Encoding UTF8
@@ -88,23 +89,44 @@ function Stage-Common ($stagePath) {
     if (Test-Path "icons") { Copy-Item "icons" -Destination "$stagePath\" -Recurse }
 }
 
+# Build a ZIP from a staged directory using FORWARD-SLASH entry names.
+#
+# Why not ZipFile::CreateFromDirectory? Under Windows PowerShell 5.1 (.NET
+# Framework) it writes entry names with the OS separator, i.e. backslashes
+# ("data\sdg-content.js"). Windows Explorer is lenient and recreates the
+# "data" folder on extract, so it looks fine locally - but the SLS package
+# server reads the entry name literally as one flat file, so the relative
+# path "data/sdg-content.js" in index.html 404s and the app shows
+# "Content failed to load". The ZIP spec mandates forward slashes, so we add
+# each file explicitly with a "/"-joined entry name.
+function New-ZipFromDir ($sourceDir, $zipPath) {
+    if (Test-Path $zipPath) { Remove-Item $zipPath }
+    $srcFull = (Resolve-Path $sourceDir).ProviderPath.TrimEnd('\')
+    $zip = [System.IO.Compression.ZipFile]::Open($zipPath, [System.IO.Compression.ZipArchiveMode]::Create)
+    try {
+        Get-ChildItem -Path $sourceDir -Recurse -File | ForEach-Object {
+            $entryName = $_.FullName.Substring($srcFull.Length + 1).Replace('\', '/')
+            [void][System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $_.FullName, $entryName)
+        }
+    } finally {
+        $zip.Dispose()
+    }
+}
+
 function Make-Zip ($name, $contentSrc) {
     $stage = "$DIST\stage-$name"
     if (Test-Path $stage) { Remove-Item -Recurse -Force $stage }
     New-Item -ItemType Directory -Path $stage -Force | Out-Null
-    
+
     Stage-Common $stage
     Copy-Item $contentSrc -Destination "$stage\data\content.js"
-    
+
     # Explicitly build absolute paths using PowerShell's true current directory
     $absoluteStage = Join-Path $PWD.ProviderPath $stage
     $absoluteZip = Join-Path $PWD.ProviderPath "$DIST\sdg-explorer-$name.zip"
-    
-    if (Test-Path $absoluteZip) { Remove-Item $absoluteZip }
-    
-    # Create the ZIP cleanly using the absolute paths
-    [System.IO.Compression.ZipFile]::CreateFromDirectory($absoluteStage, $absoluteZip)
-    
+
+    New-ZipFromDir $absoluteStage $absoluteZip
+
     Remove-Item -Recurse -Force $stage
     Write-Host "built $DIST/sdg-explorer-$name.zip"
 }
